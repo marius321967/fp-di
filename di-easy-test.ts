@@ -1,14 +1,15 @@
 import { inject, registerBuilder, registerValue } from './di-easy.js';
 
-export type FooFunc = (a: number, b: number) => number;
+export type UserNameGetter = (id: string) => string;
+
+export type User = { name: string };
+export type UserGetter = (id: string) => User;
 
 export const base =
-  (outsideService): FooFunc =>
-  (a, b) =>
-    a + b;
+  (getUser: UserGetter): UserNameGetter =>
+  (id) =>
+    getUser(id).name;
 
-const token = registerBuilder<FooFunc>(base);
-const token2 = registerValue<FooFunc>(base([]));
+const token = registerBuilder<UserNameGetter>(base);
 
-console.log(inject(token)(1, 2));
-console.log(inject(token2)(1, 2));
+console.log(inject(token)('foobar'));
