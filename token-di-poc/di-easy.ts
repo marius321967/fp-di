@@ -12,8 +12,12 @@ export const registerBuilder: BuilderRegistrator = <T>(
   token?: Token<T>
 ): Token<T> => {
   if (!token) token = { symbol: Symbol() };
+
+  
+  
   collection[token.symbol] = builder;
 
+  console.log(collection);
   return token;
 };
 
@@ -28,5 +32,7 @@ export const registerValue: ValueRegistrator = <T>(
 };
 
 export const inject = <T>(token: Token<T>): T => {
-  return collection[token.symbol]();
+  return collection[token.symbol](
+    // ...would resolve here
+  );
 };
