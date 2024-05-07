@@ -1,9 +1,4 @@
-import {
-  Builder,
-  BuilderRegistrator,
-  Token,
-  ValueRegistrator,
-} from './di-types';
+import { Builder, BuilderRegistrator, Token } from './registry-types.mvp';
 
 const collection: { [key: symbol]: Builder<any> } = {};
 
@@ -17,7 +12,7 @@ export const registerBuilder: BuilderRegistrator = <T>(
   return token;
 };
 
-export const registerValue: ValueRegistrator = <T>(
+export const registerValue: BuilderRegistrator = <T>(
   value: T,
   token?: Token<T>,
 ): Token<T> => {
