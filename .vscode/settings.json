@@ -1,0 +1,19 @@
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "editor.formatOnSave": true,
+  "editor.minimap.maxColumn": 80,
+  "editor.tabSize": 2,
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "files.trimTrailingWhitespace": true,
+  "prettier.trailingComma": "none",
+  "prettier.htmlWhitespaceSensitivity": "ignore",
+  "prettier.singleQuote": true,
+  "prettier.arrowParens": "avoid",
+  "prettier.endOfLine": "auto"
+}
