@@ -1,0 +1,6 @@
+{
+  "watchFiles": [
+    "tests/**/*.ts",
+    "*.ts"
+  ]
+}
