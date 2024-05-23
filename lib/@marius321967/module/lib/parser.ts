@@ -45,40 +45,6 @@ export const parse = (
     if (isEntrypointDeclaration(node)) {
       entrypointDeclaration = node;
     }
-
-    // findIdentifiers(node);
-
-    // if (ts.isVariableStatement(node)) {
-    //   node.declarationList.forEachChild((node) => {
-    //     if (
-    //       ts.isVariableDeclaration(node) &&
-    //       node.initializer &&
-    //       ts.isArrowFunction(node.initializer!)
-    //     ) {
-    //       const fn = node.initializer;
-    //       if (!fn.type) return;
-
-    //       const signature = checker.getSignatureFromDeclaration(fn);
-    //       if (ts.isTypeReferenceNode(fn.type)) {
-    //         fn.type.forEachChild((tChild) => {
-    //           if (ts.isIdentifier(tChild)) {
-    //             const symbol = checker.getSymbolAtLocation(tChild);
-    //             console.log(symbol);
-    //           }
-    //           console.log(tChild.getText());
-    //         });
-    //       }
-    //       const symbol = checker.getSymbolAtLocation(fn.type);
-    //       const type = checker.getTypeAtLocation(fn);
-
-    //       fn.forEachChild((fnChild) => {
-    //         if (ts.isTypeReferenceNode(fnChild)) {
-    //           console.log(checker.getSymbolAtLocation(fnChild));
-    //         }
-    //       });
-    //     }
-    //   });
-    // }
   });
 
   if (!entrypointDeclaration) {
