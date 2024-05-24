@@ -1,5 +1,6 @@
 import ts from 'typescript';
-import { addIdentifier, getIdentifier } from './symbol-map';
+import { addIdentifier } from './symbol-map';
+import { addValue } from './value-map';
 
 let checker;
 
@@ -38,9 +39,7 @@ export const registerValueDeclaration = (
 
   if (!symbol) throw new Error('symbol not found');
 
-  const identifier = getIdentifier(symbol);
-
-  if (!identifier) return;
+  addValue(symbol, node);
 
   // console.log(
   //   `found value declaration [${identifier.getText()}]: ${node.getText()}`,

@@ -6,7 +6,10 @@ export const transform = (filePath: string): void => {
   const program = ts.createProgram([filePath], {});
 
   const parseResult = parse(program, filePath);
-  generateStart(parseResult, { entrypointPath: filePath });
+  generateStart(parseResult, {
+    entrypointPath: filePath,
+    typeChecker: program.getTypeChecker(),
+  });
 
   // console.log(context);
 };

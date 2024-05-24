@@ -1,2 +1,2 @@
-import start from "./test-program";
-start()
+import start, { mypass1 } from './test-program';
+start(mypass1);
