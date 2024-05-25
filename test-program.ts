@@ -1,5 +1,7 @@
 // type User = { name: string; contact: string };
 
+import { MyName, MyPassword } from './my-values';
+
 // export type Notifier = (destination: string) => Promise<unknown>;
 
 // const unknownNotifier = (destination: string) => Promise.resolve();
@@ -25,13 +27,8 @@
 // 1. find exported types
 // 2. find values being exported for those types
 
-export type MyPassword = string;
-export type MyName = string;
+// myName2: MyName = 'darius';
 
-export const mypass1: MyPassword = 'foo!',
-  myName1: MyName = 'marius',
-  myName2: MyName = 'darius';
-
-export default (pass: MyPassword) => {
-  console.log('the program runs!', pass);
+export default (pass: MyPassword, name: MyName) => {
+  console.log('the program runs!', pass, name);
 };
