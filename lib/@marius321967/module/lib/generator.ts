@@ -8,11 +8,52 @@ import {
 } from './generator-tools';
 import { ParseResult } from './parser';
 
+const createStartArgumentImports = (
+  startArguments: ts.Identifier[],
+  startFilename: string,
+): ts.ImportDeclaration[] => {
+  return startArguments
+    .map((argumentIdentifier) =>
+      importIdentifier(argumentIdentifier, startFilename),
+    )
+    .filter(
+      (declaration): declaration is ts.ImportDeclaration =>
+        declaration !== null && ts.isImportDeclaration(declaration),
+    );
+};
+
+const createEntrypointImport = (
+  entrypointIdentifier: ts.Identifier,
+  entrypointImportPath: string,
+): ts.ImportDeclaration => {
+  return ts.factory.createImportDeclaration(
+    undefined,
+    makeDefaultImportClause(entrypointIdentifier),
+    ts.factory.createStringLiteral(entrypointImportPath),
+  );
+};
+
+const createStatements = (
+  startArgumentImports: ts.ImportDeclaration[],
+  entrypointImport: ts.ImportDeclaration,
+  startCall: ts.CallExpression,
+): ts.Statement[] => {
+  return [
+    ...startArgumentImports,
+    entrypointImport,
+    ts.factory.createExpressionStatement(startCall),
+  ];
+};
+
 export const generateStart = (
   parseResult: ParseResult,
-  context: { entrypointPath: string; typeChecker: ts.TypeChecker },
+  context: {
+    entrypointPath: string;
+    program: ts.Program;
+    typeChecker: ts.TypeChecker;
+  },
 ): void => {
-  const startFilename = process.cwd() + path.sep + 'start.ts';
+  const startFilePath = process.cwd() + path.sep + 'start.ts';
   // const startFilename = 'start.ts';
   const printer = ts.createPrinter();
 
@@ -29,15 +70,6 @@ export const generateStart = (
     startArguments,
   );
 
-  const startArgumentImports = startArguments
-    .map((argumentIdentifier) =>
-      importIdentifier(argumentIdentifier, startFilename),
-    )
-    .filter(
-      (declaration): declaration is ts.ImportDeclaration =>
-        declaration !== null && ts.isImportDeclaration(declaration),
-    );
-
   const entrypointImportPath =
     './' +
     path.basename(
@@ -45,29 +77,22 @@ export const generateStart = (
       '.ts',
     );
 
-  const entrypointImport = ts.factory.createImportDeclaration(
-    undefined,
-    makeDefaultImportClause(entrypointIdentifier),
-    ts.factory.createStringLiteral(entrypointImportPath),
-  );
-
-  const nodes = ts.factory.createNodeArray([
-    ...startArgumentImports,
-    entrypointImport,
+  const statements: ts.Statement[] = createStatements(
+    createStartArgumentImports(startArguments, startFilePath),
+    createEntrypointImport(entrypointIdentifier, entrypointImportPath),
     startCall,
-  ]);
-
-  // Create a source file
-  const sourceFile = ts.createSourceFile(
-    startFilename,
-    '',
-    ts.ScriptTarget.Latest,
-    false,
-    ts.ScriptKind.TS,
   );
 
-  const result = printer.printList(ts.ListFormat.MultiLine, nodes, sourceFile);
+  const sourceFile = ts.factory.createSourceFile(
+    statements,
+    ts.factory.createToken(ts.SyntaxKind.EndOfFileToken),
+    ts.NodeFlags.None,
+  );
+  sourceFile.fileName = startFilePath;
 
-  fs.writeFileSync(startFilename, result);
+  const result = printer.printFile(sourceFile);
+
+  fs.writeFileSync(startFilePath, result);
+
   console.log(result);
 };

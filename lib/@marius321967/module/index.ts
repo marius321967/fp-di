@@ -8,6 +8,7 @@ export const transform = (filePath: string): void => {
   const parseResult = parse(program, filePath);
   generateStart(parseResult, {
     entrypointPath: filePath,
+    program,
     typeChecker: program.getTypeChecker(),
   });
 
