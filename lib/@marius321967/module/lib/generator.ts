@@ -77,7 +77,7 @@ export const generateStart = (
       '.ts',
     );
 
-  const statements: ts.Statement[] = createStatements(
+  const statements = createStatements(
     createStartArgumentImports(startArguments, startFilePath),
     createEntrypointImport(entrypointIdentifier, entrypointImportPath),
     startCall,
