@@ -5,7 +5,5 @@
     "moduleResolution": "NodeNext",
     "strictNullChecks": true
   },
-  "include": [
-    "program/**/*.ts"
-  ]
+  "include": ["./**/*.ts"]
 }
