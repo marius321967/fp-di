@@ -1,7 +1,7 @@
 import path from 'path';
 import ts from 'typescript';
-import { getIdentifier } from './symbol-map';
-import { getValue } from './value-map';
+import { SymbolGetter } from './symbol-map';
+import { ValueGetter } from './value-map';
 
 export const makeDefaultImportClause = (
   identifier: ts.Identifier,
@@ -110,7 +110,11 @@ export type ImportOrder = {
  * Get information for importing a requested value
  * @param symbol Symbol of value
  */
-const gatherValueImport = (symbol: ts.Symbol): ImportOrder => {
+const gatherValueImport = (
+  symbol: ts.Symbol,
+  getIdentifier: SymbolGetter,
+  getValue: ValueGetter,
+): ImportOrder => {
   const identifier = getIdentifier(symbol);
 
   if (!identifier) {

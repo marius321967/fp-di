@@ -1,13 +1,30 @@
 import ts from 'typescript';
 import { generateStart } from './lib/generator';
-import { parse } from './lib/parser';
+import { parseProgram } from './lib/parser';
+import { getParsedConfig } from './lib/tools';
 
-export const transform = (filePath: string): void => {
-  const program = ts.createProgram([filePath], {});
+export const transform = (programDir: string): void => {
+  const config = getParsedConfig(programDir, programDir + '/tsconfig.json');
 
-  const parseResult = parse(program, filePath);
+  const programFiles = config.fileNames;
+
+  const programEntrypointPath = programDir + '/test-program.ts';
+  const program = ts.createProgram([programEntrypointPath], config.options);
+
+  const diagnostics = ts.getPreEmitDiagnostics(program);
+
+  if (diagnostics.length > 0) {
+    throw new Error('Program has syntax errors');
+  }
+
+  const parseResult = parseProgram(
+    programFiles,
+    programEntrypointPath,
+    program,
+  );
+
   generateStart(parseResult, {
-    entrypointPath: filePath,
+    entrypointPath: programEntrypointPath,
     program,
     typeChecker: program.getTypeChecker(),
   });
