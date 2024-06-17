@@ -1,20 +1,55 @@
 import ts from 'typescript';
 
-export type ValueMap = {
+export type ValueMapEntry = {
   symbol: ts.Symbol;
+  filename: string;
   valueDeclaration: ts.VariableDeclaration;
-}[];
+};
 
-export const createValueMap = (): ValueMap => [];
+export type ValueMap = ValueMapEntry[];
 
-let map = createValueMap();
-
-export const addValue = (
+export type ValueAdder = (
   symbol: ts.Symbol,
   valueDeclaration: ts.VariableDeclaration,
-): ValueMap => (map = [...map, { symbol, valueDeclaration: valueDeclaration }]);
+) => ValueMap;
+export type ValueGetter = (symbol: ts.Symbol) => ts.VariableDeclaration | null;
+export type ValueListGetter = () => ValueMap;
 
-export const getValue = (symbol: ts.Symbol): ts.VariableDeclaration | null =>
-  map.find((entry) => entry.symbol === symbol)?.valueDeclaration || null;
+export type ValueMapTools = {
+  addValue: ValueAdder;
+  getValue: ValueGetter;
+  getValues: ValueListGetter;
+};
 
-export const getValues = (): ValueMap => map;
+export const combineValueMaps = (
+  items1: ValueMap,
+  items2: ValueMap,
+): ValueMap =>
+  items1.concat(
+    items2.filter(
+      (item2) => !items1.some((item1) => item1.symbol === item2.symbol),
+    ),
+  );
+
+export const createValueMap = (items: ValueMap = []): ValueMapTools => {
+  const addValue: ValueAdder = (symbol, valueDeclaration) =>
+    (items = [
+      ...items,
+      {
+        symbol,
+        filename: valueDeclaration.getSourceFile().fileName,
+        valueDeclaration,
+      },
+    ]);
+
+  const getValue: ValueGetter = (symbol) =>
+    items.find((entry) => entry.symbol === symbol)?.valueDeclaration || null;
+
+  const getValues: ValueListGetter = () => items;
+
+  return {
+    addValue,
+    getValue,
+    getValues,
+  };
+};
