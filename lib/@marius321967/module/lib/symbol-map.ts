@@ -17,24 +17,33 @@ export type SymbolGetter = (symbol: ts.Symbol) => ts.Identifier | null;
 
 export type SymbolListGetter = () => IdentifierMap;
 
-export type SymbolMapTools = {
+export type SymbolRepository = {
   addSymbol: SymbolAdder;
   getIdentifier: SymbolGetter;
   getIdentifiers: SymbolListGetter;
+  // for debug
+  items: IdentifierMap;
 };
 
 // TODO: remove duplicates (not likely to occur but still semantically needed)
-export const combineSymbolMaps = (
-  items1: IdentifierMap,
-  items2: IdentifierMap,
-): IdentifierMap => [...items1, ...items2];
+export const combineSymbolRepositories = (
+  repo1: SymbolRepository,
+  repo2: SymbolRepository,
+): SymbolRepository =>
+  createSymbolRepository([
+    ...repo1.getIdentifiers(),
+    ...repo2.getIdentifiers(),
+  ]);
 
-export const createSymbolMap = (items: IdentifierMap = []): SymbolMapTools => {
+export const createSymbolRepository = (
+  items: IdentifierMap = [],
+): SymbolRepository => {
   const addSymbol: SymbolAdder = (symbol, identifier) => {
-    items = [
-      ...items,
-      { symbol, filename: identifier.getSourceFile().fileName, identifier },
-    ];
+    items.push({
+      symbol,
+      filename: identifier.getSourceFile().fileName,
+      identifier,
+    });
   };
 
   const getIdentifier: SymbolGetter = (symbol) =>
@@ -46,5 +55,7 @@ export const createSymbolMap = (items: IdentifierMap = []): SymbolMapTools => {
     addSymbol,
     getIdentifier,
     getIdentifiers,
+    // for debug
+    items,
   };
 };

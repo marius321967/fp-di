@@ -15,23 +15,21 @@ export type ValueAdder = (
 export type ValueGetter = (symbol: ts.Symbol) => ts.VariableDeclaration | null;
 export type ValueListGetter = () => ValueMap;
 
-export type ValueMapTools = {
+export type ValueRepository = {
   addValue: ValueAdder;
   getValue: ValueGetter;
   getValues: ValueListGetter;
 };
 
-export const combineValueMaps = (
-  items1: ValueMap,
-  items2: ValueMap,
-): ValueMap =>
-  items1.concat(
-    items2.filter(
-      (item2) => !items1.some((item1) => item1.symbol === item2.symbol),
-    ),
-  );
+export const combineValueRepositories = (
+  repo1: ValueRepository,
+  repo2: ValueRepository,
+): ValueRepository =>
+  createValueRepository([...repo1.getValues(), ...repo2.getValues()]);
 
-export const createValueMap = (items: ValueMap = []): ValueMapTools => {
+export const createValueRepository = (
+  items: ValueMap = [],
+): ValueRepository => {
   const addValue: ValueAdder = (symbol, valueDeclaration) =>
     (items = [
       ...items,

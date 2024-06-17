@@ -19,17 +19,14 @@ export const makeNamedImportClause = (
     ]),
   );
 
-export const getExportedFunctionParams = (
-  exportAssignment: ts.ExportAssignment,
+export const getArrowFunctionParams = (
+  arrowFunction: ts.ArrowFunction,
   typeChecker: ts.TypeChecker,
+  getSymbol: SymbolGetter,
 ): ts.Identifier[] => {
-  const exportExpression = exportAssignment.expression;
-  if (!ts.isArrowFunction(exportExpression)) {
-    throw new Error('Entrypoint is not a function');
-  }
-
-  const types = exportExpression.parameters.map((parameter) => {
+  return arrowFunction.parameters.map((parameter) => {
     const typeNode = parameter.type;
+
     if (!typeNode || !ts.isTypeReferenceNode(typeNode)) {
       throw new Error(
         `Unable to resolve type [${typeNode?.getText()}] for argument [${parameter.name.getText()}]`,
@@ -37,16 +34,29 @@ export const getExportedFunctionParams = (
     }
 
     const symbol = typeNodeToSymbol(typeNode, typeChecker);
-    const importOrder = gatherValueImport(symbol);
+    const typeDeclaration = getSymbol(symbol);
 
-    console.log(
-      `we should import ${importOrder.moduleExportIdentifier.getText()} from ${importOrder.moduleFilename}`,
-    );
+    if (!typeDeclaration) {
+      throw new Error(
+        `Type declaration not found for symbol [${symbol.escapedName}]`,
+      );
+    }
 
-    return importOrder.moduleExportIdentifier;
+    return typeDeclaration;
   });
+};
 
-  return types;
+export const getExportedFunctionParams = (
+  exportAssignment: ts.ExportAssignment,
+  typeChecker: ts.TypeChecker,
+  getSymbol: SymbolGetter,
+): ts.Identifier[] => {
+  const exportExpression = exportAssignment.expression;
+  if (!ts.isArrowFunction(exportExpression)) {
+    throw new Error('Entrypoint is not a function');
+  }
+
+  return getArrowFunctionParams(exportExpression, typeChecker, getSymbol);
 };
 
 export const importIdentifier = (

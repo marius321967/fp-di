@@ -62,6 +62,7 @@ export const generateStart = (
   const startArguments = getExportedFunctionParams(
     parseResult.entrypoint,
     context.typeChecker,
+    parseResult.identifiers.getIdentifier,
   );
 
   const startCall = ts.factory.createCallExpression(
