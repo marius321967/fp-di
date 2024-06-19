@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import { SymbolAdder } from './symbol-map';
+import { resolveOriginalSymbol } from './symbol-tools';
 import { ValueAdder } from './value-map';
 
 export const getParsedConfig = (
@@ -17,13 +18,15 @@ export const registerTypeDeclaration = (
   typeChecker: ts.TypeChecker,
   addSymbol: SymbolAdder,
 ): void => {
-  const symbol = typeChecker.getSymbolAtLocation(node.name);
+  const localSymbol = typeChecker.getSymbolAtLocation(node.name);
 
-  if (!symbol) {
+  if (!localSymbol) {
     throw new Error('symbol not found');
   }
 
-  addSymbol(symbol, node.name);
+  const originalSymbol = resolveOriginalSymbol(localSymbol, typeChecker);
+
+  addSymbol(originalSymbol, node.name);
 };
 
 export const registerValueDeclarations = (

@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { resolveOriginalSymbol } from './symbol-tools';
 
 export type IdentifierMapEntry = {
   symbol: ts.Symbol;
@@ -29,25 +30,33 @@ export type SymbolRepository = {
 export const combineSymbolRepositories = (
   repo1: SymbolRepository,
   repo2: SymbolRepository,
-): SymbolRepository =>
-  createSymbolRepository([
-    ...repo1.getIdentifiers(),
-    ...repo2.getIdentifiers(),
-  ]);
+): SymbolRepository => {
+  repo2.items.forEach((item) => {
+    repo1.addSymbol(item.symbol, item.identifier);
+  });
+
+  return repo1;
+};
 
 export const createSymbolRepository = (
+  typeChecker: ts.TypeChecker,
   items: IdentifierMap = [],
 ): SymbolRepository => {
   const addSymbol: SymbolAdder = (symbol, identifier) => {
     items.push({
-      symbol,
+      symbol: resolveOriginalSymbol(symbol, typeChecker),
       filename: identifier.getSourceFile().fileName,
       identifier,
     });
   };
 
-  const getIdentifier: SymbolGetter = (symbol) =>
-    items.find((entry) => entry.symbol === symbol)?.identifier || null;
+  const getIdentifier: SymbolGetter = (symbol) => {
+    const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
+
+    return (
+      items.find((entry) => entry.symbol === originalSymbol)?.identifier || null
+    );
+  };
 
   const getIdentifiers: SymbolListGetter = () => items;
 

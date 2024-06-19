@@ -55,7 +55,10 @@ export const parseProgram = (
 ): ParseResult => {
   const { identifiers, values } = programFiles.reduce(
     programParseReducer(program),
-    { identifiers: createSymbolRepository(), values: createValueRepository() },
+    {
+      identifiers: createSymbolRepository(program.getTypeChecker()),
+      values: createValueRepository(),
+    },
   );
 
   const entrypointDeclaration = findProgramEntrypoint(program, entrypointFile);
@@ -97,7 +100,7 @@ export const parseFile = (
     throw new Error(`Source file [${path}] not found`);
   }
 
-  const symbolRepository = createSymbolRepository();
+  const symbolRepository = createSymbolRepository(program.getTypeChecker());
   const valueRepository = createValueRepository();
 
   source.forEachChild((node) => {
