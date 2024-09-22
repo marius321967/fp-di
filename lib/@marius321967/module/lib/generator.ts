@@ -2,9 +2,10 @@ import * as fs from 'fs';
 import path from 'path';
 import ts from 'typescript';
 import {
-  getExportedFunctionParams,
   importIdentifier,
   makeDefaultImportClause,
+  relativizeImportPath,
+  resolveExportedFunctionParams,
 } from './generator-tools';
 import { ParseResult } from './parser';
 
@@ -54,15 +55,15 @@ export const generateStart = (
   },
 ): void => {
   const startFilePath = process.cwd() + path.sep + 'start.ts';
-  // const startFilename = 'start.ts';
   const printer = ts.createPrinter();
 
   const entrypointIdentifier = ts.factory.createIdentifier('start');
 
-  const startArguments = getExportedFunctionParams(
+  const startArguments = resolveExportedFunctionParams(
     parseResult.entrypoint,
     context.typeChecker,
     parseResult.identifiers.getIdentifier,
+    parseResult.values.getValue,
   );
 
   const startCall = ts.factory.createCallExpression(
@@ -71,12 +72,10 @@ export const generateStart = (
     startArguments,
   );
 
-  const entrypointImportPath =
-    './' +
-    path.basename(
-      path.relative('.', parseResult.entrypoint.getSourceFile().fileName),
-      '.ts',
-    );
+  const entrypointImportPath = relativizeImportPath(
+    context.entrypointPath,
+    startFilePath,
+  );
 
   const statements = createStatements(
     createStartArgumentImports(startArguments, startFilePath),

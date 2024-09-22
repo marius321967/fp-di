@@ -1,6 +1,7 @@
 import path from 'path';
 import ts from 'typescript';
 import { SymbolGetter } from './symbol-map';
+import { resolveOriginalSymbol } from './symbol-tools';
 import { ValueGetter } from './value-map';
 
 export const makeDefaultImportClause = (
@@ -19,10 +20,10 @@ export const makeNamedImportClause = (
     ]),
   );
 
-export const getArrowFunctionParams = (
+export const getArrowFunctionParamTypes = (
   arrowFunction: ts.ArrowFunction,
   typeChecker: ts.TypeChecker,
-  getSymbol: SymbolGetter,
+  getIdentifier: SymbolGetter,
 ): ts.Identifier[] => {
   return arrowFunction.parameters.map((parameter) => {
     const typeNode = parameter.type;
@@ -34,7 +35,7 @@ export const getArrowFunctionParams = (
     }
 
     const symbol = typeNodeToSymbol(typeNode, typeChecker);
-    const typeDeclaration = getSymbol(symbol);
+    const typeDeclaration = getIdentifier(symbol);
 
     if (!typeDeclaration) {
       throw new Error(
@@ -46,7 +47,7 @@ export const getArrowFunctionParams = (
   });
 };
 
-export const getExportedFunctionParams = (
+export const getExportedFunctionParamTypes = (
   exportAssignment: ts.ExportAssignment,
   typeChecker: ts.TypeChecker,
   getSymbol: SymbolGetter,
@@ -56,7 +57,48 @@ export const getExportedFunctionParams = (
     throw new Error('Entrypoint is not a function');
   }
 
-  return getArrowFunctionParams(exportExpression, typeChecker, getSymbol);
+  return getArrowFunctionParamTypes(exportExpression, typeChecker, getSymbol);
+};
+
+export const resolveExportedFunctionParams = (
+  exportAssignment: ts.ExportAssignment,
+  typeChecker: ts.TypeChecker,
+  getSymbol: SymbolGetter,
+  getValue: ValueGetter,
+): ts.Identifier[] => {
+  const paramTypes = getExportedFunctionParamTypes(
+    exportAssignment,
+    typeChecker,
+    getSymbol,
+  );
+
+  return paramTypes.map((paramType) => {
+    const typeSymbol = typeChecker.getSymbolAtLocation(paramType);
+
+    if (!typeSymbol) {
+      throw new Error(
+        `Unable to resolve symbol for type [${paramType.getText()}]`,
+      );
+    }
+
+    const valueDeclaration = getValue(
+      resolveOriginalSymbol(typeSymbol, typeChecker),
+    );
+
+    if (!valueDeclaration) {
+      throw new Error(`Value not found for type [${paramType.getText()}]`);
+    }
+
+    const valueIdentifier = valueDeclaration.name;
+
+    if (!ts.isIdentifier(valueIdentifier)) {
+      throw new Error(
+        `Value declaration name [${valueDeclaration.getText()}] is not an identifier`,
+      );
+    }
+
+    return valueIdentifier;
+  });
 };
 
 export const importIdentifier = (
@@ -84,9 +126,14 @@ export const relativizeImportOrder = (
   importTo: string,
 ): ImportOrder => ({
   ...importOrder,
-  modulePath:
-    './' + path.relative(path.dirname(importTo), importOrder.modulePath),
+  modulePath: relativizeImportPath(importOrder.modulePath, importTo),
 });
+
+export const relativizeImportPath = (
+  modulePath: string,
+  importTo: string,
+): string =>
+  './' + path.relative(path.dirname(importTo), modulePath).replace(/\.ts$/, '');
 
 const typeNodeToSymbol = (
   typeNode: ts.TypeNode,
@@ -145,19 +192,18 @@ const gatherValueImport = (
   const sourceFile = value.getSourceFile();
   const moduleFilename = sourceFile.fileName;
 
-  const valueIdentifier = value.name;
+  // if (!ts.isIdentifier(value)) {
+  //   // TODO future: support values exported like 'export { foo } = x'
+  //   throw new Error(
+  //     `Export binding declarations are not supported [${value.getText()}]`,
+  //   );
+  // }
 
-  if (!ts.isIdentifier(valueIdentifier)) {
-    // TODO future: support values exported like 'export { foo } = x'
-    throw new Error(
-      `Export binding declarations are not supported [${valueIdentifier.getText()}]`,
-    );
-  }
-
-  return {
-    moduleExportIdentifier: valueIdentifier,
-    modulePath: moduleFilename,
-  };
+  // return {
+  //   moduleExportIdentifier: value,
+  //   modulePath: moduleFilename,
+  // };
+  return {} as any;
 };
 
 export const gatherIdentifierImport = (
