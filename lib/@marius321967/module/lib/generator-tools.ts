@@ -68,14 +68,14 @@ export const importIdentifier = (
     importTo,
   );
 
-  if (!importOrder.moduleFilename) {
+  if (!importOrder.modulePath) {
     return null;
   }
 
   return ts.factory.createImportDeclaration(
     undefined,
     makeNamedImportClause(importOrder.moduleExportIdentifier),
-    ts.factory.createStringLiteral(importOrder.moduleFilename),
+    ts.factory.createStringLiteral(importOrder.modulePath),
   );
 };
 
@@ -84,8 +84,8 @@ export const relativizeImportOrder = (
   importTo: string,
 ): ImportOrder => ({
   ...importOrder,
-  moduleFilename:
-    './' + path.relative(path.dirname(importTo), importOrder.moduleFilename),
+  modulePath:
+    './' + path.relative(path.dirname(importTo), importOrder.modulePath),
 });
 
 const typeNodeToSymbol = (
@@ -112,7 +112,8 @@ const typeNodeToSymbol = (
 };
 
 export type ImportOrder = {
-  moduleFilename: string;
+  /** Full abstract path */
+  modulePath: string;
   moduleExportIdentifier: ts.Identifier;
 };
 
@@ -155,7 +156,7 @@ const gatherValueImport = (
 
   return {
     moduleExportIdentifier: valueIdentifier,
-    moduleFilename,
+    modulePath: moduleFilename,
   };
 };
 
@@ -163,10 +164,11 @@ export const gatherIdentifierImport = (
   identifier: ts.Identifier,
 ): ImportOrder => {
   const sourceFile = identifier.getSourceFile();
-  const moduleFilename = path.basename(sourceFile.fileName, '.ts');
+  // const modulePath = path.basename(sourceFile.fileName, '.ts');
+  const modulePath = sourceFile.fileName;
 
   return {
     moduleExportIdentifier: identifier,
-    moduleFilename,
+    modulePath,
   };
 };
