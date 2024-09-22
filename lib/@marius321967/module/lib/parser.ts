@@ -57,7 +57,7 @@ export const parseProgram = (
     programParseReducer(program),
     {
       identifiers: createSymbolRepository(program.getTypeChecker()),
-      values: createValueRepository(),
+      values: createValueRepository(program.getTypeChecker()),
     },
   );
 
@@ -101,7 +101,7 @@ export const parseFile = (
   }
 
   const symbolRepository = createSymbolRepository(program.getTypeChecker());
-  const valueRepository = createValueRepository();
+  const valueRepository = createValueRepository(program.getTypeChecker());
 
   source.forEachChild((node) => {
     if (isExportedTypeDeclaration(node)) {
