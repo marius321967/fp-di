@@ -11,6 +11,7 @@
     "prettier": "^3.2.5"
   },
   "scripts": {
-    "start": "yarn nodemon"
+    "start": "yarn nodemon",
+    "test-output": "ts-node-esm ./start.ts"
   }
 }
