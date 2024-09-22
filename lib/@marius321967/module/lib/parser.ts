@@ -5,10 +5,10 @@ import {
   isExportedVariableDeclaration,
 } from './helpers';
 import {
-  SymbolRepository,
-  combineSymbolRepositories,
-  createSymbolRepository,
-} from './symbol-map';
+  IdentifierRepository,
+  combineIdentifierRepositories,
+  createIdentifierRepository,
+} from './identifier-map';
 import { registerTypeDeclaration, registerValueDeclarations } from './tools';
 import {
   ValueRepository,
@@ -17,13 +17,13 @@ import {
 } from './value-map';
 
 export type FileParseResult = {
-  identifiers: SymbolRepository;
+  identifiers: IdentifierRepository;
   values: ValueRepository;
 };
 
 export type ParseResult = {
   entrypoint: ts.ExportAssignment;
-  identifiers: SymbolRepository;
+  identifiers: IdentifierRepository;
   values: ValueRepository;
 };
 
@@ -56,7 +56,7 @@ export const parseProgram = (
   const { identifiers, values } = programFiles.reduce(
     programParseReducer(program),
     {
-      identifiers: createSymbolRepository(program.getTypeChecker()),
+      identifiers: createIdentifierRepository(program.getTypeChecker()),
       values: createValueRepository(program.getTypeChecker()),
     },
   );
@@ -82,7 +82,7 @@ export const programParseReducer =
     const result = parseFile(path, program);
 
     return {
-      identifiers: combineSymbolRepositories(
+      identifiers: combineIdentifierRepositories(
         acc.identifiers,
         result.identifiers,
       ),
@@ -100,7 +100,7 @@ export const parseFile = (
     throw new Error(`Source file [${path}] not found`);
   }
 
-  const symbolRepository = createSymbolRepository(program.getTypeChecker());
+  const symbolRepository = createIdentifierRepository(program.getTypeChecker());
   const valueRepository = createValueRepository(program.getTypeChecker());
 
   source.forEachChild((node) => {
@@ -108,7 +108,7 @@ export const parseFile = (
       registerTypeDeclaration(
         node,
         program.getTypeChecker(),
-        symbolRepository.addSymbol,
+        symbolRepository.addIdentifier,
       );
     }
 

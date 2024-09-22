@@ -1,6 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
-import { SymbolGetter } from './symbol-map';
+import { IdentifierGetter } from './identifier-map';
 import { resolveOriginalSymbol } from './symbol-tools';
 import { ValueGetter } from './value-map';
 
@@ -23,7 +23,7 @@ export const makeNamedImportClause = (
 export const getArrowFunctionParamTypes = (
   arrowFunction: ts.ArrowFunction,
   typeChecker: ts.TypeChecker,
-  getIdentifier: SymbolGetter,
+  getIdentifier: IdentifierGetter,
 ): ts.Identifier[] => {
   return arrowFunction.parameters.map((parameter) => {
     const typeNode = parameter.type;
@@ -50,7 +50,7 @@ export const getArrowFunctionParamTypes = (
 export const getExportedFunctionParamTypes = (
   exportAssignment: ts.ExportAssignment,
   typeChecker: ts.TypeChecker,
-  getSymbol: SymbolGetter,
+  getSymbol: IdentifierGetter,
 ): ts.Identifier[] => {
   const exportExpression = exportAssignment.expression;
   if (!ts.isArrowFunction(exportExpression)) {
@@ -63,7 +63,7 @@ export const getExportedFunctionParamTypes = (
 export const resolveExportedFunctionParams = (
   exportAssignment: ts.ExportAssignment,
   typeChecker: ts.TypeChecker,
-  getSymbol: SymbolGetter,
+  getSymbol: IdentifierGetter,
   getValue: ValueGetter,
 ): ts.Identifier[] => {
   const paramTypes = getExportedFunctionParamTypes(
@@ -170,7 +170,7 @@ export type ImportOrder = {
  */
 const gatherValueImport = (
   symbol: ts.Symbol,
-  getIdentifier: SymbolGetter,
+  getIdentifier: IdentifierGetter,
   getValue: ValueGetter,
 ): ImportOrder => {
   const identifier = getIdentifier(symbol);
