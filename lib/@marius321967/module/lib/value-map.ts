@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { resolveOriginalSymbol } from './symbol-tools';
 
 export type ValueMapEntry = {
   symbol: ts.Symbol;
@@ -11,7 +12,7 @@ export type ValueMap = ValueMapEntry[];
 export type ValueAdder = (
   symbol: ts.Symbol,
   valueDeclaration: ts.VariableDeclaration,
-) => ValueMap;
+) => void;
 export type ValueGetter = (symbol: ts.Symbol) => ts.VariableDeclaration | null;
 export type ValueListGetter = () => ValueMap;
 
@@ -24,24 +25,36 @@ export type ValueRepository = {
 export const combineValueRepositories = (
   repo1: ValueRepository,
   repo2: ValueRepository,
-): ValueRepository =>
-  createValueRepository([...repo1.getValues(), ...repo2.getValues()]);
+): ValueRepository => {
+  repo2.getValues().forEach((item) => {
+    repo1.addValue(item.symbol, item.valueDeclaration);
+  });
+
+  return repo1;
+};
 
 export const createValueRepository = (
+  typeChecker: ts.TypeChecker,
   items: ValueMap = [],
 ): ValueRepository => {
-  const addValue: ValueAdder = (symbol, valueDeclaration) =>
-    (items = [
-      ...items,
-      {
-        symbol,
-        filename: valueDeclaration.getSourceFile().fileName,
-        valueDeclaration,
-      },
-    ]);
+  const addValue: ValueAdder = (symbol, valueDeclaration) => {
+    const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
 
-  const getValue: ValueGetter = (symbol) =>
-    items.find((entry) => entry.symbol === symbol)?.valueDeclaration || null;
+    items.push({
+      symbol: originalSymbol,
+      filename: valueDeclaration.getSourceFile().fileName,
+      valueDeclaration,
+    });
+  };
+
+  const getValue: ValueGetter = (symbol) => {
+    const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
+
+    return (
+      items.find((entry) => entry.symbol === originalSymbol)
+        ?.valueDeclaration || null
+    );
+  };
 
   const getValues: ValueListGetter = () => items;
 
