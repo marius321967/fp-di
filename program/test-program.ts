@@ -1,6 +1,7 @@
 // type User = { name: string; contact: string };
 
-import { MyName, MyPassword } from './my-values';
+import { MyName, MyPassword } from './my-types';
+import './my-values';
 
 // export type Notifier = (destination: string) => Promise<unknown>;
 
