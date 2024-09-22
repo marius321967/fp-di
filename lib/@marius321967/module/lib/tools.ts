@@ -55,8 +55,4 @@ export const registerValueDeclaration =
     if (!symbol) throw new Error('symbol not found');
 
     addValue(symbol, node);
-
-    // console.log(
-    //   `found value declaration [${identifier.getText()}]: ${node.getText()}`,
-    // );
   };
