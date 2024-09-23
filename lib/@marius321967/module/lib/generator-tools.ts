@@ -1,6 +1,6 @@
-import path from 'path';
 import ts from 'typescript';
-import { IdentifierGetter } from './identifier-map';
+import { BlueprintGetter } from './blueprint-map';
+import { ImportOrder, relativizeImportOrder } from './imports';
 import { resolveOriginalSymbol } from './symbol-tools';
 import { ValueGetter } from './value-map';
 
@@ -23,7 +23,7 @@ export const makeNamedImportClause = (
 export const getArrowFunctionParamTypes = (
   arrowFunction: ts.ArrowFunction,
   typeChecker: ts.TypeChecker,
-  getIdentifier: IdentifierGetter,
+  getBlueprint: BlueprintGetter,
 ): ts.Identifier[] => {
   return arrowFunction.parameters.map((parameter) => {
     const typeNode = parameter.type;
@@ -35,22 +35,22 @@ export const getArrowFunctionParamTypes = (
     }
 
     const symbol = typeNodeToSymbol(typeNode, typeChecker);
-    const typeDeclaration = getIdentifier(symbol);
+    const blueprint = getBlueprint(symbol);
 
-    if (!typeDeclaration) {
+    if (!blueprint) {
       throw new Error(
         `Type declaration not found for symbol [${symbol.escapedName}]`,
       );
     }
 
-    return typeDeclaration;
+    return blueprint.identifier;
   });
 };
 
 export const getExportedFunctionParamTypes = (
   exportAssignment: ts.ExportAssignment,
   typeChecker: ts.TypeChecker,
-  getSymbol: IdentifierGetter,
+  getSymbol: BlueprintGetter,
 ): ts.Identifier[] => {
   const exportExpression = exportAssignment.expression;
   if (!ts.isArrowFunction(exportExpression)) {
@@ -63,7 +63,7 @@ export const getExportedFunctionParamTypes = (
 export const resolveExportedFunctionParams = (
   exportAssignment: ts.ExportAssignment,
   typeChecker: ts.TypeChecker,
-  getSymbol: IdentifierGetter,
+  getSymbol: BlueprintGetter,
   getValue: ValueGetter,
 ): ts.Identifier[] => {
   const paramTypes = getExportedFunctionParamTypes(
@@ -120,21 +120,6 @@ export const importIdentifier = (
     ts.factory.createStringLiteral(importOrder.modulePath),
   );
 };
-
-export const relativizeImportOrder = (
-  importOrder: ImportOrder,
-  importTo: string,
-): ImportOrder => ({
-  ...importOrder,
-  modulePath: relativizeImportPath(importOrder.modulePath, importTo),
-});
-
-export const relativizeImportPath = (
-  modulePath: string,
-  importTo: string,
-): string =>
-  './' + path.relative(path.dirname(importTo), modulePath).replace(/\.ts$/, '');
-
 const typeNodeToSymbol = (
   typeNode: ts.TypeNode,
   context: ts.TypeChecker,
@@ -156,54 +141,6 @@ const typeNodeToSymbol = (
   }
 
   return symbol;
-};
-
-export type ImportOrder = {
-  /** Full abstract path */
-  modulePath: string;
-  moduleExportIdentifier: ts.Identifier;
-};
-
-/**
- * Get information for importing a requested value
- * @param symbol Symbol of value
- */
-const gatherValueImport = (
-  symbol: ts.Symbol,
-  getIdentifier: IdentifierGetter,
-  getValue: ValueGetter,
-): ImportOrder => {
-  const identifier = getIdentifier(symbol);
-
-  if (!identifier) {
-    throw new Error(
-      `Identifier not found in registry for symbol [${symbol.escapedName}]`,
-    );
-  }
-
-  const value = getValue(symbol);
-
-  if (!value) {
-    throw new Error(
-      `Value not found in registry for symbol [${symbol.escapedName}]`,
-    );
-  }
-
-  const sourceFile = value.getSourceFile();
-  const moduleFilename = sourceFile.fileName;
-
-  // if (!ts.isIdentifier(value)) {
-  //   // TODO future: support values exported like 'export { foo } = x'
-  //   throw new Error(
-  //     `Export binding declarations are not supported [${value.getText()}]`,
-  //   );
-  // }
-
-  // return {
-  //   moduleExportIdentifier: value,
-  //   modulePath: moduleFilename,
-  // };
-  return {} as any;
 };
 
 export const gatherIdentifierImport = (

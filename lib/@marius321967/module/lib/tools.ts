@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { IdentifierAdder } from './identifier-map';
+import { BlueprintAdder } from './blueprint-map';
 import { resolveOriginalSymbol } from './symbol-tools';
 import { ValueAdder } from './value-map';
 
@@ -16,7 +16,7 @@ export const getParsedConfig = (
 export const registerTypeDeclaration = (
   node: ts.TypeAliasDeclaration,
   typeChecker: ts.TypeChecker,
-  addSymbol: IdentifierAdder,
+  addSymbol: BlueprintAdder,
 ): void => {
   const localSymbol = typeChecker.getSymbolAtLocation(node.name);
 

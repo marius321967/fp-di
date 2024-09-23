@@ -1,14 +1,14 @@
 import ts from 'typescript';
 import {
+  BlueprintRepository,
+  combineBlueprintRepositories,
+  createBlueprintRepository,
+} from './blueprint-map';
+import {
   isEntrypointDeclaration,
   isExportedTypeDeclaration,
   isExportedVariableDeclaration,
 } from './helpers';
-import {
-  IdentifierRepository,
-  combineIdentifierRepositories,
-  createIdentifierRepository,
-} from './identifier-map';
 import { registerTypeDeclaration, registerValueDeclarations } from './tools';
 import {
   ValueRepository,
@@ -17,13 +17,13 @@ import {
 } from './value-map';
 
 export type FileParseResult = {
-  identifiers: IdentifierRepository;
+  identifiers: BlueprintRepository;
   values: ValueRepository;
 };
 
 export type ParseResult = {
   entrypoint: ts.ExportAssignment;
-  identifiers: IdentifierRepository;
+  identifiers: BlueprintRepository;
   values: ValueRepository;
 };
 
@@ -56,7 +56,7 @@ export const parseProgram = (
   const { identifiers, values } = programFiles.reduce(
     programParseReducer(program),
     {
-      identifiers: createIdentifierRepository(program.getTypeChecker()),
+      identifiers: createBlueprintRepository(program.getTypeChecker()),
       values: createValueRepository(program.getTypeChecker()),
     },
   );
@@ -82,7 +82,7 @@ export const programParseReducer =
     const result = parseFile(path, program);
 
     return {
-      identifiers: combineIdentifierRepositories(
+      identifiers: combineBlueprintRepositories(
         acc.identifiers,
         result.identifiers,
       ),
@@ -90,6 +90,9 @@ export const programParseReducer =
     };
   };
 
+/**
+ * TODO: parse exports instead of declarations
+ */
 export const parseFile = (
   path: string,
   program: ts.Program,
@@ -100,7 +103,7 @@ export const parseFile = (
     throw new Error(`Source file [${path}] not found`);
   }
 
-  const symbolRepository = createIdentifierRepository(program.getTypeChecker());
+  const symbolRepository = createBlueprintRepository(program.getTypeChecker());
   const valueRepository = createValueRepository(program.getTypeChecker());
 
   source.forEachChild((node) => {
@@ -108,7 +111,7 @@ export const parseFile = (
       registerTypeDeclaration(
         node,
         program.getTypeChecker(),
-        symbolRepository.addIdentifier,
+        symbolRepository.addBlueprint,
       );
     }
 

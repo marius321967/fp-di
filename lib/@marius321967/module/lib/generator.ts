@@ -4,10 +4,12 @@ import ts from 'typescript';
 import {
   importIdentifier,
   makeDefaultImportClause,
-  relativizeImportPath,
   resolveExportedFunctionParams,
 } from './generator-tools';
+import { relativizeImportPath } from './imports';
 import { ParseResult } from './parser';
+
+const filterNotNull = <T>(value: T | null): value is T => value !== null;
 
 const createStartArgumentImports = (
   startArguments: ts.Identifier[],
@@ -17,10 +19,7 @@ const createStartArgumentImports = (
     .map((argumentIdentifier) =>
       importIdentifier(argumentIdentifier, startFilename),
     )
-    .filter(
-      (declaration): declaration is ts.ImportDeclaration =>
-        declaration !== null && ts.isImportDeclaration(declaration),
-    );
+    .filter(filterNotNull);
 };
 
 const createEntrypointImport = (
@@ -62,7 +61,7 @@ export const generateStart = (
   const startArguments = resolveExportedFunctionParams(
     parseResult.entrypoint,
     context.typeChecker,
-    parseResult.identifiers.getIdentifier,
+    parseResult.identifiers.getBlueprint,
     parseResult.values.getValue,
   );
 
