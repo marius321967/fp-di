@@ -2,23 +2,21 @@ import * as fs from 'fs';
 import path from 'path';
 import ts from 'typescript';
 import {
-  importIdentifier,
   makeDefaultImportClause,
   resolveExportedFunctionParams,
 } from './generator-tools';
-import { relativizeImportPath } from './imports';
+import { importValue, relativizeImportPath } from './imports';
 import { ParseResult } from './parser';
+import { ValueMapEntry } from './value-map';
 
 const filterNotNull = <T>(value: T | null): value is T => value !== null;
 
 const createStartArgumentImports = (
-  startArguments: ts.Identifier[],
+  startArguments: ValueMapEntry[],
   startFilename: string,
 ): ts.ImportDeclaration[] => {
   return startArguments
-    .map((argumentIdentifier) =>
-      importIdentifier(argumentIdentifier, startFilename),
-    )
+    .map((argumentIdentifier) => importValue(argumentIdentifier, startFilename))
     .filter(filterNotNull);
 };
 
@@ -58,7 +56,7 @@ export const generateStart = (
 
   const entrypointIdentifier = ts.factory.createIdentifier('start');
 
-  const startArguments = resolveExportedFunctionParams(
+  const startArgumentValues = resolveExportedFunctionParams(
     parseResult.entrypoint,
     context.typeChecker,
     parseResult.identifiers.getBlueprint,
@@ -68,7 +66,9 @@ export const generateStart = (
   const startCall = ts.factory.createCallExpression(
     entrypointIdentifier,
     undefined,
-    startArguments,
+    startArgumentValues.map(({ exportedAs }) =>
+      ts.factory.createIdentifier(exportedAs),
+    ),
   );
 
   const entrypointImportPath = relativizeImportPath(
@@ -77,7 +77,7 @@ export const generateStart = (
   );
 
   const statements = createStatements(
-    createStartArgumentImports(startArguments, startFilePath),
+    createStartArgumentImports(startArgumentValues, startFilePath),
     createEntrypointImport(entrypointIdentifier, entrypointImportPath),
     startCall,
   );

@@ -4,6 +4,7 @@ import { resolveOriginalSymbol } from './symbol-tools';
 export type ValueMapEntry = {
   symbol: ts.Symbol;
   valueDeclaration: ts.VariableDeclaration;
+  exportIdentifier: ts.Identifier;
   filename: string;
   exportedAs: string;
 };
@@ -40,12 +41,20 @@ export const createValueRepository = (
 ): ValueRepository => {
   const addValue: ValueAdder = (symbol, valueDeclaration) => {
     const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
+    const exportIdentifier = valueDeclaration.name;
+
+    if (!ts.isIdentifier(exportIdentifier)) {
+      throw new Error(
+        `Binding pattern value declarations not yet supported (eg., [${exportIdentifier.getText()}])`,
+      );
+    }
 
     items.push({
       symbol: originalSymbol,
       valueDeclaration,
       filename: valueDeclaration.getSourceFile().fileName,
       exportedAs: originalSymbol.name,
+      exportIdentifier,
     });
   };
 

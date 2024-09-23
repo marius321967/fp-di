@@ -1,7 +1,7 @@
 import path from 'path';
 import ts from 'typescript';
 import { BlueprintGetter } from './blueprint-map';
-import { ValueGetter } from './value-map';
+import { ValueGetter, ValueMapEntry } from './value-map';
 
 export type ImportOrder = {
   /** Full abstract path */
@@ -18,10 +18,55 @@ export const relativizeImportOrder = (
 });
 
 export const relativizeImportPath = (
-  modulePath: string,
+  importFrom: string,
   importTo: string,
 ): string =>
-  './' + path.relative(path.dirname(importTo), modulePath).replace(/\.ts$/, '');
+  './' + path.relative(path.dirname(importTo), importFrom).replace(/\.ts$/, '');
+
+/** @returns Import clause with single identifier, eg., { x } */
+export const makeNamedImportClause = (
+  identifier: ts.Identifier,
+): ts.ImportClause =>
+  ts.factory.createImportClause(
+    false,
+    undefined,
+    ts.factory.createNamedImports([
+      ts.factory.createImportSpecifier(false, undefined, identifier),
+    ]),
+  );
+
+export const gatherIdentifierImport = (
+  identifier: ts.Identifier,
+): ImportOrder => {
+  const sourceFile = identifier.getSourceFile();
+  // const modulePath = path.basename(sourceFile.fileName, '.ts');
+  const modulePath = sourceFile.fileName;
+
+  return {
+    moduleExportIdentifier: identifier,
+    modulePath,
+  };
+};
+
+export const importValue = (
+  value: ValueMapEntry,
+  importTo: string,
+): ts.ImportDeclaration | null => {
+  const importOrder = relativizeImportOrder(
+    gatherIdentifierImport(value.exportIdentifier),
+    importTo,
+  );
+
+  if (!importOrder.modulePath) {
+    return null;
+  }
+
+  return ts.factory.createImportDeclaration(
+    undefined,
+    makeNamedImportClause(importOrder.moduleExportIdentifier),
+    ts.factory.createStringLiteral(importOrder.modulePath),
+  );
+};
 
 /**
  * Get information for importing a requested value

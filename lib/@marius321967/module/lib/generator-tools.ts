@@ -1,24 +1,12 @@
 import ts from 'typescript';
 import { BlueprintGetter } from './blueprint-map';
-import { ImportOrder, relativizeImportOrder } from './imports';
 import { resolveOriginalSymbol } from './symbol-tools';
-import { ValueGetter } from './value-map';
+import { ValueGetter, ValueMapEntry } from './value-map';
 
 export const makeDefaultImportClause = (
   identifier: ts.Identifier,
 ): ts.ImportClause =>
   ts.factory.createImportClause(false, identifier, undefined);
-
-export const makeNamedImportClause = (
-  identifier: ts.Identifier,
-): ts.ImportClause =>
-  ts.factory.createImportClause(
-    false,
-    undefined,
-    ts.factory.createNamedImports([
-      ts.factory.createImportSpecifier(false, undefined, identifier),
-    ]),
-  );
 
 export const getArrowFunctionParamTypes = (
   arrowFunction: ts.ArrowFunction,
@@ -65,7 +53,7 @@ export const resolveExportedFunctionParams = (
   typeChecker: ts.TypeChecker,
   getSymbol: BlueprintGetter,
   getValue: ValueGetter,
-): ts.Identifier[] => {
+): ValueMapEntry[] => {
   const paramTypes = getExportedFunctionParamTypes(
     exportAssignment,
     typeChecker,
@@ -89,37 +77,10 @@ export const resolveExportedFunctionParams = (
       throw new Error(`Value not found for type [${paramType.getText()}]`);
     }
 
-    const valueIdentifier = valueDeclaration.valueDeclaration.name;
-
-    if (!ts.isIdentifier(valueIdentifier)) {
-      throw new Error(
-        `Value declaration name [${valueDeclaration.exportedAs}] is not an identifier`,
-      );
-    }
-
-    return valueIdentifier;
+    return valueDeclaration;
   });
 };
 
-export const importIdentifier = (
-  identifier: ts.Identifier,
-  importTo: string,
-): ts.ImportDeclaration | null => {
-  const importOrder = relativizeImportOrder(
-    gatherIdentifierImport(identifier),
-    importTo,
-  );
-
-  if (!importOrder.modulePath) {
-    return null;
-  }
-
-  return ts.factory.createImportDeclaration(
-    undefined,
-    makeNamedImportClause(importOrder.moduleExportIdentifier),
-    ts.factory.createStringLiteral(importOrder.modulePath),
-  );
-};
 const typeNodeToSymbol = (
   typeNode: ts.TypeNode,
   context: ts.TypeChecker,
@@ -141,17 +102,4 @@ const typeNodeToSymbol = (
   }
 
   return symbol;
-};
-
-export const gatherIdentifierImport = (
-  identifier: ts.Identifier,
-): ImportOrder => {
-  const sourceFile = identifier.getSourceFile();
-  // const modulePath = path.basename(sourceFile.fileName, '.ts');
-  const modulePath = sourceFile.fileName;
-
-  return {
-    moduleExportIdentifier: identifier,
-    modulePath,
-  };
 };
