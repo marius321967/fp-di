@@ -89,11 +89,11 @@ export const resolveExportedFunctionParams = (
       throw new Error(`Value not found for type [${paramType.getText()}]`);
     }
 
-    const valueIdentifier = valueDeclaration.name;
+    const valueIdentifier = valueDeclaration.valueDeclaration.name;
 
     if (!ts.isIdentifier(valueIdentifier)) {
       throw new Error(
-        `Value declaration name [${valueDeclaration.getText()}] is not an identifier`,
+        `Value declaration name [${valueDeclaration.exportedAs}] is not an identifier`,
       );
     }
 

@@ -48,7 +48,7 @@ const gatherValueImport = (
     );
   }
 
-  const sourceFile = value.getSourceFile();
+  const sourceFile = value.valueDeclaration.getSourceFile();
   const moduleFilename = sourceFile.fileName;
 
   // if (!ts.isIdentifier(value)) {

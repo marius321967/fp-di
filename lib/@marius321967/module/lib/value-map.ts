@@ -3,8 +3,9 @@ import { resolveOriginalSymbol } from './symbol-tools';
 
 export type ValueMapEntry = {
   symbol: ts.Symbol;
-  filename: string;
   valueDeclaration: ts.VariableDeclaration;
+  filename: string;
+  exportedAs: string;
 };
 
 export type ValueMap = ValueMapEntry[];
@@ -13,7 +14,7 @@ export type ValueAdder = (
   symbol: ts.Symbol,
   valueDeclaration: ts.VariableDeclaration,
 ) => void;
-export type ValueGetter = (symbol: ts.Symbol) => ts.VariableDeclaration | null;
+export type ValueGetter = (symbol: ts.Symbol) => ValueMapEntry | null;
 export type ValueListGetter = () => ValueMap;
 
 export type ValueRepository = {
@@ -42,18 +43,16 @@ export const createValueRepository = (
 
     items.push({
       symbol: originalSymbol,
-      filename: valueDeclaration.getSourceFile().fileName,
       valueDeclaration,
+      filename: valueDeclaration.getSourceFile().fileName,
+      exportedAs: originalSymbol.name,
     });
   };
 
   const getValue: ValueGetter = (symbol) => {
     const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
 
-    return (
-      items.find((entry) => entry.symbol === originalSymbol)
-        ?.valueDeclaration || null
-    );
+    return items.find((entry) => entry.symbol === originalSymbol) || null;
   };
 
   const getValues: ValueListGetter = () => items;
