@@ -6,14 +6,8 @@ import {
 import { registerTypeDeclaration, registerValueDeclarations } from './index';
 import { ParserSet } from './structs';
 
-export const rooNodeWalker =
-  (
-    program: ts.Program,
-    {
-      blueprints,
-      values,
-    }: ParserSet,
-  ) =>
+export const rootNodeWalker =
+  (program: ts.Program, { blueprints, values }: ParserSet) =>
   (node: ts.Node): void => {
     if (isExportedTypeDeclaration(node)) {
       registerTypeDeclaration(

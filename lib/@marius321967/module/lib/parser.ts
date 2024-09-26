@@ -4,7 +4,7 @@ import {
   createBlueprintRepository,
 } from './blueprint-map';
 import { isEntrypointDeclaration } from './helpers';
-import { rooNodeWalker } from './parser/rootNodeWalker';
+import { rootNodeWalker } from './parser/rootNodeWalker';
 import { ParseResult, ParserSet } from './parser/structs';
 import { combineValueRepositories, createValueRepository } from './value-map';
 
@@ -84,7 +84,7 @@ export const parseFile = (path: string, program: ts.Program): ParserSet => {
   const blueprints = createBlueprintRepository(program.getTypeChecker());
   const values = createValueRepository(program.getTypeChecker());
 
-  source.forEachChild(rooNodeWalker(program, { blueprints, values }));
+  source.forEachChild(rootNodeWalker(program, { blueprints, values }));
 
   return { blueprints, values };
 };
