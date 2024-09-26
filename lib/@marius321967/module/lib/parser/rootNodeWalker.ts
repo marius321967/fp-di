@@ -2,13 +2,16 @@ import ts from 'typescript';
 import {
   isExportedTypeDeclaration,
   isExportedVariableDeclaration,
+  isNamedExportDeclaration,
 } from '../helpers';
 import { registerTypeDeclaration, registerValueDeclarations } from './index';
+import { namedExportElementEvaluator } from './namedExportElementEvaluator';
 import { ParserSet } from './structs';
 
 export const rootNodeWalker =
   (program: ts.Program, { blueprints, values }: ParserSet) =>
   (node: ts.Node): void => {
+    // export type Foo = string | number;
     if (isExportedTypeDeclaration(node)) {
       registerTypeDeclaration(
         node,
@@ -17,11 +20,19 @@ export const rootNodeWalker =
       );
     }
 
+    // export const x: Foo = 'foo';
     if (isExportedVariableDeclaration(node)) {
       registerValueDeclarations(
         node,
         program.getTypeChecker(),
         values.addValue,
+      );
+    }
+
+    // export {x, y};
+    if (isNamedExportDeclaration(node)) {
+      node.exportClause.elements.forEach(
+        namedExportElementEvaluator(program, { blueprints, values }),
       );
     }
   };

@@ -23,6 +23,16 @@ export const isExportedVariableDeclaration = (
   );
 };
 
+export const isNamedExportDeclaration = (
+  node: ts.Node,
+): node is ts.ExportDeclaration & { exportClause: ts.NamedExports } => {
+  return (
+    ts.isExportDeclaration(node) &&
+    !!node.exportClause &&
+    ts.isNamedExports(node.exportClause)
+  );
+};
+
 export const isEntrypointDeclaration = (
   node: ts.Node,
 ): node is ts.ExportAssignment => {
