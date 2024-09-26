@@ -1,0 +1,3 @@
+describe('node.getSourceFile() should return the exact same object for same file, not a copy of the SourceFile object', () => {
+  // ...
+});
