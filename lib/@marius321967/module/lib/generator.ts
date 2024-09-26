@@ -6,7 +6,7 @@ import {
   resolveExportedFunctionParams,
 } from './generator-tools';
 import { importValue, relativizeImportPath } from './imports';
-import { ParseResult } from './parser';
+import { ParseResult } from './parser/structs';
 import { ValueMapEntry } from './value-map';
 
 const filterNotNull = <T>(value: T | null): value is T => value !== null;
@@ -59,7 +59,7 @@ export const generateStart = (
   const startArgumentValues = resolveExportedFunctionParams(
     parseResult.entrypoint,
     context.typeChecker,
-    parseResult.identifiers.getBlueprint,
+    parseResult.blueprints.getBlueprint,
     parseResult.values.getValue,
   );
 

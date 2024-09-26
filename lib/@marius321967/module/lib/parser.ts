@@ -1,31 +1,12 @@
 import ts from 'typescript';
 import {
-  BlueprintRepository,
   combineBlueprintRepositories,
   createBlueprintRepository,
 } from './blueprint-map';
-import {
-  isEntrypointDeclaration,
-  isExportedTypeDeclaration,
-  isExportedVariableDeclaration,
-} from './helpers';
-import { registerTypeDeclaration, registerValueDeclarations } from './tools';
-import {
-  ValueRepository,
-  combineValueRepositories,
-  createValueRepository,
-} from './value-map';
-
-export type FileParseResult = {
-  identifiers: BlueprintRepository;
-  values: ValueRepository;
-};
-
-export type ParseResult = {
-  entrypoint: ts.ExportAssignment;
-  identifiers: BlueprintRepository;
-  values: ValueRepository;
-};
+import { isEntrypointDeclaration } from './helpers';
+import { rooNodeWalker } from './parser/rootNodeWalker';
+import { ParseResult, ParserSet } from './parser/structs';
+import { combineValueRepositories, createValueRepository } from './value-map';
 
 export const findProgramEntrypoint = (
   program: ts.Program,
@@ -53,10 +34,10 @@ export const parseProgram = (
   entrypointFile: string,
   program: ts.Program,
 ): ParseResult => {
-  const { identifiers, values } = programFiles.reduce(
+  const { blueprints, values } = programFiles.reduce(
     programParseReducer(program),
     {
-      identifiers: createBlueprintRepository(program.getTypeChecker()),
+      blueprints: createBlueprintRepository(program.getTypeChecker()),
       values: createValueRepository(program.getTypeChecker()),
     },
   );
@@ -71,20 +52,20 @@ export const parseProgram = (
 
   return {
     entrypoint: entrypointDeclaration,
-    identifiers,
+    blueprints,
     values,
   };
 };
 
 export const programParseReducer =
   (program: ts.Program) =>
-  (acc: ParseResult, path: string): FileParseResult => {
+  (acc: ParseResult, path: string): ParserSet => {
     const result = parseFile(path, program);
 
     return {
-      identifiers: combineBlueprintRepositories(
-        acc.identifiers,
-        result.identifiers,
+      blueprints: combineBlueprintRepositories(
+        acc.blueprints,
+        result.blueprints,
       ),
       values: combineValueRepositories(acc.values, result.values),
     };
@@ -93,36 +74,17 @@ export const programParseReducer =
 /**
  * TODO: parse exports instead of declarations
  */
-export const parseFile = (
-  path: string,
-  program: ts.Program,
-): FileParseResult => {
+export const parseFile = (path: string, program: ts.Program): ParserSet => {
   const source = program.getSourceFile(path);
 
   if (!source) {
     throw new Error(`Source file [${path}] not found`);
   }
 
-  const symbolRepository = createBlueprintRepository(program.getTypeChecker());
-  const valueRepository = createValueRepository(program.getTypeChecker());
+  const blueprints = createBlueprintRepository(program.getTypeChecker());
+  const values = createValueRepository(program.getTypeChecker());
 
-  source.forEachChild((node) => {
-    if (isExportedTypeDeclaration(node)) {
-      registerTypeDeclaration(
-        node,
-        program.getTypeChecker(),
-        symbolRepository.addBlueprint,
-      );
-    }
+  source.forEachChild(rooNodeWalker(program, { blueprints, values }));
 
-    if (isExportedVariableDeclaration(node)) {
-      registerValueDeclarations(
-        node,
-        program.getTypeChecker(),
-        valueRepository.addValue,
-      );
-    }
-  });
-
-  return { identifiers: symbolRepository, values: valueRepository };
+  return { blueprints, values };
 };
