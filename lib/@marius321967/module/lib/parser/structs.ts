@@ -1,6 +1,6 @@
 import ts from 'typescript';
-import { BlueprintRepository } from '../blueprint-map';
-import { ValueRepository } from '../value-map';
+import { BlueprintRepository } from '../repositories/blueprints';
+import { ValueRepository } from '../repositories/values';
 
 export type ParserSet = {
   blueprints: BlueprintRepository;

@@ -1,7 +1,7 @@
 import path from 'path';
 import ts from 'typescript';
-import { BlueprintGetter } from './blueprint-map';
-import { ValueGetter, ValueMapEntry } from './value-map';
+import { BlueprintGetter } from './repositories/blueprints';
+import { ValueGetter, ValueMapEntry } from './repositories/values';
 
 export type ImportOrder = {
   /** Full abstract path */

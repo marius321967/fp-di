@@ -7,7 +7,7 @@ import {
 } from './generator-tools';
 import { importValue, relativizeImportPath } from './imports';
 import { ParseResult } from './parser/structs';
-import { ValueMapEntry } from './value-map';
+import { ValueMapEntry } from './repositories/values';
 
 const filterNotNull = <T>(value: T | null): value is T => value !== null;
 

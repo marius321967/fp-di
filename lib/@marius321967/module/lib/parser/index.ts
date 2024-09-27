@@ -1,6 +1,6 @@
 import ts from 'typescript';
-import { BlueprintAdder } from '../blueprint-map';
-import { ValueAdder } from '../value-map';
+import { BlueprintAdder } from '../repositories/blueprints';
+import { ValueAdder } from '../repositories/values';
 
 export const registerTypeDeclaration = (
   node: ts.TypeAliasDeclaration,

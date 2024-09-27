@@ -1,12 +1,15 @@
 import ts from 'typescript';
-import {
-  combineBlueprintRepositories,
-  createBlueprintRepository,
-} from './blueprint-map';
 import { isEntrypointDeclaration } from './helpers';
 import { rootNodeWalker } from './parser/rootNodeWalker';
 import { ParseResult, ParserSet } from './parser/structs';
-import { combineValueRepositories, createValueRepository } from './value-map';
+import {
+  combineBlueprintRepositories,
+  createBlueprintRepository,
+} from './repositories/blueprints';
+import {
+  combineValueRepositories,
+  createValueRepository,
+} from './repositories/values';
 
 export const findProgramEntrypoint = (
   program: ts.Program,

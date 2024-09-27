@@ -1,6 +1,6 @@
 import ts from 'typescript';
-import { BlueprintGetter } from './blueprint-map';
-import { ValueGetter, ValueMapEntry } from './value-map';
+import { BlueprintGetter } from './repositories/blueprints';
+import { ValueGetter, ValueMapEntry } from './repositories/values';
 
 export const makeDefaultImportClause = (
   identifier: ts.Identifier,
