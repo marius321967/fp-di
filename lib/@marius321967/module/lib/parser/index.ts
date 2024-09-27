@@ -1,12 +1,11 @@
 import ts from 'typescript';
 import { BlueprintAdder } from '../blueprint-map';
-import { resolveOriginalSymbol } from '../symbol-tools';
 import { ValueAdder } from '../value-map';
 
 export const registerTypeDeclaration = (
   node: ts.TypeAliasDeclaration,
   typeChecker: ts.TypeChecker,
-  addSymbol: BlueprintAdder,
+  addBlueprint: BlueprintAdder,
 ): void => {
   const localSymbol = typeChecker.getSymbolAtLocation(node.name);
 
@@ -14,9 +13,7 @@ export const registerTypeDeclaration = (
     throw new Error('symbol not found');
   }
 
-  const originalSymbol = resolveOriginalSymbol(localSymbol, typeChecker);
-
-  addSymbol(originalSymbol, node.name);
+  addBlueprint(localSymbol, node.name.getText(), node.getSourceFile().fileName);
 };
 
 export const registerValueDeclarations = (
@@ -40,9 +37,10 @@ export const registerValueDeclaration =
     if (!ts.isTypeReferenceNode(variableBroadType)) return;
 
     const localIdentifier = variableBroadType.typeName;
-    const symbol = typeChecker.getSymbolAtLocation(localIdentifier);
+    const typeSymbol = typeChecker.getSymbolAtLocation(localIdentifier);
 
-    if (!symbol) throw new Error('symbol not found');
+    if (!typeSymbol)
+      throw new Error(`Type symbol [${localIdentifier.getText()}] not found`);
 
-    addValue(symbol, node);
+    addValue(typeSymbol, node);
   };

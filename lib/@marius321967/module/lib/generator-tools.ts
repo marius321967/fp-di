@@ -1,6 +1,5 @@
 import ts from 'typescript';
 import { BlueprintGetter } from './blueprint-map';
-import { resolveOriginalSymbol } from './symbol-tools';
 import { ValueGetter, ValueMapEntry } from './value-map';
 
 export const makeDefaultImportClause = (
@@ -8,11 +7,11 @@ export const makeDefaultImportClause = (
 ): ts.ImportClause =>
   ts.factory.createImportClause(false, identifier, undefined);
 
-export const getArrowFunctionParamTypes = (
+export const getArrowFunctionParamTypeSymbols = (
   arrowFunction: ts.ArrowFunction,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): ts.Identifier[] => {
+): ts.Symbol[] => {
   return arrowFunction.parameters.map((parameter) => {
     const typeNode = parameter.type;
 
@@ -31,21 +30,25 @@ export const getArrowFunctionParamTypes = (
       );
     }
 
-    return blueprint.identifier;
+    return blueprint.originalSymbol;
   });
 };
 
 export const getExportedFunctionParamTypes = (
   exportAssignment: ts.ExportAssignment,
   typeChecker: ts.TypeChecker,
-  getSymbol: BlueprintGetter,
-): ts.Identifier[] => {
+  getBlueprint: BlueprintGetter,
+): ts.Symbol[] => {
   const exportExpression = exportAssignment.expression;
   if (!ts.isArrowFunction(exportExpression)) {
     throw new Error('Entrypoint is not a function');
   }
 
-  return getArrowFunctionParamTypes(exportExpression, typeChecker, getSymbol);
+  return getArrowFunctionParamTypeSymbols(
+    exportExpression,
+    typeChecker,
+    getBlueprint,
+  );
 };
 
 export const resolveExportedFunctionParams = (
@@ -61,20 +64,10 @@ export const resolveExportedFunctionParams = (
   );
 
   return paramTypes.map((paramType) => {
-    const typeSymbol = typeChecker.getSymbolAtLocation(paramType);
-
-    if (!typeSymbol) {
-      throw new Error(
-        `Unable to resolve symbol for type [${paramType.getText()}]`,
-      );
-    }
-
-    const valueDeclaration = getValue(
-      resolveOriginalSymbol(typeSymbol, typeChecker),
-    );
+    const valueDeclaration = getValue(paramType);
 
     if (!valueDeclaration) {
-      throw new Error(`Value not found for type [${paramType.getText()}]`);
+      throw new Error(`Value not found for type [${paramType.name}]`);
     }
 
     return valueDeclaration;

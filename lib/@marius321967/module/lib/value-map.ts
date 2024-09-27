@@ -2,7 +2,7 @@ import ts from 'typescript';
 import { resolveOriginalSymbol } from './symbol-tools';
 
 export type ValueMapEntry = {
-  symbol: ts.Symbol;
+  typeSymbol: ts.Symbol;
   valueDeclaration: ts.VariableDeclaration;
   exportIdentifier: ts.Identifier;
   filename: string;
@@ -12,14 +12,21 @@ export type ValueMapEntry = {
 export type ValueMap = ValueMapEntry[];
 
 export type ValueAdder = (
-  symbol: ts.Symbol,
+  typeSymbol: ts.Symbol,
   valueDeclaration: ts.VariableDeclaration,
 ) => void;
-export type ValueGetter = (symbol: ts.Symbol) => ValueMapEntry | null;
+/**
+ * Resolve value by given type
+ * @param typeSymbol Does not have to be original, can be alias
+ */
+export type ValueGetter = (typeSymbol: ts.Symbol) => ValueMapEntry | null;
 export type ValueListGetter = () => ValueMap;
 
 export type ValueRepository = {
   addValue: ValueAdder;
+  /**
+   * Resolve value by given type
+   */
   getValue: ValueGetter;
   getValues: ValueListGetter;
 };
@@ -29,7 +36,7 @@ export const combineValueRepositories = (
   repo2: ValueRepository,
 ): ValueRepository => {
   repo2.getValues().forEach((item) => {
-    repo1.addValue(item.symbol, item.valueDeclaration);
+    repo1.addValue(item.typeSymbol, item.valueDeclaration);
   });
 
   return repo1;
@@ -39,8 +46,8 @@ export const createValueRepository = (
   typeChecker: ts.TypeChecker,
   items: ValueMap = [],
 ): ValueRepository => {
-  const addValue: ValueAdder = (symbol, valueDeclaration) => {
-    const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
+  const addValue: ValueAdder = (typeSymbol, valueDeclaration) => {
+    const originalTypeSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
     const exportIdentifier = valueDeclaration.name;
 
     if (!ts.isIdentifier(exportIdentifier)) {
@@ -50,18 +57,18 @@ export const createValueRepository = (
     }
 
     items.push({
-      symbol: originalSymbol,
+      typeSymbol: originalTypeSymbol,
       valueDeclaration,
       filename: valueDeclaration.getSourceFile().fileName,
-      exportedAs: originalSymbol.name,
+      exportedAs: originalTypeSymbol.name,
       exportIdentifier,
     });
   };
 
-  const getValue: ValueGetter = (symbol) => {
-    const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
+  const getValue: ValueGetter = (typeSymbol) => {
+    const originalSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
 
-    return items.find((entry) => entry.symbol === originalSymbol) || null;
+    return items.find((entry) => entry.typeSymbol === originalSymbol) || null;
   };
 
   const getValues: ValueListGetter = () => items;
