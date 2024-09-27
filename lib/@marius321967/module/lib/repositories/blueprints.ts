@@ -3,6 +3,7 @@ import { resolveOriginalSymbol } from '../symbol-tools';
 
 export type Blueprint = {
   originalSymbol: ts.Symbol;
+  /** TODO not sure if this info needed since lib only manipulates values, not types */
   exportedAs: string;
   /** TODO specify whether abstract path, relative from project root, etc. */
   filename: string;

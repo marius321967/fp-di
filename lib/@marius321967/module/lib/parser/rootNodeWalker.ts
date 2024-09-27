@@ -32,7 +32,10 @@ export const rootNodeWalker =
     // export {x, y};
     if (isNamedExportDeclaration(node)) {
       node.exportClause.elements.forEach(
-        namedExportElementEvaluator(program, { blueprints, values }),
+        namedExportElementEvaluator(program.getTypeChecker(), {
+          blueprints,
+          values,
+        }),
       );
     }
   };

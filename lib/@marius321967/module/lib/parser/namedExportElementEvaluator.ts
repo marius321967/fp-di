@@ -1,47 +1,32 @@
 import ts from 'typescript';
-import { registerValueDeclaration } from '.';
-import { resolveOriginalSymbol } from '../symbol-tools';
+import { registerTypeDeclaration, registerValueDeclaration } from '.';
+import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem';
 import { ParserSet } from './structs';
 
 export const namedExportElementEvaluator =
-  (program: ts.Program, { blueprints, values }: ParserSet) =>
-  (node: ts.ExportSpecifier): void => {
-    const symbol = program.getTypeChecker().getSymbolAtLocation(node.name);
-
-    if (!symbol) {
-      throw new Error('No symbol found');
-    }
-
-    const originalSymbol = resolveOriginalSymbol(
-      symbol,
-      program.getTypeChecker(),
+  (typeChecker: ts.TypeChecker, { blueprints, values }: ParserSet) =>
+  (exportNode: ts.ExportSpecifier): void => {
+    const declarationNode = findDeclarationOfExportedItem(
+      exportNode,
+      typeChecker,
     );
 
-    if (!originalSymbol.declarations) {
-      throw new Error(
-        `No declarations found for symbol [${originalSymbol.name}]`,
-      );
-    }
-
-    const declarationNode = originalSymbol.declarations[0];
-
-    if (!declarationNode) {
-      throw new Error(
-        `No declaration found for original symbol [${originalSymbol.name}]`,
-      );
-    }
-
     const isDeclaredInThisFile =
-      originalSymbol.declarations[0].getSourceFile() === node.getSourceFile();
+      declarationNode.getSourceFile() === exportNode.getSourceFile();
 
-    if (!isDeclaredInThisFile || !ts.isVariableDeclaration(declarationNode)) {
+    if (!isDeclaredInThisFile) {
       return;
     }
 
-    registerValueDeclaration(
-      values.addValue,
-      program.getTypeChecker(),
-    )(declarationNode);
+    if (ts.isVariableDeclaration(declarationNode)) {
+      registerValueDeclaration(declarationNode, values.addValue, typeChecker);
+    }
 
-    // TODO handle type exports
+    if (ts.isTypeAliasDeclaration(declarationNode)) {
+      registerTypeDeclaration(
+        declarationNode,
+        typeChecker,
+        blueprints.addBlueprint,
+      );
+    }
   };

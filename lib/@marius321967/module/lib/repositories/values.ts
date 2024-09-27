@@ -5,8 +5,8 @@ export type ValueMapEntry = {
   typeSymbol: ts.Symbol;
   valueDeclaration: ts.VariableDeclaration;
   exportIdentifier: ts.Identifier;
-  filename: string;
   exportedAs: string;
+  filename: string;
 };
 
 export type ValueMap = ValueMapEntry[];
@@ -24,9 +24,6 @@ export type ValueListGetter = () => ValueMap;
 
 export type ValueRepository = {
   addValue: ValueAdder;
-  /**
-   * Resolve value by given type
-   */
   getValue: ValueGetter;
   getValues: ValueListGetter;
 };
