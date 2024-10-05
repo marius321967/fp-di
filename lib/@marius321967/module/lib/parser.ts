@@ -74,9 +74,6 @@ export const programParseReducer =
     };
   };
 
-/**
- * TODO: parse exports instead of declarations
- */
 export const parseFile = (path: string, program: ts.Program): ParserSet => {
   const source = program.getSourceFile(path);
 
