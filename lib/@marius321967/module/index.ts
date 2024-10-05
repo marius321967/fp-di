@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { generateStart } from './lib/generator';
+import { generateStart } from './lib/generator/generateStart';
 import { parseProgram } from './lib/parser';
 import { getParsedConfig } from './lib/tools';
 

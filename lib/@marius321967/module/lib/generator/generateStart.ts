@@ -1,13 +1,13 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 import ts from 'typescript';
+import { importValue, relativizeImportPath } from '../imports';
+import { ParseResult } from '../parser/structs';
+import { ValueMapEntry } from '../repositories/values';
 import {
   makeDefaultImportClause,
   resolveExportedFunctionParams,
-} from './generator-tools';
-import { importValue, relativizeImportPath } from './imports';
-import { ParseResult } from './parser/structs';
-import { ValueMapEntry } from './repositories/values';
+} from './tools';
 
 const filterNotNull = <T>(value: T | null): value is T => value !== null;
 

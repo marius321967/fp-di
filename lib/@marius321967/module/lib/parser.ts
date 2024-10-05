@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { isEntrypointDeclaration } from './helpers';
+import { isEntrypointDeclaration } from './node.type-guards';
 import { rootNodeWalker } from './parser/rootNodeWalker';
 import { ParseResult, ParserSet } from './parser/structs';
 import {

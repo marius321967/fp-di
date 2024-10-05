@@ -3,7 +3,7 @@ import {
   isExportedTypeDeclaration,
   isExportedVariableDeclaration,
   isNamedExportDeclaration,
-} from '../helpers';
+} from '../node.type-guards';
 import { registerTypeDeclaration, registerValueDeclarations } from './index';
 import { namedExportElementEvaluator } from './namedExportElementEvaluator';
 import { ParserSet } from './structs';

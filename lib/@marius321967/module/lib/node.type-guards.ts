@@ -1,7 +1,5 @@
 import ts from 'typescript';
 
-export const kind = (node: ts.Node): string => ts.SyntaxKind[node.kind];
-
 export const isExportedTypeDeclaration = (
   node: ts.Node,
 ): node is ts.TypeAliasDeclaration => {
