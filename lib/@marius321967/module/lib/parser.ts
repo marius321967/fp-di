@@ -1,7 +1,11 @@
 import ts from 'typescript';
-import { isEntrypointDeclaration } from './node.type-guards';
+import { isEntrypointExport } from './node.type-guards';
 import { rootNodeWalker } from './parser/rootNodeWalker';
-import { ParseResult, ParserSet } from './parser/structs';
+import {
+  ParseResult,
+  ParserSet,
+  ProgramEntrypointExport,
+} from './parser/structs';
 import {
   combineBlueprintRepositories,
   createBlueprintRepository,
@@ -14,7 +18,7 @@ import {
 export const findProgramEntrypoint = (
   program: ts.Program,
   entrypointFile: string,
-): ts.ExportAssignment | null => {
+): ProgramEntrypointExport | null => {
   const source = program.getSourceFile(entrypointFile);
 
   if (!source) {
@@ -24,7 +28,7 @@ export const findProgramEntrypoint = (
   let entrypointDeclaration: ts.ExportAssignment | null = null;
 
   source.forEachChild((node) => {
-    if (isEntrypointDeclaration(node)) {
+    if (isEntrypointExport(node)) {
       entrypointDeclaration = node;
     }
   });
@@ -45,16 +49,16 @@ export const parseProgram = (
     },
   );
 
-  const entrypointDeclaration = findProgramEntrypoint(program, entrypointFile);
+  const entrypointExport = findProgramEntrypoint(program, entrypointFile);
 
-  if (!entrypointDeclaration) {
+  if (!entrypointExport) {
     throw new Error(
       'No entrypoint found. Must be arrow function exported as default.',
     );
   }
 
   return {
-    entrypoint: entrypointDeclaration,
+    entrypointExport,
     blueprints,
     values,
   };

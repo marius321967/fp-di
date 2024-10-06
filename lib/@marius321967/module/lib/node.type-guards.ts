@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { ProgramEntrypointExport } from './parser/structs';
 
 export const isExportedTypeDeclaration = (
   node: ts.Node,
@@ -31,8 +32,8 @@ export const isNamedExportDeclaration = (
   );
 };
 
-export const isEntrypointDeclaration = (
+export const isEntrypointExport = (
   node: ts.Node,
-): node is ts.ExportAssignment => {
+): node is ProgramEntrypointExport => {
   return ts.isExportAssignment(node) && ts.isArrowFunction(node.expression);
 };
