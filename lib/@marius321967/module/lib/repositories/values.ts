@@ -15,6 +15,7 @@ export type ValueAdder = (
   typeSymbol: ts.Symbol,
   valueDeclaration: ts.VariableDeclaration,
 ) => void;
+
 /**
  * Resolve value by given type
  * @param typeSymbol Does not have to be original, can be alias
@@ -43,24 +44,8 @@ export const createValueRepository = (
   typeChecker: ts.TypeChecker,
   items: ValueMap = [],
 ): ValueRepository => {
-  const addValue: ValueAdder = (typeSymbol, valueDeclaration) => {
-    const originalTypeSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
-    const exportIdentifier = valueDeclaration.name;
-
-    if (!ts.isIdentifier(exportIdentifier)) {
-      throw new Error(
-        `Binding pattern value declarations not yet supported (eg., [${exportIdentifier.getText()}])`,
-      );
-    }
-
-    items.push({
-      typeSymbol: originalTypeSymbol,
-      valueDeclaration,
-      filename: valueDeclaration.getSourceFile().fileName,
-      exportedAs: originalTypeSymbol.name,
-      exportIdentifier,
-    });
-  };
+  const addValue: ValueAdder = (typeSymbol, valueDeclaration) =>
+    items.push(buildValueMapEntry(typeSymbol, typeChecker, valueDeclaration));
 
   const getValue: ValueGetter = (typeSymbol) => {
     const originalSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
@@ -74,5 +59,28 @@ export const createValueRepository = (
     addValue,
     getValue,
     getValues,
+  };
+};
+
+export const buildValueMapEntry = (
+  typeSymbol: ts.Symbol,
+  typeChecker: ts.TypeChecker,
+  valueDeclaration: ts.VariableDeclaration,
+): ValueMapEntry => {
+  const originalTypeSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
+  const exportIdentifier = valueDeclaration.name;
+
+  if (!ts.isIdentifier(exportIdentifier)) {
+    throw new Error(
+      `Binding pattern value declarations not yet supported (eg., [${exportIdentifier.getText()}])`,
+    );
+  }
+
+  return {
+    typeSymbol: originalTypeSymbol,
+    valueDeclaration,
+    filename: valueDeclaration.getSourceFile().fileName,
+    exportedAs: originalTypeSymbol.name,
+    exportIdentifier,
   };
 };
