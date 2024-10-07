@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import { ValueAdder } from '../repositories/values';
+import { assertIsPresent } from '../tools';
 
 export const valueDeclarationRegistrator =
   (addValue: ValueAdder, typeChecker: ts.TypeChecker) =>
@@ -7,9 +8,10 @@ export const valueDeclarationRegistrator =
     const localIdentifier = node.type.typeName;
     const typeSymbol = typeChecker.getSymbolAtLocation(localIdentifier);
 
-    if (!typeSymbol) {
-      throw new Error(`Type symbol [${localIdentifier.getText()}] not found`);
-    }
+    assertIsPresent(
+      typeSymbol,
+      `Type symbol [${localIdentifier.getText()}] not found`,
+    );
 
     addValue(typeSymbol, node);
   };

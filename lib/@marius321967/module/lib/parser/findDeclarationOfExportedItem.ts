@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import { resolveOriginalSymbol } from '../symbol';
+import { assertIsPresent } from '../tools';
 
 export const findDeclarationOfExportedItem = (
   node: ts.ExportSpecifier,
@@ -9,25 +10,24 @@ export const findDeclarationOfExportedItem = (
     node.propertyName || node.name,
   );
 
-  if (!symbol) {
-    throw new Error('No symbol found');
-  }
+  assertIsPresent(
+    symbol,
+    `Symbol not found for export specifier [${node.name}]`,
+  );
 
   const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
 
-  if (!originalSymbol.declarations) {
-    throw new Error(
-      `No declarations found for symbol [${originalSymbol.name}]`,
-    );
-  }
+  assertIsPresent(
+    originalSymbol.declarations,
+    `No declarations found for symbol [${originalSymbol.name}]`,
+  );
 
   const declarationNode = originalSymbol.declarations[0];
 
-  if (!declarationNode) {
-    throw new Error(
-      `No declaration found for original symbol [${originalSymbol.name}]`,
-    );
-  }
+  assertIsPresent(
+    declarationNode,
+    `No declaration found for original symbol [${originalSymbol.name}]`,
+  );
 
   return declarationNode;
 };

@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import { resolveOriginalSymbol } from '../symbol';
+import { assertIsPresent } from '../tools';
 
 /**
  * TODO: handle union types, return an array
@@ -17,11 +18,10 @@ export const resolveTypeNodeSymbol = (
 
   const symbol = typeChecker.getSymbolAtLocation(typeNode.typeName);
 
-  if (!symbol) {
-    throw new Error(
-      `Symbol not found by TypeChecker for identifier [${typeNode.getText()}]`,
-    );
-  }
+  assertIsPresent(
+    symbol,
+    `Symbol not found by TypeChecker for identifier [${typeNode.getText()}]`,
+  );
 
   return resolveOriginalSymbol(symbol, typeChecker);
 };

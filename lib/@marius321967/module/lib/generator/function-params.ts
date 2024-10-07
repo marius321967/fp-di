@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import { Blueprint, BlueprintGetter } from '../repositories/blueprints';
 import { ValueGetter, ValueMapEntry } from '../repositories/values';
+import { assertIsPresent } from '../tools';
 import { resolveTypeNodeSymbol } from './symbols';
 
 /** @returns Length same as functionNode.parameters */
@@ -21,11 +22,10 @@ export const resolveFunctionParamTypeSymbols = (
     const symbol = resolveTypeNodeSymbol(typeNode, typeChecker);
     const blueprint = getBlueprint(symbol);
 
-    if (!blueprint) {
-      throw new Error(
-        `Type declaration not found for symbol [${symbol.escapedName}]`,
-      );
-    }
+    assertIsPresent(
+      blueprint,
+      `Type declaration not found for symbol [${symbol.escapedName}]`,
+    );
 
     return blueprint;
   });
@@ -47,11 +47,10 @@ export const resolveFunctionParams = (
   return blueprints.map((blueprint) => {
     const value = getValue(blueprint.originalSymbol);
 
-    if (!value) {
-      throw new Error(
-        `Value not found for type [${blueprint.originalSymbol.getName()}]`,
-      );
-    }
+    assertIsPresent(
+      value,
+      `Value not found for type [${blueprint.originalSymbol.getName()}]`,
+    );
 
     return value;
   });

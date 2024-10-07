@@ -2,6 +2,7 @@ import path from 'path';
 import ts from 'typescript';
 import { BlueprintGetter } from './repositories/blueprints';
 import { ValueGetter, ValueMapEntry } from './repositories/values';
+import { assertIsPresent } from './tools';
 
 export type ImportOrder = {
   /** Full abstract path */
@@ -78,20 +79,16 @@ const gatherValueImport = (
   getValue: ValueGetter,
 ): ImportOrder => {
   const blueprint = getBlueprint(symbol);
-
-  if (!blueprint) {
-    throw new Error(
-      `Identifier not found in registry for symbol [${symbol.escapedName}]`,
-    );
-  }
+  assertIsPresent(
+    blueprint,
+    `Blueprint not found in registry for symbol [${symbol.escapedName}]`,
+  );
 
   const value = getValue(symbol);
-
-  if (!value) {
-    throw new Error(
-      `Value not found in registry for symbol [${symbol.escapedName}]`,
-    );
-  }
+  assertIsPresent(
+    value,
+    `Value not found in registry for symbol [${symbol.escapedName}]`,
+  );
 
   const sourceFile = value.valueDeclaration.getSourceFile();
   const moduleFilename = sourceFile.fileName;
