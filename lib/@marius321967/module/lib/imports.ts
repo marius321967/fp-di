@@ -1,5 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
+import { createNamedImportClause } from './generator/node-builders';
 import { BlueprintGetter } from './repositories/blueprints';
 import { ValueGetter, ValueMapEntry } from './repositories/values';
 import { assertIsPresent } from './tools';
@@ -13,28 +14,18 @@ export type ImportOrder = {
 export const relativizeImportOrder = (
   importOrder: ImportOrder,
   importTo: string,
-): ImportOrder => ({
-  ...importOrder,
-  modulePath: relativizeImportPath(importOrder.modulePath, importTo),
-});
+): ImportOrder => {
+  return {
+    ...importOrder,
+    modulePath: relativizeImportPath(importOrder.modulePath, importTo),
+  };
+};
 
 export const relativizeImportPath = (
   importFrom: string,
   importTo: string,
-): string =>
+): string | '' =>
   './' + path.relative(path.dirname(importTo), importFrom).replace(/\.ts$/, '');
-
-/** @returns Import clause with single identifier, eg., { x } */
-export const makeNamedImportClause = (
-  identifier: ts.Identifier,
-): ts.ImportClause =>
-  ts.factory.createImportClause(
-    false,
-    undefined,
-    ts.factory.createNamedImports([
-      ts.factory.createImportSpecifier(false, undefined, identifier),
-    ]),
-  );
 
 export const gatherIdentifierImport = (
   identifier: ts.Identifier,
@@ -52,19 +43,15 @@ export const gatherIdentifierImport = (
 export const importValue = (
   value: ValueMapEntry,
   importTo: string,
-): ts.ImportDeclaration | null => {
+): ts.ImportDeclaration => {
   const importOrder = relativizeImportOrder(
     gatherIdentifierImport(value.exportIdentifier),
     importTo,
   );
 
-  if (!importOrder.modulePath) {
-    return null;
-  }
-
   return ts.factory.createImportDeclaration(
     undefined,
-    makeNamedImportClause(importOrder.moduleExportIdentifier),
+    createNamedImportClause(importOrder.moduleExportIdentifier),
     ts.factory.createStringLiteral(importOrder.modulePath),
   );
 };

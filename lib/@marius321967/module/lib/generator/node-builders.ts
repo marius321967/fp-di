@@ -23,7 +23,7 @@ export const createEntrypointImport = (
 ): ts.ImportDeclaration => {
   return ts.factory.createImportDeclaration(
     undefined,
-    makeDefaultImportClause(entrypointIdentifier),
+    createDefaultImportClause(entrypointIdentifier),
     ts.factory.createStringLiteral(entrypointImportPath),
   );
 };
@@ -39,3 +39,20 @@ export const createStatements = (
     ts.factory.createExpressionStatement(startCall),
   ];
 };
+
+export const createDefaultImportClause = (
+  identifier: ts.Identifier,
+): ts.ImportClause =>
+  ts.factory.createImportClause(false, identifier, undefined);
+
+/** @returns Import clause with single identifier, eg., { x } */
+export const createNamedImportClause = (
+  identifier: ts.Identifier,
+): ts.ImportClause =>
+  ts.factory.createImportClause(
+    false,
+    undefined,
+    ts.factory.createNamedImports([
+      ts.factory.createImportSpecifier(false, undefined, identifier),
+    ]),
+  );
