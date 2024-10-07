@@ -1,6 +1,7 @@
-import ts from 'typescript';
+import ts, { TypeReferenceNode } from 'typescript';
 import { BlueprintAdder } from '../repositories/blueprints';
 import { ValueAdder } from '../repositories/values';
+import { isEligibleValue } from './isEligibleValue';
 import { valueDeclarationRegistrator } from './valueDeclarationRegistrator';
 
 export const registerTypeDeclaration = (
@@ -17,18 +18,18 @@ export const registerTypeDeclaration = (
   addBlueprint(localSymbol, node.name.getText(), node.getSourceFile().fileName);
 };
 
-export const registerValueDeclarations = (
+export const registerEligibleValueDeclarations = (
   node: ts.VariableStatement,
   typeChecker: ts.TypeChecker,
   addValue: ValueAdder,
 ): void => {
-  node.declarationList.declarations.forEach(
-    valueDeclarationRegistrator(addValue, typeChecker),
-  );
+  node.declarationList.declarations
+    .filter(isEligibleValue)
+    .forEach(valueDeclarationRegistrator(addValue, typeChecker));
 };
 
 export const registerValueDeclaration = (
-  node: ts.VariableDeclaration,
+  node: ts.VariableDeclaration & { type: TypeReferenceNode },
   addValue: ValueAdder,
   typeChecker: ts.TypeChecker,
-) => valueDeclarationRegistrator(addValue, typeChecker)(node);
+): void => valueDeclarationRegistrator(addValue, typeChecker)(node);

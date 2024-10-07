@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import { registerTypeDeclaration, registerValueDeclaration } from '.';
 import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem';
+import { isEligibleValue } from './isEligibleValue';
 import { ParserSet } from './structs';
 
 export const namedExportElementEvaluator =
@@ -18,7 +19,10 @@ export const namedExportElementEvaluator =
       return;
     }
 
-    if (ts.isVariableDeclaration(declarationNode)) {
+    if (
+      ts.isVariableDeclaration(declarationNode) &&
+      isEligibleValue(declarationNode)
+    ) {
       registerValueDeclaration(declarationNode, values.addValue, typeChecker);
     }
 

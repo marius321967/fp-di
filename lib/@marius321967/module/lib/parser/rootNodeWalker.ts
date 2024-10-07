@@ -4,7 +4,10 @@ import {
   isExportedVariableDeclaration,
   isNamedExportDeclaration,
 } from '../node.type-guards';
-import { registerTypeDeclaration, registerValueDeclarations } from './index';
+import {
+  registerEligibleValueDeclarations,
+  registerTypeDeclaration,
+} from './index';
 import { namedExportElementEvaluator } from './namedExportElementEvaluator';
 import { ParserSet } from './structs';
 
@@ -22,7 +25,7 @@ export const rootNodeWalker =
 
     // export const x: Foo = 'foo';
     if (isExportedVariableDeclaration(node)) {
-      registerValueDeclarations(
+      registerEligibleValueDeclarations(
         node,
         program.getTypeChecker(),
         values.addValue,
