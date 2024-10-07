@@ -27,6 +27,8 @@ export type ValueRepository = {
   addValue: ValueAdder;
   getValue: ValueGetter;
   getValues: ValueListGetter;
+  // for debug
+  items: ValueMap;
 };
 
 export const combineValueRepositories = (
@@ -59,6 +61,8 @@ export const createValueRepository = (
     addValue,
     getValue,
     getValues,
+    // for debug
+    items,
   };
 };
 
