@@ -1,6 +1,5 @@
 import ts from 'typescript';
 import {
-  isExportedTypeDeclaration,
   isExportedVariableDeclaration,
   isNamedExportDeclaration,
 } from '../node.type-guards';
@@ -8,6 +7,7 @@ import {
   registerEligibleValueDeclarations,
   registerTypeDeclaration,
 } from './index';
+import { isEligibleBlueprint } from './isEligibleBlueprint';
 import { namedExportElementEvaluator } from './namedExportElementEvaluator';
 import { ParserSet } from './structs';
 
@@ -15,7 +15,7 @@ export const rootNodeWalker =
   (program: ts.Program, { blueprints, values }: ParserSet) =>
   (node: ts.Node): void => {
     // export type Foo = string | number;
-    if (isExportedTypeDeclaration(node)) {
+    if (isEligibleBlueprint(node)) {
       registerTypeDeclaration(
         node,
         program.getTypeChecker(),
