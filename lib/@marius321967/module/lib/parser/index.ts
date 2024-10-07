@@ -1,8 +1,61 @@
 import ts, { TypeReferenceNode } from 'typescript';
-import { BlueprintAdder } from '../repositories/blueprints';
-import { ValueAdder } from '../repositories/values';
+import {
+  BlueprintAdder,
+  combineBlueprintRepositories,
+  createBlueprintRepository,
+} from '../repositories/blueprints';
+import {
+  combineValueRepositories,
+  createValueRepository,
+  ValueAdder,
+} from '../repositories/values';
+import { assertIsPresent } from '../tools';
+import { findProgramEntrypoint } from './findProgramEntrypoint';
 import { isEligibleValue } from './isEligibleValue';
+import { parseFile } from './parseFile';
+import { ParseResult, ParserSet } from './structs';
 import { valueDeclarationRegistrator } from './valueDeclarationRegistrator';
+
+export const parseProgram = (
+  programFiles: string[],
+  entrypointFile: string,
+  program: ts.Program,
+): ParseResult => {
+  const { blueprints, values } = programFiles.reduce(
+    programParseReducer(program),
+    {
+      blueprints: createBlueprintRepository(program.getTypeChecker()),
+      values: createValueRepository(program.getTypeChecker()),
+    },
+  );
+
+  const entrypointExport = findProgramEntrypoint(program, entrypointFile);
+
+  assertIsPresent(
+    entrypointExport,
+    'No entrypoint found. Must be arrow function exported as default.',
+  );
+
+  return {
+    entrypointExport,
+    blueprints,
+    values,
+  };
+};
+
+export const programParseReducer =
+  (program: ts.Program) =>
+  (acc: ParseResult, path: string): ParserSet => {
+    const result = parseFile(path, program);
+
+    return {
+      blueprints: combineBlueprintRepositories(
+        acc.blueprints,
+        result.blueprints,
+      ),
+      values: combineValueRepositories(acc.values, result.values),
+    };
+  };
 
 export const registerTypeDeclaration = (
   node: ts.TypeAliasDeclaration,
@@ -11,9 +64,10 @@ export const registerTypeDeclaration = (
 ): void => {
   const localSymbol = typeChecker.getSymbolAtLocation(node.name);
 
-  if (!localSymbol) {
-    throw new Error('symbol not found');
-  }
+  assertIsPresent(
+    localSymbol,
+    `No symbol found for type declaration ${node.name.getText()}`,
+  );
 
   addBlueprint(localSymbol, node.name.getText(), node.getSourceFile().fileName);
 };
