@@ -3,12 +3,12 @@ import path from 'path';
 import ts from 'typescript';
 import { relativizeImportPath } from '../imports';
 import { ParseResult } from '../parser/structs';
-import { resolveFunctionParams } from './function-params';
 import {
   createEntrypointImport,
   createStartArgumentImports,
   createStatements,
-} from './tools';
+} from './node-builders';
+import { resolveFunctionParams } from './resolveFunctionParams';
 
 export const generateStart = (
   parseResult: ParseResult,

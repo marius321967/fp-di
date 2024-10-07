@@ -5,7 +5,7 @@ import { assertIsPresent } from '../tools';
 import { resolveTypeNodeSymbol } from './symbols';
 
 /** @returns Length same as functionNode.parameters */
-export const resolveFunctionParamTypeSymbols = (
+export const resolveFunctionParamBlueprints = (
   functionNode: ts.SignatureDeclarationBase,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
@@ -38,7 +38,7 @@ export const resolveFunctionParams = (
   getSymbol: BlueprintGetter,
   getValue: ValueGetter,
 ): ValueMapEntry[] => {
-  const blueprints = resolveFunctionParamTypeSymbols(
+  const blueprints = resolveFunctionParamBlueprints(
     functionNode,
     typeChecker,
     getSymbol,
