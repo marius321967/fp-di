@@ -2,32 +2,33 @@ import ts from 'typescript';
 import { Blueprint, BlueprintGetter } from '../repositories/blueprints';
 import { ValueGetter, ValueMapEntry } from '../repositories/values';
 import { assertIsPresent } from '../tools';
-import { resolveTypeNodeSymbol } from './symbols';
+import { resolveValueFromCandidateBlueprints } from './resolveValueFromCandidateBlueprints';
+import { resolveTypeNodeSymbols } from './symbols';
 
-/** @returns Length same as functionNode.parameters */
+/** @returns Length same as functionNode.parameters. Each param may have multiple candidates in case of UnionType. */
 export const resolveFunctionParamBlueprints = (
   functionNode: ts.SignatureDeclarationBase,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): Blueprint[] => {
+): Blueprint[][] => {
   return functionNode.parameters.map((parameter) => {
     const typeNode = parameter.type;
 
-    if (!typeNode || !ts.isTypeReferenceNode(typeNode)) {
-      throw new Error(
-        `Unable to resolve type [${typeNode?.getText()}] for argument [${parameter.name.getText()}]`,
+    assertIsPresent(typeNode, `Parameter [${parameter.getText()}] has no type`);
+
+    const typeSymbols = resolveTypeNodeSymbols(typeNode, typeChecker);
+
+    const blueprints = typeSymbols.map((typeSymbol) => {
+      const blueprint = getBlueprint(typeSymbol);
+      assertIsPresent(
+        blueprint,
+        `Type declaration not found for symbol [${typeSymbol.escapedName}]`,
       );
-    }
 
-    const symbol = resolveTypeNodeSymbol(typeNode, typeChecker);
-    const blueprint = getBlueprint(symbol);
+      return blueprint;
+    });
 
-    assertIsPresent(
-      blueprint,
-      `Type declaration not found for symbol [${symbol.escapedName}]`,
-    );
-
-    return blueprint;
+    return blueprints;
   });
 };
 
@@ -38,18 +39,21 @@ export const resolveFunctionParams = (
   getSymbol: BlueprintGetter,
   getValue: ValueGetter,
 ): ValueMapEntry[] => {
-  const blueprints = resolveFunctionParamBlueprints(
+  const params = resolveFunctionParamBlueprints(
     functionNode,
     typeChecker,
     getSymbol,
   );
 
-  return blueprints.map((blueprint) => {
-    const value = getValue(blueprint.originalSymbol);
+  return params.map((paramCandidates, paramIndex) => {
+    const value = resolveValueFromCandidateBlueprints(
+      paramCandidates,
+      getValue,
+    );
 
     assertIsPresent(
       value,
-      `Value not found for type [${blueprint.originalSymbol.getName()}]`,
+      `Could not resolve value for type [${functionNode.parameters[paramIndex].getText()}]`,
     );
 
     return value;

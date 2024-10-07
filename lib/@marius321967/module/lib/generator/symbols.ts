@@ -2,26 +2,37 @@ import ts from 'typescript';
 import { resolveOriginalSymbol } from '../symbol';
 import { assertIsPresent } from '../tools';
 
-/**
- * TODO: handle union types, return an array
- * @returns Original symbol
- */
-export const resolveTypeNodeSymbol = (
+const extractTypeReferences = (
   typeNode: ts.TypeNode,
-  typeChecker: ts.TypeChecker,
-): ts.Symbol => {
-  if (!ts.isTypeReferenceNode(typeNode)) {
-    throw new Error(
-      `Only TypeReferenceNode supported when resolving symbol from type [${typeNode.getText()}]`,
-    );
+): ts.TypeReferenceNode[] => {
+  if (ts.isTypeReferenceNode(typeNode)) {
+    return [typeNode];
   }
 
-  const symbol = typeChecker.getSymbolAtLocation(typeNode.typeName);
+  if (ts.isUnionTypeNode(typeNode)) {
+    return typeNode.types.filter(ts.isTypeReferenceNode);
+  }
 
-  assertIsPresent(
-    symbol,
-    `Symbol not found by TypeChecker for identifier [${typeNode.getText()}]`,
+  throw new Error(
+    `Only TypeReferenceNode, UnionType supported [${typeNode.getText()}]`,
   );
+};
 
-  return resolveOriginalSymbol(symbol, typeChecker);
+/** @returns Single symbol in case of TypeReferenceNode, multiple possible symbols in case of UnionTypeNode */
+export const resolveTypeNodeSymbols = (
+  typeNode: ts.TypeNode,
+  typeChecker: ts.TypeChecker,
+): ts.Symbol[] => {
+  const typeReferences = extractTypeReferences(typeNode);
+
+  return typeReferences.map((typeReference) => {
+    const symbol = typeChecker.getSymbolAtLocation(typeReference.typeName);
+
+    assertIsPresent(
+      symbol,
+      `Symbol not found by TypeChecker for identifier [${typeNode.getText()}]`,
+    );
+
+    return resolveOriginalSymbol(symbol, typeChecker);
+  });
 };

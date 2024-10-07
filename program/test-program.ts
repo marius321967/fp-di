@@ -1,6 +1,6 @@
 // type User = { name: string; contact: string };
 
-import { MyName, MyPassword } from './my-types';
+import { MyEmail, MyName, MyPassword } from './my-types';
 import './my-values';
 
 // export type Notifier = (destination: string) => Promise<unknown>;
@@ -30,6 +30,6 @@ import './my-values';
 
 // myName2: MyName = 'darius';
 
-export default (pass: MyPassword, name: MyName) => {
-  console.log('the program runs!', pass, name);
+export default (pass: MyPassword, name: MyEmail | MyName) => {
+  console.log('the program runs with values:', pass, name);
 };
