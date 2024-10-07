@@ -11,6 +11,8 @@ export type ValueMapEntry = {
 
 export type ValueMap = ValueMapEntry[];
 
+// TODO: determine where original symbol should be resolve (inside or outside this fn), then if needed
+// forbid TypeAlias flag symbols
 export type ValueAdder = (
   typeSymbol: ts.Symbol,
   valueDeclaration: ts.VariableDeclaration,
