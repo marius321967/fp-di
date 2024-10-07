@@ -8,7 +8,7 @@ export type ParserSet = {
 };
 
 export type ParseResult = ParserSet & {
-  entrypointExport: ts.ExportAssignment;
+  entrypointExport: ProgramEntrypointExport;
 };
 
 export type ProgramEntrypointExport = ts.ExportAssignment & {
