@@ -68,7 +68,7 @@ export const createValueRepository = (
   };
 };
 
-export const buildValueMapEntry = (
+const buildValueMapEntry = (
   typeSymbol: ts.Symbol,
   typeChecker: ts.TypeChecker,
   valueDeclaration: ts.VariableDeclaration,
