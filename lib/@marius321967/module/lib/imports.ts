@@ -1,9 +1,7 @@
 import path from 'path';
 import ts from 'typescript';
 import { createNamedImportClause } from './generator/node-builders';
-import { BlueprintGetter } from './repositories/blueprints';
-import { ValueGetter, ValueMapEntry } from './repositories/values';
-import { assertIsPresent } from './tools';
+import { ValueMapEntry } from './repositories/values';
 
 export type ImportOrder = {
   /** Full abstract path */
@@ -54,42 +52,4 @@ export const importValue = (
     createNamedImportClause(importOrder.moduleExportIdentifier),
     ts.factory.createStringLiteral(importOrder.modulePath),
   );
-};
-
-/**
- * Get information for importing a requested value
- * @param symbol Symbol of value
- */
-const gatherValueImport = (
-  symbol: ts.Symbol,
-  getBlueprint: BlueprintGetter,
-  getValue: ValueGetter,
-): ImportOrder => {
-  const blueprint = getBlueprint(symbol);
-  assertIsPresent(
-    blueprint,
-    `Blueprint not found in registry for symbol [${symbol.escapedName}]`,
-  );
-
-  const value = getValue(symbol);
-  assertIsPresent(
-    value,
-    `Value not found in registry for symbol [${symbol.escapedName}]`,
-  );
-
-  const sourceFile = value.valueDeclaration.getSourceFile();
-  const moduleFilename = sourceFile.fileName;
-
-  // if (!ts.isIdentifier(value)) {
-  //   // TODO future: support values exported like 'export { foo } = x'
-  //   throw new Error(
-  //     `Export binding declarations are not supported [${value.getText()}]`,
-  //   );
-  // }
-
-  // return {
-  //   moduleExportIdentifier: value,
-  //   modulePath: moduleFilename,
-  // };
-  return {} as any;
 };
