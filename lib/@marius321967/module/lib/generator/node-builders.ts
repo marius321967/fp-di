@@ -1,20 +1,20 @@
+import path from 'path';
 import ts from 'typescript';
 import { importValue } from '../imports';
 import { ValueMapEntry } from '../repositories/values';
-import { filterNotNull } from '../tools';
 
-export const makeDefaultImportClause = (
-  identifier: ts.Identifier,
-): ts.ImportClause =>
-  ts.factory.createImportClause(false, identifier, undefined);
+const isImportNeeded = (value: ValueMapEntry, importTo: string): boolean =>
+  path.relative(value.filename, importTo) !== '';
 
 export const createStartArgumentImports = (
   startArguments: ValueMapEntry[],
   startFilename: string,
 ): ts.ImportDeclaration[] => {
   return startArguments
-    .map((argumentIdentifier) => importValue(argumentIdentifier, startFilename))
-    .filter(filterNotNull);
+    .filter((value) => isImportNeeded(value, startFilename))
+    .map((argumentIdentifier) =>
+      importValue(argumentIdentifier, startFilename),
+    );
 };
 
 export const createEntrypointImport = (
