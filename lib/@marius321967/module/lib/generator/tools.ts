@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import { importValue } from '../imports';
 import { ValueMapEntry } from '../repositories/values';
+import { filterNotNull } from '../tools';
 
 export const makeDefaultImportClause = (
   identifier: ts.Identifier,
@@ -13,7 +14,7 @@ export const createStartArgumentImports = (
 ): ts.ImportDeclaration[] => {
   return startArguments
     .map((argumentIdentifier) => importValue(argumentIdentifier, startFilename))
-    .filter(importDeclaration => importDeclaration !== null);
+    .filter(filterNotNull);
 };
 
 export const createEntrypointImport = (

@@ -9,3 +9,5 @@ export const getParsedConfig = (
     ts.sys,
     basePath,
   );
+
+export const filterNotNull = <T>(value: T | null): value is T => value !== null;
