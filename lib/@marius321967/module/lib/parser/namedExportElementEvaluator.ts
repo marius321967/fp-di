@@ -23,7 +23,7 @@ export const namedExportElementEvaluator =
       ts.isVariableDeclaration(declarationNode) &&
       isEligibleValue(declarationNode)
     ) {
-      registerValueDeclaration(declarationNode, values.addValue, typeChecker);
+      registerValueDeclaration(declarationNode, typeChecker, values.addValue);
     }
 
     if (ts.isTypeAliasDeclaration(declarationNode)) {

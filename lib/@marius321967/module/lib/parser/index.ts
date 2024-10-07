@@ -84,6 +84,6 @@ export const registerEligibleValueDeclarations = (
 
 export const registerValueDeclaration = (
   node: ts.VariableDeclaration & { type: TypeReferenceNode },
-  addValue: ValueAdder,
   typeChecker: ts.TypeChecker,
+  addValue: ValueAdder,
 ): void => valueDeclarationRegistrator(addValue, typeChecker)(node);
