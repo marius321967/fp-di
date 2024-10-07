@@ -18,7 +18,6 @@ import './my-values';
 // - function type must be exported
 // - builder must identify return type (which is type above)
 // - builder must be exported
-// - there must not be competing candidates
 
 // for var to be injected:
 // - type must be exported
