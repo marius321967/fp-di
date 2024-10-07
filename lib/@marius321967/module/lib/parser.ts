@@ -29,6 +29,12 @@ export const findProgramEntrypoint = (
 
   source.forEachChild((node) => {
     if (isEntrypointExport(node)) {
+      if (entrypointDeclaration) {
+        throw new Error(
+          `Multiple eligible program entrypoints found. First entrypoint: [${entrypointDeclaration.getText()}], current entrypoint: [${node.getText()}]`,
+        );
+      }
+
       entrypointDeclaration = node;
     }
   });
