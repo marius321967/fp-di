@@ -41,4 +41,7 @@ export const rootNodeWalker =
         }),
       );
     }
+
+    // export default x;
+    // TODO: handle default exports
   };
