@@ -84,7 +84,7 @@ export const buildValueMapEntry = (
     typeSymbol: originalTypeSymbol,
     valueDeclaration,
     filename: valueDeclaration.getSourceFile().fileName,
-    exportedAs: originalTypeSymbol.name,
+    exportedAs: exportIdentifier.getText(),
     exportIdentifier,
   };
 };
