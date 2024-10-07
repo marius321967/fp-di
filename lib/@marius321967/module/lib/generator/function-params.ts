@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { BlueprintGetter } from '../repositories/blueprints';
+import { Blueprint, BlueprintGetter } from '../repositories/blueprints';
 import { ValueGetter, ValueMapEntry } from '../repositories/values';
 import { resolveTypeNodeSymbol } from './symbols';
 
@@ -8,7 +8,7 @@ export const resolveFunctionParamTypeSymbols = (
   functionNode: ts.SignatureDeclarationBase,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): ts.Symbol[] => {
+): Blueprint[] => {
   return functionNode.parameters.map((parameter) => {
     const typeNode = parameter.type;
 
@@ -27,29 +27,32 @@ export const resolveFunctionParamTypeSymbols = (
       );
     }
 
-    return blueprint.originalSymbol;
+    return blueprint;
   });
 };
 
+/** @returns Resolved values to fill in for params */
 export const resolveFunctionParams = (
   functionNode: ts.SignatureDeclarationBase,
   typeChecker: ts.TypeChecker,
   getSymbol: BlueprintGetter,
   getValue: ValueGetter,
 ): ValueMapEntry[] => {
-  const paramTypeSymbols = resolveFunctionParamTypeSymbols(
+  const blueprints = resolveFunctionParamTypeSymbols(
     functionNode,
     typeChecker,
     getSymbol,
   );
 
-  return paramTypeSymbols.map((paramType) => {
-    const valueDeclaration = getValue(paramType);
+  return blueprints.map((blueprint) => {
+    const value = getValue(blueprint.originalSymbol);
 
-    if (!valueDeclaration) {
-      throw new Error(`Value not found for type [${paramType.name}]`);
+    if (!value) {
+      throw new Error(
+        `Value not found for type [${blueprint.originalSymbol.getName()}]`,
+      );
     }
 
-    return valueDeclaration;
+    return value;
   });
 };
