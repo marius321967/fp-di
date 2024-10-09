@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { generateFills } from './lib/generator/fills';
 import { generateStart } from './lib/generator/generateStart';
 import { parseProgram } from './lib/parser';
 import { getParsedConfig } from './lib/tools';
@@ -29,5 +30,5 @@ export const transform = (programDir: string): void => {
     typeChecker: program.getTypeChecker(),
   });
 
-  // console.log(context);
+  generateFills(parseResult, program);
 };
