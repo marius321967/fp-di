@@ -10,6 +10,33 @@ export const getParsedConfig = (
     basePath,
   );
 
+export const prepareProgram = (
+  programDir: string,
+): {
+  program: ts.Program;
+  programFiles: string[];
+  programEntrypointPath: string;
+} => {
+  const config = getParsedConfig(programDir, programDir + '/tsconfig.json');
+
+  const programFiles = config.fileNames;
+
+  const programEntrypointPath = programDir + '/test-program.ts';
+  const program = ts.createProgram([programEntrypointPath], config.options);
+
+  const diagnostics = ts.getPreEmitDiagnostics(program);
+
+  if (diagnostics.length > 0) {
+    throw new Error('Program has syntax errors');
+  }
+
+  return {
+    program,
+    programFiles,
+    programEntrypointPath,
+  };
+};
+
 export const filterNotNull = <T>(value: T | null): value is T => value !== null;
 
 export function assertIsPresent<T>(
