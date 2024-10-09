@@ -19,7 +19,9 @@ export const prepareProgram = (
 } => {
   const config = getParsedConfig(programDir, programDir + '/tsconfig.json');
 
-  const programFiles = config.fileNames;
+  const programFiles = config.fileNames.filter(
+    (path) => !path.endsWith('.fill.ts'),
+  );
 
   const programEntrypointPath = programDir + '/test-program.ts';
   const program = ts.createProgram([programEntrypointPath], config.options);

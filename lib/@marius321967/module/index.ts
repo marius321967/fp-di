@@ -19,5 +19,5 @@ export const transform = (programDir: string): void => {
     typeChecker: program.getTypeChecker(),
   });
 
-  generateFills(parseResult, program);
+  generateFills(parseResult, program, programFiles);
 };
