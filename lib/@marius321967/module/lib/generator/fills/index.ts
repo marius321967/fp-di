@@ -2,6 +2,7 @@ import ts from 'typescript';
 import { ParseResult } from '../../parser/structs';
 import { assertIsPresent } from '../../tools';
 import { isEligibleFillable } from './isEligibleFillable';
+import { processEligibleFillable } from './processEligibleFillable';
 
 export const generateFills = (
   parseResult: ParseResult,
@@ -17,12 +18,12 @@ export const generateFills = (
 export const programFillReducer =
   (parseResult: ParseResult, program: ts.Program) =>
   (acc: number, path: string): number => {
-    const result = processFileFill(path, program, parseResult);
+    const result = processFileFillables(path, program, parseResult);
 
     return acc;
   };
 
-export const processFileFill = (
+export const processFileFillables = (
   path: string,
   program: ts.Program,
   parseResult: ParseResult,
@@ -35,17 +36,33 @@ export const processFileFill = (
       return;
     }
 
-    node.declarationList.declarations
-      .filter((declaration) => {
+    const filledFunctions = node.declarationList.declarations
+      .filter((declaration) =>
         isEligibleFillable(
           declaration,
           program.getTypeChecker(),
           parseResult.blueprints.getBlueprint,
+        ),
+      )
+      .map((declaration) => ({
+        ...processEligibleFillable(
+          declaration.initializer as any,
+          program.getTypeChecker(),
+          parseResult.values.getValue,
+        ),
+        name: declaration.name,
+      }));
+
+    filledFunctions.forEach((filledFunction) => {
+      console.log(
+        `Fillable function: ${filledFunction.name.getText()}; params:`,
+      );
+      filledFunction.parameterValues.forEach((value) => {
+        console.log(
+          `  ${value.filename}:${value.exportedAs}: ${value.typeSymbol.name}`,
         );
-      })
-      .forEach((declaration) => {
-        console.log('Eligible fillable', declaration.getText());
       });
+    });
 
     // if node's parameters are all found among Blueprints
     // if node's parameters have candidates among Values

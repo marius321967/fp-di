@@ -7,7 +7,9 @@ export const isEligibleFillable = (
   declarationNode: ts.VariableDeclaration,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): declarationNode is ts.VariableDeclaration & {initializer: ts.ArrowFunction} => {
+): declarationNode is Omit<ts.VariableDeclaration, 'initializer'> & {
+  initializer: ts.ArrowFunction;
+} => {
   if (
     !declarationNode.initializer ||
     !ts.isArrowFunction(declarationNode.initializer)
@@ -17,7 +19,7 @@ export const isEligibleFillable = (
 
   const functionNode = declarationNode.initializer;
 
-  return !functionNode.parameters.every(
+  return functionNode.parameters.every(
     ({ type }) =>
       !!type && hasMatchingBlueprint(type, typeChecker, getBlueprint),
   );
