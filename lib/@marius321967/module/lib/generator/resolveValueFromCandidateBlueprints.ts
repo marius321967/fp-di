@@ -1,17 +1,12 @@
 import { Blueprint } from '../repositories/blueprints';
 import { ValueGetter, ValueMapEntry } from '../repositories/values';
+import { resolveValueFromCandidateSymbols } from './resolveValueFromCandidateSymbols';
 
 export const resolveValueFromCandidateBlueprints = (
   blueprints: Blueprint[],
   getValue: ValueGetter,
-): ValueMapEntry | null => {
-  for (const blueprint of blueprints) {
-    const value = getValue(blueprint.originalSymbol);
-
-    if (value) {
-      return value;
-    }
-  }
-
-  return null;
-};
+): ValueMapEntry | null =>
+  resolveValueFromCandidateSymbols(
+    blueprints.map(({ originalSymbol }) => originalSymbol),
+    getValue,
+  );
