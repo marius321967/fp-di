@@ -49,13 +49,3 @@ export function assertIsPresent<T>(
     throw new Error(message);
   }
 }
-
-export const symbolAtLocationGetter =
-  (typeChecker: ts.TypeChecker) =>
-  (node: ts.Node): ts.Symbol => {
-    const symbol = typeChecker.getSymbolAtLocation(node);
-
-    assertIsPresent(symbol, `Symbol not found for node [${node.getText()}]`);
-
-    return symbol;
-  };

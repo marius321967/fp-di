@@ -1,6 +1,6 @@
 import ts from 'typescript';
+import { getSymbolAtLocation } from '../helpers/getSymbolAtLocation';
 import { resolveOriginalSymbol } from '../symbol';
-import { assertIsPresent } from '../tools';
 
 const extractTypeReferences = (
   typeNode: ts.TypeNode,
@@ -26,12 +26,7 @@ export const resolveTypeNodeSymbols = (
   const typeReferences = extractTypeReferences(typeNode);
 
   return typeReferences.map((typeReference) => {
-    const symbol = typeChecker.getSymbolAtLocation(typeReference.typeName);
-
-    assertIsPresent(
-      symbol,
-      `Symbol not found by TypeChecker for identifier [${typeNode.getText()}]`,
-    );
+    const symbol = getSymbolAtLocation(typeReference.typeName, typeChecker);
 
     return resolveOriginalSymbol(symbol, typeChecker);
   });

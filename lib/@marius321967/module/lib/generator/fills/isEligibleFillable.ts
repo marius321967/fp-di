@@ -1,6 +1,6 @@
 import ts, { TypeNode } from 'typescript';
+import { getSymbolAtLocation } from '../../helpers/getSymbolAtLocation';
 import { BlueprintGetter } from '../../repositories/blueprints';
-import { assertIsPresent } from '../../tools';
 
 /** TODO handle functions */
 export const isEligibleFillable = (
@@ -31,8 +31,7 @@ const hasMatchingBlueprint = (
   getBlueprint: BlueprintGetter,
 ): boolean => {
   if (ts.isTypeReferenceNode(typeNode)) {
-    const symbol = typeChecker.getSymbolAtLocation(typeNode.typeName);
-    assertIsPresent(symbol, `No symbol found for type [${typeNode.getText()}]`);
+    const symbol = getSymbolAtLocation(typeNode.typeName, typeChecker);
 
     const blueprint = getBlueprint(symbol);
 

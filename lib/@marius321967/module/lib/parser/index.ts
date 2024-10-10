@@ -1,4 +1,5 @@
 import ts, { TypeReferenceNode } from 'typescript';
+import { getSymbolAtLocation } from '../helpers/getSymbolAtLocation';
 import {
   BlueprintAdder,
   combineBlueprintRepositories,
@@ -62,14 +63,11 @@ export const registerTypeDeclaration = (
   typeChecker: ts.TypeChecker,
   addBlueprint: BlueprintAdder,
 ): void => {
-  const localSymbol = typeChecker.getSymbolAtLocation(node.name);
-
-  assertIsPresent(
-    localSymbol,
-    `No symbol found for type declaration ${node.name.getText()}`,
+  addBlueprint(
+    getSymbolAtLocation(node.name, typeChecker),
+    node.name.getText(),
+    node.getSourceFile().fileName,
   );
-
-  addBlueprint(localSymbol, node.name.getText(), node.getSourceFile().fileName);
 };
 
 export const registerEligibleValueDeclarations = (

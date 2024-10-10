@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { getSymbolAtLocation } from '../helpers/getSymbolAtLocation';
 import { resolveOriginalSymbol } from '../symbol';
 import { assertIsPresent } from '../tools';
 
@@ -6,13 +7,9 @@ export const findDeclarationOfExportedItem = (
   node: ts.ExportSpecifier,
   typeChecker: ts.TypeChecker,
 ): ts.Declaration => {
-  const symbol = typeChecker.getSymbolAtLocation(
+  const symbol = getSymbolAtLocation(
     node.propertyName || node.name,
-  );
-
-  assertIsPresent(
-    symbol,
-    `Symbol not found for export specifier [${node.name}]`,
+    typeChecker,
   );
 
   const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
