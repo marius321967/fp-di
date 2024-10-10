@@ -1,7 +1,7 @@
 import ts from 'typescript';
+import { assertIsPresent } from '../../helpers/assert';
 import { symbolAtLocationGetter } from '../../helpers/symbols';
 import { ValueGetter, ValueMapEntry } from '../../repositories/values';
-import { assertIsPresent } from '../../tools';
 import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';
 import { toAcceptedTypes } from './toAcceptedTypes';
 

@@ -1,6 +1,6 @@
 import ts from 'typescript';
+import { assertIsPresent } from '../../helpers/assert';
 import { ParseResult } from '../../parser/structs';
-import { assertIsPresent } from '../../tools';
 import { isEligibleFillable } from './isEligibleFillable';
 import { processEligibleFillable } from './processEligibleFillable';
 

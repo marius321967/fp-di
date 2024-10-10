@@ -1,6 +1,6 @@
 import ts from 'typescript';
+import { assertIsPresent } from '../helpers/assert';
 import { isEntrypointExport } from '../node.type-guards';
-import { assertIsPresent } from '../tools';
 import { ProgramEntrypointExport } from './structs';
 
 export const findProgramEntrypoint = (

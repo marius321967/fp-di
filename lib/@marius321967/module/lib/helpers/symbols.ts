@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { assertIsPresent } from '../tools';
+import { assertIsPresent } from './assert';
 
 /** Throws error if symbol is null */
 export const getSymbolAtLocation = (

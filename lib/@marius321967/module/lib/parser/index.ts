@@ -1,4 +1,5 @@
 import ts, { TypeReferenceNode } from 'typescript';
+import { assertIsPresent } from '../helpers/assert';
 import { getSymbolAtLocation } from '../helpers/symbols';
 import {
   BlueprintAdder,
@@ -10,7 +11,6 @@ import {
   createValueRepository,
   ValueAdder,
 } from '../repositories/values';
-import { assertIsPresent } from '../tools';
 import { findProgramEntrypoint } from './findProgramEntrypoint';
 import { isEligibleValue } from './isEligibleValue';
 import { parseFile } from './parseFile';

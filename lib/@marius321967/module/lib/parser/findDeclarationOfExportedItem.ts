@@ -1,6 +1,6 @@
 import ts from 'typescript';
+import { assertIsPresent } from '../helpers/assert';
 import { getSymbolAtLocation, resolveOriginalSymbol } from '../helpers/symbols';
-import { assertIsPresent } from '../tools';
 
 export const findDeclarationOfExportedItem = (
   node: ts.ExportSpecifier,

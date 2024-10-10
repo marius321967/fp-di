@@ -1,7 +1,7 @@
 import ts from 'typescript';
+import { assertIsPresent } from '../helpers/assert';
 import { Blueprint, BlueprintGetter } from '../repositories/blueprints';
 import { ValueGetter, ValueMapEntry } from '../repositories/values';
-import { assertIsPresent } from '../tools';
 import { resolveValueFromCandidateBlueprints } from './resolveValueFromCandidateBlueprints';
 import { resolveTypeNodeSymbols } from './symbols';
 

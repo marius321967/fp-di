@@ -1,7 +1,7 @@
 import ts from 'typescript';
+import { assertIsPresent } from '../helpers/assert';
 import { createBlueprintRepository } from '../repositories/blueprints';
 import { createValueRepository } from '../repositories/values';
-import { assertIsPresent } from '../tools';
 import { rootNodeWalker } from './rootNodeWalker';
 import { ParserSet } from './structs';
 
