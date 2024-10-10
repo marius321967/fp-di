@@ -1,5 +1,5 @@
 import ts, { TypeNode } from 'typescript';
-import { getSymbolAtLocation } from '../../helpers/getSymbolAtLocation';
+import { getSymbolAtLocation } from '../../helpers/symbols';
 import { BlueprintGetter } from '../../repositories/blueprints';
 
 /** TODO handle functions */

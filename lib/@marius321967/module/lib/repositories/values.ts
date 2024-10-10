@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { resolveOriginalSymbol } from '../symbol';
+import { resolveOriginalSymbol } from '../helpers/symbols';
 
 export type ValueMapEntry = {
   typeSymbol: ts.Symbol;

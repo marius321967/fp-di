@@ -1,6 +1,5 @@
 import ts from 'typescript';
-import { getSymbolAtLocation } from '../helpers/getSymbolAtLocation';
-import { resolveOriginalSymbol } from '../symbol';
+import { getSymbolAtLocation, resolveOriginalSymbol } from '../helpers/symbols';
 import { assertIsPresent } from '../tools';
 
 export const findDeclarationOfExportedItem = (

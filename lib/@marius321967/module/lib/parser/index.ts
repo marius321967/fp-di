@@ -1,5 +1,5 @@
 import ts, { TypeReferenceNode } from 'typescript';
-import { getSymbolAtLocation } from '../helpers/getSymbolAtLocation';
+import { getSymbolAtLocation } from '../helpers/symbols';
 import {
   BlueprintAdder,
   combineBlueprintRepositories,

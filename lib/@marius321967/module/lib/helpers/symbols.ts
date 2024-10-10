@@ -18,3 +18,11 @@ export const symbolAtLocationGetter =
   (typeChecker: ts.TypeChecker) =>
   (node: ts.Node): ts.Symbol =>
     getSymbolAtLocation(node, typeChecker);
+
+export const resolveOriginalSymbol = (
+  localSymbol: ts.Symbol,
+  typeChecker: ts.TypeChecker,
+): ts.Symbol =>
+  (localSymbol.flags & ts.SymbolFlags.Alias) !== 0
+    ? typeChecker.getAliasedSymbol(localSymbol)
+    : localSymbol;

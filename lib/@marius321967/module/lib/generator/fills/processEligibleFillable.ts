@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { symbolAtLocationGetter } from '../../helpers/getSymbolAtLocation';
+import { symbolAtLocationGetter } from '../../helpers/symbols';
 import { ValueGetter, ValueMapEntry } from '../../repositories/values';
 import { assertIsPresent } from '../../tools';
 import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';

@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { getSymbolAtLocation } from '../helpers/getSymbolAtLocation';
+import { getSymbolAtLocation } from '../helpers/symbols';
 import { ValueAdder } from '../repositories/values';
 
 export const valueDeclarationRegistrator =
