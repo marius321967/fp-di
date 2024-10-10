@@ -38,5 +38,3 @@ export const prepareProgram = (
     programEntrypointPath,
   };
 };
-
-export const filterNotNull = <T>(value: T | null): value is T => value !== null;
