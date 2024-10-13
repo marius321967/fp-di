@@ -3,12 +3,8 @@ import { assertIsPresent } from '../../helpers/assert';
 import { symbolAtLocationGetter } from '../../helpers/symbols';
 import { ValueGetter, ValueMapEntry } from '../../repositories/values';
 import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';
+import { FilledFunction } from './structs';
 import { toAcceptedTypes } from './toAcceptedTypes';
-
-export type FilledFunction = {
-  functionNode: ts.ArrowFunction;
-  parameterValues: ValueMapEntry[];
-};
 
 export const processEligibleFillable = (
   functionNode: ts.ArrowFunction,
