@@ -1,6 +1,6 @@
 import ts, { TypeNode } from 'typescript';
-import { getSymbolAtLocation } from '../../helpers/symbols';
 import { BlueprintGetter } from '../../repositories/blueprints';
+import { canExtractAcceptedTypes, toAcceptedTypes } from './toAcceptedTypes';
 
 /** TODO handle functions */
 export const isEligibleFillable = (
@@ -30,19 +30,13 @@ const hasMatchingBlueprint = (
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
 ): boolean => {
-  if (ts.isTypeReferenceNode(typeNode)) {
-    const symbol = getSymbolAtLocation(typeNode.typeName, typeChecker);
-
-    const blueprint = getBlueprint(symbol);
-
-    return !!blueprint;
+  if (!canExtractAcceptedTypes(typeNode)) {
+    return false;
   }
 
-  if (ts.isUnionTypeNode(typeNode)) {
-    return typeNode.types.some((type) =>
-      hasMatchingBlueprint(type, typeChecker, getBlueprint),
-    );
-  }
+  const typeReferences = toAcceptedTypes(typeNode);
 
-  return false;
+  return typeReferences.some((type) =>
+    hasMatchingBlueprint(type, typeChecker, getBlueprint),
+  );
 };
