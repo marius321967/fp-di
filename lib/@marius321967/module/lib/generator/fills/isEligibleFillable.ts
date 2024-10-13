@@ -1,4 +1,5 @@
 import ts, { TypeNode } from 'typescript';
+import { getSymbolAtLocation } from '../../helpers/symbols';
 import { BlueprintGetter } from '../../repositories/blueprints';
 import { canExtractAcceptedTypes, toAcceptedTypes } from './toAcceptedTypes';
 
@@ -34,9 +35,11 @@ const hasMatchingBlueprint = (
     return false;
   }
 
-  const typeReferences = toAcceptedTypes(typeNode);
+  return toAcceptedTypes(typeNode).some((typeReferenceNod) => {
+    const symbol = getSymbolAtLocation(typeReferenceNod.typeName, typeChecker);
 
-  return typeReferences.some((type) =>
-    hasMatchingBlueprint(type, typeChecker, getBlueprint),
-  );
+    const blueprint = getBlueprint(symbol);
+
+    return !!blueprint;
+  });
 };
