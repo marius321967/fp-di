@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { ParseResult } from '../../parser/structs';
+import { generateFillSyntax } from './generateFillSyntax';
 import { isEligibleFillable } from './isEligibleFillable';
 import { processEligibleFillable } from './processEligibleFillable';
 
@@ -53,6 +54,10 @@ export const processFileFillables = (
         name: declaration.name,
       }));
 
+      filledFunctions.forEach((filledFunction) => {
+        generateFillSyntax()
+      })
+
     filledFunctions.forEach((filledFunction) => {
       console.log(
         `Fillable function: ${filledFunction.name.getText()}; params:`,
@@ -64,8 +69,6 @@ export const processFileFillables = (
       });
     });
 
-    // if node's parameters are all found among Blueprints
-    // if node's parameters have candidates among Values
     // then make a fill package with: imports of needed Values, import of function being filled, export of filled function [eg: export notifyUser(emailNotifier)]
     // save it to file named `<>.fill.ts`
   });

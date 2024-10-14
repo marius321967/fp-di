@@ -3,7 +3,7 @@ import { getSymbolAtLocation } from '../../helpers/symbols';
 import { BlueprintGetter } from '../../repositories/blueprints';
 import { canExtractAcceptedTypes, toAcceptedTypes } from './toAcceptedTypes';
 
-/** TODO handle functions */
+/** TODO handle function x() {} */
 export const isEligibleFillable = (
   declarationNode: ts.VariableDeclaration,
   typeChecker: ts.TypeChecker,
