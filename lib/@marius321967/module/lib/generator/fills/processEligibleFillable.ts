@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { symbolAtLocationGetter } from '../../helpers/symbols';
-import { ValueGetter, ValueMapEntry } from '../../repositories/values';
+import { Value, ValueGetter } from '../../repositories/values';
 import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';
 import { FilledFunction } from './structs';
 import { toAcceptedTypes } from './toAcceptedTypes';
@@ -27,7 +27,7 @@ export const resolveFunctionParameterValues = (
   functionNode: ts.ArrowFunction,
   typeChecker: ts.TypeChecker,
   getValue: ValueGetter,
-): ValueMapEntry[] =>
+): Value[] =>
   functionNode.parameters
     .map((parameter) => {
       const parameterType = parameter.type;

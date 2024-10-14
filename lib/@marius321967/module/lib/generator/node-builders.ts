@@ -1,13 +1,13 @@
 import path from 'path';
 import ts from 'typescript';
 import { importValue } from '../imports';
-import { ValueMapEntry } from '../repositories/values';
+import { Value } from '../repositories/values';
 
-const isImportNeeded = (value: ValueMapEntry, importTo: string): boolean =>
+const isImportNeeded = (value: Value, importTo: string): boolean =>
   path.relative(value.filename, importTo) !== '';
 
 export const createStartArgumentImports = (
-  startArguments: ValueMapEntry[],
+  startArguments: Value[],
   startFilename: string,
 ): ts.ImportDeclaration[] => {
   return startArguments

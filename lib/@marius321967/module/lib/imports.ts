@@ -1,7 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
-import { createNamedImportClause } from './generator/node-builders';
-import { ValueMapEntry } from './repositories/values';
+import { Value } from './repositories/values';
 
 export type ImportOrder = {
   /** Full abstract path */
@@ -39,7 +38,7 @@ export const gatherIdentifierImport = (
 };
 
 export const importValue = (
-  value: ValueMapEntry,
+  value: Value,
   importTo: string,
 ): ts.ImportDeclaration => {
   const importOrder = relativizeImportOrder(

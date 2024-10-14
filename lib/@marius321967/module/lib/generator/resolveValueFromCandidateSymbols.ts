@@ -1,10 +1,10 @@
 import ts from 'typescript';
-import { ValueGetter, ValueMapEntry } from '../repositories/values';
+import { Value, ValueGetter } from '../repositories/values';
 
 export const resolveValueFromCandidateSymbols = (
   symbols: ts.Symbol[],
   getValue: ValueGetter,
-): ValueMapEntry | null => {
+): Value | null => {
   for (const symbol of symbols) {
     const value = getValue(symbol);
 

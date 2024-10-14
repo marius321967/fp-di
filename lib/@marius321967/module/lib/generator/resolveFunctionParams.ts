@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import { assertIsPresent } from '../helpers/assert';
 import { Blueprint, BlueprintGetter } from '../repositories/blueprints';
-import { ValueGetter, ValueMapEntry } from '../repositories/values';
+import { Value, ValueGetter } from '../repositories/values';
 import { resolveValueFromCandidateBlueprints } from './resolveValueFromCandidateBlueprints';
 import { resolveTypeNodeSymbols } from './symbols';
 
@@ -38,7 +38,7 @@ export const resolveFunctionParams = (
   typeChecker: ts.TypeChecker,
   getSymbol: BlueprintGetter,
   getValue: ValueGetter,
-): ValueMapEntry[] => {
+): Value[] => {
   const params = resolveFunctionParamBlueprints(
     functionNode,
     typeChecker,

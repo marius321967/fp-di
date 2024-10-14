@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import { resolveOriginalSymbol } from '../helpers/symbols';
 
-export type ValueMapEntry = {
+export type Value = {
   typeSymbol: ts.Symbol;
   valueDeclaration: ts.VariableDeclaration;
   exportIdentifier: ts.Identifier;
@@ -9,7 +9,7 @@ export type ValueMapEntry = {
   filename: string;
 };
 
-export type ValueMap = ValueMapEntry[];
+export type ValueMap = Value[];
 
 // TODO: determine where original symbol should be resolve (inside or outside this fn), then if needed
 // forbid TypeAlias flag symbols
@@ -22,7 +22,7 @@ export type ValueAdder = (
  * Resolve value by given type
  * @param typeSymbol Does not have to be original, can be alias
  */
-export type ValueGetter = (typeSymbol: ts.Symbol) => ValueMapEntry | null;
+export type ValueGetter = (typeSymbol: ts.Symbol) => Value | null;
 export type ValueListGetter = () => ValueMap;
 
 export type ValueRepository = {
@@ -72,7 +72,7 @@ const buildValueMapEntry = (
   typeSymbol: ts.Symbol,
   typeChecker: ts.TypeChecker,
   valueDeclaration: ts.VariableDeclaration,
-): ValueMapEntry => {
+): Value => {
   const originalTypeSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
   const exportIdentifier = valueDeclaration.name;
 
