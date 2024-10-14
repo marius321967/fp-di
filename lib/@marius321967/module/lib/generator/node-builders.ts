@@ -56,3 +56,13 @@ export const createNamedImportClause = (
       ts.factory.createImportSpecifier(false, undefined, identifier),
     ]),
   );
+
+export const createImportDeclaration = (
+  clause: ts.ImportClause,
+  modulePath: string,
+): ts.ImportDeclaration =>
+  ts.factory.createImportDeclaration(
+    undefined,
+    clause,
+    ts.factory.createStringLiteral(modulePath),
+  );

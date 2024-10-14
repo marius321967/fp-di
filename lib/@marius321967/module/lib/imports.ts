@@ -1,5 +1,9 @@
 import path from 'path';
 import ts from 'typescript';
+import {
+  createImportDeclaration,
+  createNamedImportClause,
+} from './generator/node-builders';
 import { Value } from './repositories/values';
 
 export type ImportOrder = {
@@ -46,9 +50,8 @@ export const importValue = (
     importTo,
   );
 
-  return ts.factory.createImportDeclaration(
-    undefined,
+  return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),
-    ts.factory.createStringLiteral(importOrder.modulePath),
+    importOrder.modulePath,
   );
 };
