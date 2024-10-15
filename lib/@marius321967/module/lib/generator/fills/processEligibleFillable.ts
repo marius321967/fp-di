@@ -4,13 +4,12 @@ import { symbolAtLocationGetter } from '../../helpers/symbols';
 import { Value, ValueGetter } from '../../repositories/values';
 import { FunctionLikeNode } from '../../types';
 import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';
+import { EligibleFillable } from './isEligibleFillable';
 import { FilledFunction } from './structs';
 import { toAcceptedTypes } from './toAcceptedTypes';
 
 export const processEligibleFillable = (
-  declarationNode: Omit<ts.VariableDeclaration, 'initializer'> & {
-    initializer: FunctionLikeNode;
-  },
+  declarationNode: EligibleFillable,
   typeChecker: ts.TypeChecker,
   getValue: ValueGetter,
 ): FilledFunction => {
