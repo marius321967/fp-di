@@ -59,21 +59,10 @@ export const processFileFillables = (
 
     filledFunctions
       .map((filledFunction) => generateFillSyntax(filledFunction, fillPath))
-      .forEach((fillSyntax) => {
-        console.log(`[${fillPath}]:`);
-
-        const printer = ts.createPrinter();
-        const sourceText = printer.printList(
-          ts.ListFormat.MultiLine,
-          ts.factory.createNodeArray([
-            ...fillSyntax.importNodes,
-            fillSyntax.functionExportNode,
-          ]),
-          ts.createSourceFile('', '', ts.ScriptTarget.Latest),
-        );
-
-        console.log(sourceText);
-      });
+      .map((fillSyntax) =>
+        printFile([...fillSyntax.importNodes, fillSyntax.functionExportNode]),
+      )
+      .forEach((sourceText) => fs.writeFileSync(fillPath, sourceText));
   });
 
   return parseResult;
