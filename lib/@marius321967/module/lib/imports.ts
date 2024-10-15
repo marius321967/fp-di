@@ -1,5 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
+import { FilledFunction } from './generator/fills/structs';
 import {
   createImportDeclaration,
   createNamedImportClause,
@@ -12,13 +13,16 @@ export type ImportOrder = {
   moduleExportIdentifier: ts.Identifier;
 };
 
-export const relativizeImportOrder = (
-  importOrder: ImportOrder,
+export const orderImportTo = (
+  identifier: ts.Identifier,
   importTo: string,
 ): ImportOrder => {
   return {
-    ...importOrder,
-    modulePath: relativizeImportPath(importOrder.modulePath, importTo),
+    moduleExportIdentifier: identifier,
+    modulePath: relativizeImportPath(
+      identifier.getSourceFile().fileName,
+      importTo,
+    ),
   };
 };
 
@@ -28,27 +32,23 @@ export const relativizeImportPath = (
 ): string | '' =>
   './' + path.relative(path.dirname(importTo), importFrom).replace(/\.ts$/, '');
 
-export const gatherIdentifierImport = (
-  identifier: ts.Identifier,
-): ImportOrder => {
-  const sourceFile = identifier.getSourceFile();
-  // const modulePath = path.basename(sourceFile.fileName, '.ts');
-  const modulePath = sourceFile.fileName;
-
-  return {
-    moduleExportIdentifier: identifier,
-    modulePath,
-  };
-};
-
 export const importValue = (
   value: Value,
   importTo: string,
 ): ts.ImportDeclaration => {
-  const importOrder = relativizeImportOrder(
-    gatherIdentifierImport(value.exportIdentifier),
-    importTo,
+  const importOrder = orderImportTo(value.exportIdentifier, importTo);
+
+  return createImportDeclaration(
+    createNamedImportClause(importOrder.moduleExportIdentifier),
+    importOrder.modulePath,
   );
+};
+
+export const importFilledFunction = (
+  fill: FilledFunction,
+  importTo: string,
+): ts.ImportDeclaration => {
+  const importOrder = orderImportTo(fill.exportIdentifier, importTo);
 
   return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),
