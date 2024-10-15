@@ -74,17 +74,6 @@ export const processFileFillables = (
 
         console.log(sourceText);
       });
-
-    filledFunctions.forEach((filledFunction) => {
-      console.log(
-        `Fillable function: ${filledFunction.name.getText()}; params:`,
-      );
-      filledFunction.parameterValues.forEach((value) => {
-        console.log(
-          `  ${value.filename}:${value.exportedAs}: ${value.typeSymbol.name}`,
-        );
-      });
-    });
   });
 
   return parseResult;
