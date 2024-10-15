@@ -2,6 +2,7 @@ import path from 'path';
 import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { ParseResult } from '../../parser/structs';
+import { generateFillModulePath } from './generateFillModulePath';
 import { generateFillSyntax } from './generateFillSyntax';
 import { eligibleFillableFilter } from './isEligibleFillable';
 import { processEligibleFillable } from './processEligibleFillable';
@@ -54,8 +55,7 @@ export const processFileFillables = (
         name: declaration.name,
       }));
 
-    const pathBasename = path.basename(modulePath, '.ts');
-    const fillPath = `${pathBasename}.fill.ts`;
+    const fillPath = generateFillModulePath(modulePath);
 
     filledFunctions
       .map((filledFunction) => generateFillSyntax(filledFunction, fillPath))

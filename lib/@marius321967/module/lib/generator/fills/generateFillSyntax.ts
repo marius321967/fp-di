@@ -3,9 +3,13 @@ import { importValue } from '../../imports';
 import { createSingleExportStatement } from '../node-builders';
 import { FilledFunction, FillSyntax } from './structs';
 
+/**
+ * Generate AST nodes for a fill file
+ * @returns Export statement of function fill; import statements for function being filled and fill Values
+ */
 export const generateFillSyntax = (
   fill: FilledFunction,
-  modulePath: string,
+  fillModulePath: string,
 ): FillSyntax => {
   const functionExportNode = createSingleExportStatement(
     getNameForFill(fill.exportedAs),
@@ -13,7 +17,7 @@ export const generateFillSyntax = (
   );
 
   const importNodes = fill.parameterValues.map((value) =>
-    importValue(value, modulePath),
+    importValue(value, fillModulePath),
   );
 
   return {
