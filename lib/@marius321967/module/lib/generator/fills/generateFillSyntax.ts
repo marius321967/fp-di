@@ -1,6 +1,14 @@
 import ts from 'typescript';
-import { importValue } from '../../imports';
-import { createSingleExportStatement } from '../node-builders';
+import {
+  gatherIdentifierImport,
+  importValue,
+  relativizeImportOrder,
+} from '../../imports';
+import {
+  createImportDeclaration,
+  createNamedImportClause,
+  createSingleExportStatement,
+} from '../node-builders';
 import { FilledFunction, FillSyntax } from './structs';
 
 /**
@@ -16,13 +24,14 @@ export const generateFillSyntax = (
     createFillInitializer(fill),
   );
 
-  const importNodes = fill.parameterValues.map((value) =>
+  const valueImports = fill.parameterValues.map((value) =>
     importValue(value, fillModulePath),
   );
+  const filledFunctionImport = importFilledFunction(fill, fillModulePath);
 
   return {
     functionExportNode,
-    importNodes,
+    importNodes: [filledFunctionImport, ...valueImports],
   };
 };
 
@@ -38,3 +47,18 @@ export const createFillInitializer = ({
 
 export const getNameForFill = (targetName: string): string =>
   `fill_${targetName}`;
+
+export const importFilledFunction = (
+  fill: FilledFunction,
+  importTo: string,
+): ts.ImportDeclaration => {
+  const importOrder = relativizeImportOrder(
+    gatherIdentifierImport(fill.exportIdentifier),
+    importTo,
+  );
+
+  return createImportDeclaration(
+    createNamedImportClause(importOrder.moduleExportIdentifier),
+    importOrder.modulePath,
+  );
+};

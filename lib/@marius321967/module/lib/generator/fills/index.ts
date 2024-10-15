@@ -1,7 +1,8 @@
-import path from 'path';
+import fs from 'fs';
 import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { ParseResult } from '../../parser/structs';
+import { printFile } from '../printFile';
 import { generateFillModulePath } from './generateFillModulePath';
 import { generateFillSyntax } from './generateFillSyntax';
 import { eligibleFillableFilter } from './isEligibleFillable';
