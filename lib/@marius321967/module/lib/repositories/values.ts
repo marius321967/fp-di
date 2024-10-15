@@ -1,8 +1,12 @@
 import ts from 'typescript';
 import { resolveOriginalSymbol } from '../helpers/symbols';
 
-export type Value = {
+export type Value = TypelessValue & {
   typeSymbol: ts.Symbol;
+};
+
+/** Value that does not bind to a specific Blueprint */
+export type TypelessValue = {
   valueDeclaration: ts.VariableDeclaration;
   exportIdentifier: ts.Identifier;
   exportedAs: string;

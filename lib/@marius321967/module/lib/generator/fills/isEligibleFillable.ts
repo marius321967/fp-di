@@ -1,16 +1,26 @@
 import ts, { TypeNode } from 'typescript';
 import { getSymbolAtLocation } from '../../helpers/symbols';
 import { BlueprintGetter } from '../../repositories/blueprints';
+import { FunctionLikeNode } from '../../types';
 import { canExtractAcceptedTypes, toAcceptedTypes } from './toAcceptedTypes';
+
+export type EligibleFillable = ts.VariableDeclaration & {
+  initializer: FunctionLikeNode;
+};
+
+export const eligibleFillableFilter =
+  (typeChecker: ts.TypeChecker, getBlueprint: BlueprintGetter) =>
+  (
+    declarationNode: ts.VariableDeclaration,
+  ): declarationNode is EligibleFillable =>
+    isEligibleFillable(declarationNode, typeChecker, getBlueprint);
 
 /** TODO handle function x() {} */
 export const isEligibleFillable = (
   declarationNode: ts.VariableDeclaration,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): declarationNode is Omit<ts.VariableDeclaration, 'initializer'> & {
-  initializer: ts.ArrowFunction;
-} => {
+): declarationNode is EligibleFillable => {
   if (
     !declarationNode.initializer ||
     !ts.isArrowFunction(declarationNode.initializer)
@@ -18,7 +28,7 @@ export const isEligibleFillable = (
     return false;
   }
 
-  const functionNode = declarationNode.initializer;
+  const functionNode: FunctionLikeNode = declarationNode.initializer;
 
   return functionNode.parameters.every(
     ({ type }) =>

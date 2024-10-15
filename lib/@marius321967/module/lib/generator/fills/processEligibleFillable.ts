@@ -2,29 +2,42 @@ import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { symbolAtLocationGetter } from '../../helpers/symbols';
 import { Value, ValueGetter } from '../../repositories/values';
+import { FunctionLikeNode } from '../../types';
 import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';
 import { FilledFunction } from './structs';
 import { toAcceptedTypes } from './toAcceptedTypes';
 
 export const processEligibleFillable = (
-  functionNode: ts.ArrowFunction,
+  declarationNode: Omit<ts.VariableDeclaration, 'initializer'> & {
+    initializer: FunctionLikeNode;
+  },
   typeChecker: ts.TypeChecker,
   getValue: ValueGetter,
 ): FilledFunction => {
   const values = resolveFunctionParameterValues(
-    functionNode,
+    declarationNode.initializer,
     typeChecker,
     getValue,
   );
 
+  const exportIdentifier = declarationNode.name;
+
+  if (!ts.isIdentifier(exportIdentifier)) {
+    throw new Error(
+      `Binding pattern value declarations not yet supported (eg., [${exportIdentifier.getText()}])`,
+    );
+  }
+
   return {
-    functionNode,
+    exportedAs: exportIdentifier.getText(),
+    exportIdentifier: exportIdentifier,
+    functionNode: declarationNode.initializer,
     parameterValues: values,
   };
 };
 
 export const resolveFunctionParameterValues = (
-  functionNode: ts.ArrowFunction,
+  functionNode: FunctionLikeNode,
   typeChecker: ts.TypeChecker,
   getValue: ValueGetter,
 ): Value[] =>

@@ -1,8 +1,11 @@
 import ts from 'typescript';
 import { Value } from '../../repositories/values';
+import { FunctionLikeNode } from '../../types';
 
 export type FilledFunction = {
-  functionNode: ts.ArrowFunction;
+  exportedAs: string;
+  exportIdentifier: ts.Identifier;
+  functionNode: FunctionLikeNode;
   parameterValues: Value[];
 };
 

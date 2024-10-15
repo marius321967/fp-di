@@ -1,8 +1,9 @@
+import path from 'path';
 import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { ParseResult } from '../../parser/structs';
 import { generateFillSyntax } from './generateFillSyntax';
-import { isEligibleFillable } from './isEligibleFillable';
+import { eligibleFillableFilter } from './isEligibleFillable';
 import { processEligibleFillable } from './processEligibleFillable';
 
 export const generateFills = (
@@ -25,12 +26,12 @@ export const programFillReducer =
   };
 
 export const processFileFillables = (
-  path: string,
+  modulePath: string,
   program: ts.Program,
   parseResult: ParseResult,
 ): ParseResult => {
-  const source = program.getSourceFile(path);
-  assertIsPresent(source, `File [${path}] not found in program`);
+  const source = program.getSourceFile(modulePath);
+  assertIsPresent(source, `File [${modulePath}] not found in program`);
 
   source.forEachChild((node) => {
     if (!ts.isVariableStatement(node)) {
@@ -38,25 +39,41 @@ export const processFileFillables = (
     }
 
     const filledFunctions = node.declarationList.declarations
-      .filter((declaration) =>
-        isEligibleFillable(
-          declaration,
+      .filter(
+        eligibleFillableFilter(
           program.getTypeChecker(),
           parseResult.blueprints.getBlueprint,
         ),
       )
       .map((declaration) => ({
         ...processEligibleFillable(
-          declaration.initializer as any,
+          declaration,
           program.getTypeChecker(),
           parseResult.values.getValue,
         ),
         name: declaration.name,
       }));
 
-      filledFunctions.forEach((filledFunction) => {
-        generateFillSyntax()
-      })
+    const pathBasename = path.basename(modulePath, '.ts');
+    const fillPath = `${pathBasename}.fill.ts`;
+
+    filledFunctions
+      .map((filledFunction) => generateFillSyntax(filledFunction, fillPath))
+      .forEach((fillSyntax) => {
+        console.log(`[${fillPath}]:`);
+
+        const printer = ts.createPrinter();
+        const sourceText = printer.printList(
+          ts.ListFormat.MultiLine,
+          ts.factory.createNodeArray([
+            ...fillSyntax.importNodes,
+            fillSyntax.functionExportNode,
+          ]),
+          ts.createSourceFile('', '', ts.ScriptTarget.Latest),
+        );
+
+        console.log(sourceText);
+      });
 
     filledFunctions.forEach((filledFunction) => {
       console.log(
@@ -68,9 +85,6 @@ export const processFileFillables = (
         );
       });
     });
-
-    // then make a fill package with: imports of needed Values, import of function being filled, export of filled function [eg: export notifyUser(emailNotifier)]
-    // save it to file named `<>.fill.ts`
   });
 
   return parseResult;
