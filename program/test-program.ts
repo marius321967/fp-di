@@ -2,6 +2,7 @@ import { MyEmail, MyName, MyPassword } from './my-types';
 import './my-values';
 import './notifiers';
 import './notifyUser';
+import './userDeleters';
 
 // for function to be injected:
 // - function type must be exported
