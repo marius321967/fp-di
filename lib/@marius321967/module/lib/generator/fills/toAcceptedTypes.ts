@@ -12,9 +12,7 @@ export const toAcceptedTypes = (
   }
 
   if (ts.isUnionTypeNode(typeNode)) {
-    return typeNode.types.filter((type) =>
-      ts.isTypeReferenceNode(type),
-    ) as ts.TypeReferenceNode[];
+    return typeNode.types.filter(ts.isTypeReferenceNode);
   }
 
   throw new Error(
