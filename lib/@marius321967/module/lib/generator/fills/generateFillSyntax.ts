@@ -22,7 +22,7 @@ export const generateFillSyntax = (
   const filledFunctionImport = importFilledFunction(fill, fillModulePath);
 
   return {
-    functionExportNode,
+    fillExportNode: functionExportNode,
     importNodes: [filledFunctionImport, ...valueImports],
   };
 };

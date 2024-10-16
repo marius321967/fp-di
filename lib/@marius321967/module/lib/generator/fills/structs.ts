@@ -10,6 +10,11 @@ export type FilledFunction = {
 };
 
 export type FillSyntax = {
-  functionExportNode: ts.VariableStatement;
+  fillExportNode: ts.VariableStatement;
+  importNodes: ts.ImportDeclaration[];
+};
+
+export type FillFileSyntax = {
+  fillExportNodes: ts.VariableStatement[];
   importNodes: ts.ImportDeclaration[];
 };

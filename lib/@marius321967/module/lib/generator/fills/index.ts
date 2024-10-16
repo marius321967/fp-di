@@ -3,10 +3,12 @@ import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { ParseResult } from '../../parser/structs';
 import { printFile } from '../printFile';
+import { addFillToFile } from './addFillToFile';
 import { generateFillModulePath } from './generateFillModulePath';
 import { generateFillSyntax } from './generateFillSyntax';
 import { eligibleFillableFilter } from './isEligibleFillable';
 import { processEligibleFillable } from './processEligibleFillable';
+import { FillFileSyntax } from './structs';
 
 export const generateFills = (
   parseResult: ParseResult,
@@ -31,15 +33,19 @@ export const processFileFillables = (
   modulePath: string,
   program: ts.Program,
   parseResult: ParseResult,
-): ParseResult => {
+): void => {
   const source = program.getSourceFile(modulePath);
   assertIsPresent(source, `File [${modulePath}] not found in program`);
+
+  const fillPath = generateFillModulePath(modulePath);
+  let fillFileSyntax: FillFileSyntax = { fillExportNodes: [], importNodes: [] };
 
   source.forEachChild((node) => {
     if (!ts.isVariableStatement(node)) {
       return;
     }
 
+    // TODO: eliminate imports of same value (in meta step, not later in syntax)
     const filledFunctions = node.declarationList.declarations
       .filter(
         eligibleFillableFilter(
@@ -47,24 +53,25 @@ export const processFileFillables = (
           parseResult.blueprints.getBlueprint,
         ),
       )
-      .map((declaration) => ({
-        ...processEligibleFillable(
+      .map((declaration) =>
+        processEligibleFillable(
           declaration,
           program.getTypeChecker(),
           parseResult.values.getValue,
         ),
-        name: declaration.name,
-      }));
-
-    const fillPath = generateFillModulePath(modulePath);
-
-    filledFunctions
-      .map((filledFunction) => generateFillSyntax(filledFunction, fillPath))
-      .map((fillSyntax) =>
-        printFile([...fillSyntax.importNodes, fillSyntax.functionExportNode]),
       )
-      .forEach((sourceText) => fs.writeFileSync(fillPath, sourceText));
+      .map((filledFunction) => generateFillSyntax(filledFunction, fillPath))
+      .forEach((fillSyntax) => {
+        fillFileSyntax = addFillToFile(fillFileSyntax, fillSyntax);
+      });
   });
 
-  return parseResult;
+  if (fillFileSyntax.fillExportNodes.length > 0) {
+    const sourceText = printFile([
+      ...fillFileSyntax.importNodes,
+      ...fillFileSyntax.fillExportNodes,
+    ]);
+
+    fs.writeFileSync(fillPath, sourceText);
+  }
 };
