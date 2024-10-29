@@ -1,5 +1,12 @@
 import ts from 'typescript';
+import { Blueprint } from './repositories/blueprints';
 
-export type FunctionLikeNode = {
-  parameters: ts.NodeArray<ts.ParameterDeclaration>;
+export type FunctionLikeNode = Pick<ts.ArrowFunction, 'parameters' | 'type'>;
+
+export type TypedFunctionLikeNode = Omit<FunctionLikeNode, 'type'> & {
+  type: ts.TypeReference;
 };
+
+export type ParameterContainer = Pick<FunctionLikeNode, 'parameters'>;
+
+export type Blueprints = Blueprint[];

@@ -1,9 +1,9 @@
 import ts from 'typescript';
-import { resolveOriginalSymbol } from '../helpers/symbols';
+import { getSymbolAtLocation, resolveOriginalSymbol } from '../helpers/symbols';
 
 export type Blueprint = {
   originalSymbol: ts.Symbol;
-  /** TODO not sure if this info needed since lib only manipulates values, not types */
+  exportIdentifier: ts.Identifier;
   exportedAs: string;
   /** TODO specify whether abstract path, relative from project root, etc. */
   filename: string;
@@ -11,11 +11,7 @@ export type Blueprint = {
 
 export type BlueprintMap = Blueprint[];
 
-export type BlueprintAdder = (
-  symbol: ts.Symbol,
-  exportedAs: string,
-  filename: string,
-) => void;
+export type BlueprintAdder = (node: ts.TypeAliasDeclaration) => void;
 
 export type BlueprintGetter = (symbol: ts.Symbol) => Blueprint | null;
 
@@ -35,7 +31,7 @@ export const combineBlueprintRepositories = (
   repo2: BlueprintRepository,
 ): BlueprintRepository => {
   repo2.items.forEach((item) => {
-    repo1.addBlueprint(item.originalSymbol, item.exportedAs, item.filename);
+    repo1.items.push(item); // non-final solution - items not supposed to be accessible
   });
 
   return repo1;
@@ -45,12 +41,8 @@ export const createBlueprintRepository = (
   typeChecker: ts.TypeChecker,
   items: BlueprintMap = [],
 ): BlueprintRepository => {
-  const addBlueprint: BlueprintAdder = (symbol, exportedAs, filename) => {
-    items.push({
-      originalSymbol: resolveOriginalSymbol(symbol, typeChecker),
-      exportedAs,
-      filename,
-    });
+  const addBlueprint: BlueprintAdder = (symbol) => {
+    items.push(buildBlueprint(symbol, typeChecker));
   };
 
   const getBlueprint: BlueprintGetter = (symbol) => {
@@ -69,5 +61,22 @@ export const createBlueprintRepository = (
     getBlueprints,
     // for debug
     items,
+  };
+};
+
+const buildBlueprint = (
+  node: ts.TypeAliasDeclaration,
+  typeChecker: ts.TypeChecker,
+): Blueprint => {
+  const symbol = getSymbolAtLocation(node.name, typeChecker);
+  const originalSymbol = resolveOriginalSymbol(symbol, typeChecker);
+  const exportIdentifier = node.name;
+  const exportedAs = node.name.text;
+
+  return {
+    originalSymbol,
+    exportIdentifier,
+    exportedAs,
+    filename: node.getSourceFile().fileName,
   };
 };

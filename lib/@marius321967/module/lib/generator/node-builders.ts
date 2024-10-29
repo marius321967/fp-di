@@ -2,6 +2,7 @@ import path from 'path';
 import ts from 'typescript';
 import { importValue } from '../imports';
 import { Value } from '../repositories/values';
+import { Blueprints } from '../types';
 
 const isImportNeeded = (value: Value, importTo: string): boolean =>
   path.relative(value.filename, importTo) !== '';
@@ -70,6 +71,7 @@ export const createImportDeclaration = (
 export const createSingleExportStatement = (
   name: string,
   initializer: ts.Expression,
+  typeNode: ts.TypeNode | undefined,
 ): ts.VariableStatement =>
   ts.factory.createVariableStatement(
     [ts.factory.createToken(ts.SyntaxKind.ExportKeyword)],
@@ -78,10 +80,19 @@ export const createSingleExportStatement = (
         ts.factory.createVariableDeclaration(
           ts.factory.createIdentifier(name),
           undefined,
-          undefined,
+          typeNode,
           initializer,
         ),
       ],
       ts.NodeFlags.Const,
+    ),
+  );
+
+export const createUnionTypeFromBlueprints = (
+  blueprints: Blueprints,
+): ts.UnionTypeNode =>
+  ts.factory.createUnionTypeNode(
+    blueprints.map((blueprint) =>
+      ts.factory.createTypeReferenceNode(blueprint.exportedAs),
     ),
   );

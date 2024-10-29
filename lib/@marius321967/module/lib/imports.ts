@@ -5,6 +5,7 @@ import {
   createImportDeclaration,
   createNamedImportClause,
 } from './generator/node-builders';
+import { Blueprint } from './repositories/blueprints';
 import { Value } from './repositories/values';
 
 export type ImportOrder = {
@@ -37,6 +38,18 @@ export const importValue = (
   importTo: string,
 ): ts.ImportDeclaration => {
   const importOrder = orderImportTo(value.exportIdentifier, importTo);
+
+  return createImportDeclaration(
+    createNamedImportClause(importOrder.moduleExportIdentifier),
+    importOrder.modulePath,
+  );
+};
+
+export const importBlueprint = (
+  blueprint: Blueprint,
+  importTo: string,
+): ts.ImportDeclaration => {
+  const importOrder = orderImportTo(blueprint.exportIdentifier, importTo);
 
   return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),

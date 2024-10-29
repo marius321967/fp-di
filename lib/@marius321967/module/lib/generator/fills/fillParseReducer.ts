@@ -1,8 +1,29 @@
 import ts from 'typescript';
 import { ParseResult } from '../../parser/structs';
-import { eligibleFillableFilter } from './isEligibleFillable';
+import { BlueprintGetter } from '../../repositories/blueprints';
 import { processEligibleFillable } from './processEligibleFillable';
 import { FilledFunction } from './structs';
+import {
+  EligibleFillable,
+  tryExtractEligibleFillabe,
+} from './tryExtractEligibleFillable';
+
+export const eligibleFillableExtrator =
+  (typeChecker: ts.TypeChecker, getBlueprint: BlueprintGetter) =>
+  (
+    eligibleFillables: EligibleFillable[],
+    declarationNode: ts.VariableDeclaration,
+  ): EligibleFillable[] => {
+    const eligibleFillable = tryExtractEligibleFillabe(
+      declarationNode,
+      typeChecker,
+      getBlueprint,
+    );
+
+    return eligibleFillable
+      ? [...eligibleFillables, eligibleFillable]
+      : eligibleFillables;
+  };
 
 export const fillParseReducer =
   (typeChecker: ts.TypeChecker, parseResult: ParseResult) =>
@@ -12,15 +33,16 @@ export const fillParseReducer =
     }
 
     const newFills = node.declarationList.declarations
-      .filter(
-        eligibleFillableFilter(
+      .reduce(
+        eligibleFillableExtrator(
           typeChecker,
           parseResult.blueprints.getBlueprint,
         ),
+        [],
       )
-      .map((declaration) =>
+      .map((fillable) =>
         processEligibleFillable(
-          declaration,
+          fillable,
           typeChecker,
           parseResult.values.getValue,
         ),

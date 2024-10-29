@@ -16,11 +16,7 @@ export const rootNodeWalker =
   (node: ts.Node): void => {
     // export type Foo = string | number;
     if (isEligibleBlueprint(node)) {
-      registerTypeDeclaration(
-        node,
-        program.getTypeChecker(),
-        blueprints.addBlueprint,
-      );
+      registerTypeDeclaration(node, blueprints.addBlueprint);
     }
 
     // export const x: Foo = 'foo';

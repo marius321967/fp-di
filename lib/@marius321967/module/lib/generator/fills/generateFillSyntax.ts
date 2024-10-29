@@ -1,6 +1,13 @@
 import ts from 'typescript';
-import { importFilledFunction, importValue } from '../../imports';
-import { createSingleExportStatement } from '../node-builders';
+import {
+  importBlueprint,
+  importFilledFunction,
+  importValue,
+} from '../../imports';
+import {
+  createSingleExportStatement,
+  createUnionTypeFromBlueprints,
+} from '../node-builders';
 import { FilledFunction, FillSyntax } from './structs';
 
 /**
@@ -12,18 +19,24 @@ export const generateFillSyntax = (
   fillModulePath: string,
 ): FillSyntax => {
   const functionExportNode = createSingleExportStatement(
-    getNameForFill(fill.exportedAs),
+    getNameForFill(fill),
     createFillInitializer(fill),
+    createUnionTypeFromBlueprints(fill.blueprints),
   );
 
   const valueImports = fill.parameterValues.map((value) =>
     importValue(value, fillModulePath),
   );
+
+  const blueprintImports = fill.blueprints.map((blueprint) =>
+    importBlueprint(blueprint, fillModulePath),
+  );
+
   const filledFunctionImport = importFilledFunction(fill, fillModulePath);
 
   return {
     fillExportNode: functionExportNode,
-    importNodes: [filledFunctionImport, ...valueImports],
+    importNodes: [filledFunctionImport, ...valueImports, ...blueprintImports],
   };
 };
 
@@ -37,5 +50,5 @@ export const createFillInitializer = ({
     parameterValues.map((value) => value.exportIdentifier),
   );
 
-export const getNameForFill = (targetName: string): string =>
-  `fill_${targetName}`;
+export const getNameForFill = (fill: FilledFunction): string =>
+  `fill_${fill.exportedAs}`;

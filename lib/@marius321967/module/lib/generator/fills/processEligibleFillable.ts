@@ -4,17 +4,17 @@ import { symbolAtLocationGetter } from '../../helpers/symbols';
 import { Value, ValueGetter } from '../../repositories/values';
 import { FunctionLikeNode } from '../../types';
 import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';
-import { EligibleFillable } from './isEligibleFillable';
 import { FilledFunction } from './structs';
 import { toAcceptedTypes } from './toAcceptedTypes';
+import { EligibleFillable } from './tryExtractEligibleFillable';
 
 export const processEligibleFillable = (
-  declarationNode: EligibleFillable,
+  { declarationNode, initializerNode, blueprints }: EligibleFillable,
   typeChecker: ts.TypeChecker,
   getValue: ValueGetter,
 ): FilledFunction => {
   const values = resolveFunctionParameterValues(
-    declarationNode.initializer,
+    initializerNode,
     typeChecker,
     getValue,
   );
@@ -30,8 +30,9 @@ export const processEligibleFillable = (
   return {
     exportedAs: exportIdentifier.getText(),
     exportIdentifier: exportIdentifier,
-    functionNode: declarationNode.initializer,
+    functionNode: initializerNode,
     parameterValues: values,
+    blueprints,
   };
 };
 

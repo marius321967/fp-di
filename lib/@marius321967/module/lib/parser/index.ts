@@ -1,6 +1,5 @@
 import ts, { TypeReferenceNode } from 'typescript';
 import { assertIsPresent } from '../helpers/assert';
-import { getSymbolAtLocation } from '../helpers/symbols';
 import {
   BlueprintAdder,
   combineBlueprintRepositories,
@@ -60,14 +59,9 @@ export const programParseReducer =
 
 export const registerTypeDeclaration = (
   node: ts.TypeAliasDeclaration,
-  typeChecker: ts.TypeChecker,
   addBlueprint: BlueprintAdder,
 ): void => {
-  addBlueprint(
-    getSymbolAtLocation(node.name, typeChecker),
-    node.name.getText(),
-    node.getSourceFile().fileName,
-  );
+  addBlueprint(node);
 };
 
 export const registerEligibleValueDeclarations = (

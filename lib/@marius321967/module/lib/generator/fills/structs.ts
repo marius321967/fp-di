@@ -1,10 +1,11 @@
 import ts from 'typescript';
 import { Value } from '../../repositories/values';
-import { FunctionLikeNode } from '../../types';
+import { Blueprints, FunctionLikeNode } from '../../types';
 
 export type FilledFunction = {
   exportedAs: string;
   exportIdentifier: ts.Identifier;
+  blueprints: Blueprints;
   functionNode: FunctionLikeNode;
   parameterValues: Value[];
 };

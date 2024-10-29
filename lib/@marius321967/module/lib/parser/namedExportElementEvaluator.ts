@@ -27,10 +27,6 @@ export const namedExportElementEvaluator =
     }
 
     if (ts.isTypeAliasDeclaration(declarationNode)) {
-      registerTypeDeclaration(
-        declarationNode,
-        typeChecker,
-        blueprints.addBlueprint,
-      );
+      registerTypeDeclaration(declarationNode, blueprints.addBlueprint);
     }
   };
