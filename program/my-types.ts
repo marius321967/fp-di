@@ -9,3 +9,5 @@ export type User = {
 
 export type Notifier = (destination: string) => Promise<unknown>;
 export type UserDeleter = (id: string) => void;
+
+export type UserNotifier = (user: User) => Promise<unknown>;
