@@ -6,5 +6,5 @@
     "strictNullChecks": true
   },
   "include": ["./**/*.ts"],
-  "exclude": ["./start.ts", "./start.example.ts"]
+  "exclude": ["./start.ts", "*.example.ts"]
 }
