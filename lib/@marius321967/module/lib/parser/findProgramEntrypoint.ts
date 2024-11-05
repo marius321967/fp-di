@@ -1,12 +1,13 @@
 import ts from 'typescript';
 import { assertIsPresent } from '../helpers/assert';
 import { isEntrypointExport } from '../node.type-guards';
-import { ProgramEntrypointExport } from './structs';
+import { FunctionLikeNode } from '../types';
+import { ModuleMember } from './fills/structs';
 
 export const findProgramEntrypoint = (
   program: ts.Program,
   entrypointFile: string,
-): ProgramEntrypointExport | null => {
+): ModuleMember<FunctionLikeNode> | null => {
   const source = program.getSourceFile(entrypointFile);
 
   assertIsPresent(
@@ -14,17 +15,15 @@ export const findProgramEntrypoint = (
     `Entrypoint file [${entrypointFile}] not found in program`,
   );
 
-  let entrypointDeclaration: ts.ExportAssignment | null = null;
+  let entrypointDeclaration: ModuleMember<FunctionLikeNode> | null = null;
 
   source.forEachChild((node) => {
     if (isEntrypointExport(node)) {
-      if (entrypointDeclaration) {
-        throw new Error(
-          `Multiple eligible program entrypoints found. First entrypoint: [${entrypointDeclaration.getText()}], current entrypoint: [${node.getText()}]`,
-        );
-      }
-
-      entrypointDeclaration = node;
+      entrypointDeclaration = {
+        expression: node.expression,
+        exportedAs: { type: 'default' },
+        filePath: entrypointFile,
+      };
     }
   });
 

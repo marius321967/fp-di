@@ -1,6 +1,8 @@
 import ts from 'typescript';
 import { BlueprintRepository } from '../repositories/blueprints';
 import { ValueRepository } from '../repositories/values';
+import { FunctionLikeNode } from '../types';
+import { ModuleMember } from './fills/structs';
 
 export type DependencyContext = {
   blueprints: BlueprintRepository;
@@ -8,9 +10,12 @@ export type DependencyContext = {
 };
 
 export type ParseResult = DependencyContext & {
-  entrypointExport: ProgramEntrypointExport;
+  entrypoint: ModuleMember<FunctionLikeNode>;
 };
 
-export type ProgramEntrypointExport = ts.ExportAssignment & {
+export type ProgramEntrypointExport = Omit<
+  ts.ExportAssignment,
+  'expression'
+> & {
   expression: ts.ArrowFunction;
 };

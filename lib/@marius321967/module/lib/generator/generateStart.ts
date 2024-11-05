@@ -24,7 +24,7 @@ export const generateStart = (
   const entrypointIdentifier = ts.factory.createIdentifier('start');
 
   const startArgumentValues = resolveFunctionParams(
-    parseResult.entrypointExport.expression,
+    parseResult.entrypoint.expression,
     context.typeChecker,
     parseResult.blueprints.getBlueprint,
     parseResult.values.getValue,

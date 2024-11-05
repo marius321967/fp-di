@@ -2,12 +2,13 @@ import ts from 'typescript';
 import { assertIsPresent } from '../helpers/assert';
 import { Blueprint, BlueprintGetter } from '../repositories/blueprints';
 import { Value, ValueGetter } from '../repositories/values';
+import { FunctionLikeNode } from '../types';
 import { resolveValueFromCandidateBlueprints } from './resolveValueFromCandidateBlueprints';
 import { resolveTypeNodeSymbols } from './symbols';
 
 /** @returns Length same as functionNode.parameters. Each param may have multiple candidates in case of UnionType. */
 export const resolveFunctionParamBlueprints = (
-  functionNode: ts.SignatureDeclarationBase,
+  functionNode: FunctionLikeNode,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
 ): Blueprint[][] => {
@@ -34,7 +35,7 @@ export const resolveFunctionParamBlueprints = (
 
 /** @returns Resolved values to fill in for params */
 export const resolveFunctionParams = (
-  functionNode: ts.SignatureDeclarationBase,
+  functionNode: FunctionLikeNode,
   typeChecker: ts.TypeChecker,
   getSymbol: BlueprintGetter,
   getValue: ValueGetter,

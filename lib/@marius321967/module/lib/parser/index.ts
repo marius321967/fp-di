@@ -29,15 +29,15 @@ export const parseProgram = (
     },
   );
 
-  const entrypointExport = findProgramEntrypoint(program, entrypointFile);
+  const entrypoint = findProgramEntrypoint(program, entrypointFile);
 
   assertIsPresent(
-    entrypointExport,
+    entrypoint,
     'No entrypoint found. Must be arrow function exported as default.',
   );
 
   return {
-    entrypointExport,
+    entrypoint,
     blueprints,
     values,
   };
