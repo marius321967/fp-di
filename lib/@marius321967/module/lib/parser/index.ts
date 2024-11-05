@@ -13,7 +13,7 @@ import {
 import { findProgramEntrypoint } from './findProgramEntrypoint';
 import { isEligibleValue } from './isEligibleValue';
 import { parseFile } from './parseFile';
-import { ParseResult, ParserSet } from './structs';
+import { DependencyContext, ParseResult } from './structs';
 import { valueDeclarationRegistrator } from './valueDeclarationRegistrator';
 
 export const parseProgram = (
@@ -45,7 +45,7 @@ export const parseProgram = (
 
 export const programParseReducer =
   (program: ts.Program) =>
-  (acc: ParseResult, path: string): ParserSet => {
+  (acc: ParseResult, path: string): DependencyContext => {
     const result = parseFile(path, program);
 
     return {

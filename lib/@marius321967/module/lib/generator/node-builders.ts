@@ -88,10 +88,10 @@ export const createSingleExportStatement = (
     ),
   );
 
-export const createUnionTypeFromBlueprints = (
+export const createIntersectionTypeFromBlueprints = (
   blueprints: Blueprints,
-): ts.UnionTypeNode =>
-  ts.factory.createUnionTypeNode(
+): ts.IntersectionTypeNode =>
+  ts.factory.createIntersectionTypeNode(
     blueprints.map((blueprint) =>
       ts.factory.createTypeReferenceNode(blueprint.exportedAs),
     ),

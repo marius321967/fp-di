@@ -1,12 +1,9 @@
 import ts from 'typescript';
-import { ParseResult } from '../../parser/structs';
 import { BlueprintGetter } from '../../repositories/blueprints';
+import { DependencyContext } from '../structs';
 import { processEligibleFillable } from './processEligibleFillable';
-import { FilledFunction } from './structs';
-import {
-  EligibleFillable,
-  tryExtractEligibleFillabe,
-} from './tryExtractEligibleFillable';
+import { EligibleFillable, TypedFunctionFill } from './structs';
+import { tryExtractEligibleFillabe } from './tryExtractEligibleFillable';
 
 export const eligibleFillableExtrator =
   (typeChecker: ts.TypeChecker, getBlueprint: BlueprintGetter) =>
@@ -26,26 +23,19 @@ export const eligibleFillableExtrator =
   };
 
 export const fillParseReducer =
-  (typeChecker: ts.TypeChecker, parseResult: ParseResult) =>
-  (fills: FilledFunction[], node: ts.Node): FilledFunction[] => {
+  (typeChecker: ts.TypeChecker, context: DependencyContext) =>
+  (fills: TypedFunctionFill[], node: ts.Node): TypedFunctionFill[] => {
     if (!ts.isVariableStatement(node)) {
       return fills;
     }
 
     const newFills = node.declarationList.declarations
       .reduce(
-        eligibleFillableExtrator(
-          typeChecker,
-          parseResult.blueprints.getBlueprint,
-        ),
+        eligibleFillableExtrator(typeChecker, context.blueprints.getBlueprint),
         [],
       )
       .map((fillable) =>
-        processEligibleFillable(
-          fillable,
-          typeChecker,
-          parseResult.values.getValue,
-        ),
+        processEligibleFillable(fillable, typeChecker, context.values.getValue),
       );
 
     return [...fills, ...newFills];

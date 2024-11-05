@@ -13,6 +13,13 @@ export const transform = (programDir: string): void => {
     program,
   );
 
+  // take program entrypoint function, get fillable from it
+  // while not enough Values to fill entrypoint
+  //   compile fills (meta only, no file) and update Values
+  //   if no fills compiled in this pass, throw error to avoid infinite loop
+  // enough fills compiled, write fills to files
+  // generate start.ts
+
   generateStart(parseResult, {
     entrypointPath: programEntrypointPath,
     program,

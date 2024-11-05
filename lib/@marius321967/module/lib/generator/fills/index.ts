@@ -1,12 +1,12 @@
 import fs from 'fs';
 import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
+import { fillParseReducer } from '../../parser/fills/fillParseReducer';
+import { FunctionFill } from '../../parser/fills/structs';
 import { ParseResult } from '../../parser/structs';
 import { printFile } from '../printFile';
-import { fillParseReducer } from './fillParseReducer';
-import { generateFillModulePath } from './generateFillModulePath';
+import { generateFillModulePath } from './fill-naming';
 import { generateFillsFile } from './generateFillsFileSyntax';
-import { FilledFunction } from './structs';
 
 export const generateFills = (
   parseResult: ParseResult,
@@ -31,7 +31,7 @@ export const processFileFillables = (
   modulePath: string,
   program: ts.Program,
   parseResult: ParseResult,
-): FilledFunction[] => {
+): FunctionFill[] => {
   const source = program.getSourceFile(modulePath);
   assertIsPresent(source, `File [${modulePath}] not found in program`);
 

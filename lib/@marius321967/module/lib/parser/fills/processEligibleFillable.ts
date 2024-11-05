@@ -1,18 +1,17 @@
 import ts from 'typescript';
+import { toAcceptedTypes } from '../../generator/fills/toAcceptedTypes';
+import { resolveValueFromCandidateSymbols } from '../../generator/resolveValueFromCandidateSymbols';
 import { assertIsPresent } from '../../helpers/assert';
 import { symbolAtLocationGetter } from '../../helpers/symbols';
 import { Value, ValueGetter } from '../../repositories/values';
 import { FunctionLikeNode } from '../../types';
-import { resolveValueFromCandidateSymbols } from '../resolveValueFromCandidateSymbols';
-import { FilledFunction } from './structs';
-import { toAcceptedTypes } from './toAcceptedTypes';
-import { EligibleFillable } from './tryExtractEligibleFillable';
+import { EligibleFillable, TypedFunctionFill } from './structs';
 
 export const processEligibleFillable = (
   { declarationNode, initializerNode, blueprints }: EligibleFillable,
   typeChecker: ts.TypeChecker,
   getValue: ValueGetter,
-): FilledFunction => {
+): TypedFunctionFill => {
   const values = resolveFunctionParameterValues(
     initializerNode,
     typeChecker,
@@ -28,10 +27,16 @@ export const processEligibleFillable = (
   }
 
   return {
-    exportedAs: exportIdentifier.getText(),
-    exportIdentifier: exportIdentifier,
-    functionNode: initializerNode,
-    parameterValues: values,
+    target: {
+      expression: initializerNode,
+      filePath: declarationNode.getSourceFile().fileName,
+      exportedAs: {
+        type: 'named',
+        identifierNode: exportIdentifier,
+        name: exportIdentifier.getText(),
+      },
+    },
+    values,
     blueprints,
   };
 };

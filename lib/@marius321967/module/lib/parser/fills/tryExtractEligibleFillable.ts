@@ -1,18 +1,13 @@
 import ts, { TypeNode } from 'typescript';
+import {
+  canExtractAcceptedTypes,
+  toAcceptedTypes,
+} from '../../generator/fills/toAcceptedTypes';
 import { excludeNull, excludeUndefined } from '../../helpers/structs';
 import { getSymbolAtLocation } from '../../helpers/symbols';
 import { BlueprintGetter } from '../../repositories/blueprints';
-import { Blueprints, FunctionLikeNode } from '../../types';
-import { canExtractAcceptedTypes, toAcceptedTypes } from './toAcceptedTypes';
-
-export type EligibleFillable = {
-  declarationNode: ts.VariableDeclaration;
-  initializerNode: FunctionLikeNode;
-  /** Blueprints matching initializerNode.type. */
-  blueprints: Blueprints;
-  /** Extracted blueprints for each item in initializerNode.parameters */
-  parameterBlueprints: Blueprints[];
-};
+import { Blueprints } from '../../types';
+import { EligibleFillable } from './structs';
 
 /** TODO handle function x() {} */
 export const tryExtractEligibleFillabe = (

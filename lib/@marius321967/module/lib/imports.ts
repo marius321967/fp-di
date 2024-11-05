@@ -1,6 +1,5 @@
 import path from 'path';
 import ts from 'typescript';
-import { FilledFunction } from './generator/fills/structs';
 import {
   createImportDeclaration,
   createNamedImportClause,
@@ -14,6 +13,7 @@ export type ImportOrder = {
   moduleExportIdentifier: ts.Identifier;
 };
 
+/** @param identifier Origin module path will be taken from the identifier */
 export const orderImportTo = (
   identifier: ts.Identifier,
   importTo: string,
@@ -24,6 +24,18 @@ export const orderImportTo = (
       identifier.getSourceFile().fileName,
       importTo,
     ),
+  };
+};
+
+/** @param importFrom As opposed to `orderImportTo()`, origin module path will be taken from this argument */
+export const orderImportFromTo = (
+  importAs: ts.Identifier,
+  importFrom: string,
+  importTo: string,
+): ImportOrder => {
+  return {
+    moduleExportIdentifier: importAs,
+    modulePath: relativizeImportPath(importFrom, importTo),
   };
 };
 
@@ -50,18 +62,6 @@ export const importBlueprint = (
   importTo: string,
 ): ts.ImportDeclaration => {
   const importOrder = orderImportTo(blueprint.exportIdentifier, importTo);
-
-  return createImportDeclaration(
-    createNamedImportClause(importOrder.moduleExportIdentifier),
-    importOrder.modulePath,
-  );
-};
-
-export const importFilledFunction = (
-  fill: FilledFunction,
-  importTo: string,
-): ts.ImportDeclaration => {
-  const importOrder = orderImportTo(fill.exportIdentifier, importTo);
 
   return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),

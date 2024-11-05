@@ -2,10 +2,10 @@ import ts from 'typescript';
 import { registerTypeDeclaration, registerValueDeclaration } from '.';
 import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem';
 import { isEligibleValue } from './isEligibleValue';
-import { ParserSet } from './structs';
+import { DependencyContext } from './structs';
 
 export const namedExportElementEvaluator =
-  (typeChecker: ts.TypeChecker, { blueprints, values }: ParserSet) =>
+  (typeChecker: ts.TypeChecker, { blueprints, values }: DependencyContext) =>
   (exportNode: ts.ExportSpecifier): void => {
     const declarationNode = findDeclarationOfExportedItem(
       exportNode,

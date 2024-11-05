@@ -9,10 +9,10 @@ import {
 } from './index';
 import { isEligibleBlueprint } from './isEligibleBlueprint';
 import { namedExportElementEvaluator } from './namedExportElementEvaluator';
-import { ParserSet } from './structs';
+import { DependencyContext } from './structs';
 
 export const rootNodeWalker =
-  (program: ts.Program, { blueprints, values }: ParserSet) =>
+  (program: ts.Program, { blueprints, values }: DependencyContext) =>
   (node: ts.Node): void => {
     // export type Foo = string | number;
     if (isEligibleBlueprint(node)) {

@@ -1,5 +1,6 @@
 import ts from 'typescript';
-import { FillFileSyntax, FillSyntax } from './structs';
+import { FillSyntax } from '../structs';
+import { FillFileSyntax } from './structs';
 
 export const extractImportIdentifiers = (
   importNode: ts.ImportDeclaration,
