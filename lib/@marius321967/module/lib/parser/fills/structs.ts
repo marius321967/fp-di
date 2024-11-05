@@ -1,12 +1,6 @@
 import ts from 'typescript';
 import { Value } from '../../repositories/values';
-import { Blueprints, ExportAs, FunctionLikeNode } from '../../types';
-
-export type ModuleMember<T> = {
-  filePath: string;
-  exportedAs: ExportAs;
-  expression: T;
-};
+import { Blueprints, FunctionLikeNode, ModuleMember } from '../../types';
 
 export type FunctionFill = {
   values: Value[];

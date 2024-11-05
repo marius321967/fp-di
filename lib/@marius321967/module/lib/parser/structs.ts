@@ -1,8 +1,7 @@
 import ts from 'typescript';
 import { BlueprintRepository } from '../repositories/blueprints';
 import { ValueRepository } from '../repositories/values';
-import { FunctionLikeNode } from '../types';
-import { ModuleMember } from './fills/structs';
+import { FunctionLikeNode, ModuleMember } from '../types';
 
 export type DependencyContext = {
   blueprints: BlueprintRepository;

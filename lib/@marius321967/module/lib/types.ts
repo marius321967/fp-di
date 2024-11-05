@@ -17,3 +17,9 @@ export type Blueprints = Blueprint[];
 export type ExportAs =
   | { type: 'default' }
   | { type: 'named'; name: string; identifierNode: ts.Identifier };
+
+export type ModuleMember<T> = {
+  filePath: string;
+  exportedAs: ExportAs;
+  expression: T;
+};

@@ -5,8 +5,8 @@ import {
   orderImportFromTo,
   orderImportTo,
 } from '../../imports';
-import { FunctionFill, ModuleMember } from '../../parser/fills/structs';
-import { FunctionLikeNode } from '../../types';
+import { FunctionFill } from '../../parser/fills/structs';
+import { FunctionLikeNode, ModuleMember } from '../../types';
 import {
   createImportDeclaration,
   createIntersectionTypeFromBlueprints,
