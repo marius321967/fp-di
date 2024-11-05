@@ -10,7 +10,7 @@ import { Blueprints } from '../../types';
 import { EligibleFillable } from './structs';
 
 /** TODO handle function x() {} */
-export const tryExtractEligibleFillabe = (
+export const tryExtractEligibleFillable = (
   declarationNode: ts.VariableDeclaration,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,

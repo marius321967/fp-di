@@ -3,7 +3,7 @@ import { BlueprintGetter } from '../../repositories/blueprints';
 import { DependencyContext } from '../structs';
 import { processEligibleFillable } from './processEligibleFillable';
 import { EligibleFillable, TypedFunctionFill } from './structs';
-import { tryExtractEligibleFillabe } from './tryExtractEligibleFillable';
+import { tryExtractEligibleFillable } from './tryExtractEligibleFillable';
 
 export const eligibleFillableExtrator =
   (typeChecker: ts.TypeChecker, getBlueprint: BlueprintGetter) =>
@@ -11,7 +11,7 @@ export const eligibleFillableExtrator =
     eligibleFillables: EligibleFillable[],
     declarationNode: ts.VariableDeclaration,
   ): EligibleFillable[] => {
-    const eligibleFillable = tryExtractEligibleFillabe(
+    const eligibleFillable = tryExtractEligibleFillable(
       declarationNode,
       typeChecker,
       getBlueprint,
