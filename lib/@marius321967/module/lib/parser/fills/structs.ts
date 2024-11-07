@@ -9,10 +9,7 @@ export type FunctionFill = {
   blueprints?: Blueprints;
 };
 
-export type TypedFunctionFill = Omit<FunctionFill, 'blueprints'> & {
-  /** Blueprints that the function return will satisfy. Extracted from target.expression.type */
-  blueprints: Blueprints;
-};
+export type TypedFunctionFill = Required<FunctionFill>;
 
 export type EligibleFillable = {
   declarationNode: ts.VariableDeclaration;
