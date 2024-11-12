@@ -6,6 +6,7 @@ import { parseProgram } from './lib/parser';
 import { makeFillsPass, tryFillEligibleFillable } from './lib/parser/fills';
 import {
   EligibleFillableMember,
+  FunctionFillMember,
   TypedFunctionFillMember,
 } from './lib/parser/fills/structs';
 import { probeEligibleFillable } from './lib/parser/fills/tryExtractEligibleFillable';
@@ -46,7 +47,7 @@ export const transform = (programDir: string): void => {
       throw new Error('Entrypoint function could not be filled');
     }
 
-    fills = [...fills, ...newFills];
+    fills = temporary_addNewFills(fills, newFills);
 
     const filledEntrypoint = tryFillEligibleFillable(
       entrypointFillableMember,
@@ -66,4 +67,31 @@ const getStartPath = (entrypointPath: string): string => {
   const programDir = path.dirname(entrypointPath);
 
   return path.join(programDir, 'start.ts');
+};
+
+const temporary_fillsMatch = (
+  f1: FunctionFillMember,
+  f2: FunctionFillMember,
+): boolean => {
+  if (
+    f1.exportedAs.filePath !== f2.exportedAs.filePath ||
+    f1.exportedAs.exportedAs.type !== f2.exportedAs.exportedAs.type
+  )
+    return false;
+
+  return f1.exportedAs.exportedAs.type === 'named' &&
+    f2.exportedAs.exportedAs.type === 'named'
+    ? f1.exportedAs.exportedAs.name === f2.exportedAs.exportedAs.name
+    : true;
+};
+
+const temporary_addNewFills = (
+  fills: TypedFunctionFillMember[],
+  newFills: TypedFunctionFillMember[],
+): TypedFunctionFillMember[] => {
+  const newFillsFiltered = newFills.filter(
+    (fill) => !fills.some((oldFill) => temporary_fillsMatch(oldFill, fill)),
+  );
+
+  return [...fills, ...newFillsFiltered];
 };
