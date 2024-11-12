@@ -12,6 +12,6 @@
   },
   "scripts": {
     "start": "yarn nodemon",
-    "test-output": "ts-node-esm ./start.ts"
+    "test-output": "ts-node-esm ./program/start.ts"
   }
 }
