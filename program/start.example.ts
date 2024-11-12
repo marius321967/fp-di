@@ -1,4 +1,4 @@
 import { myName, myPass } from './my-values';
-import testProgram from './test-program';
+import start from './test-program';
 
-testProgram(myPass, myName);
+start(myPass, myName);
