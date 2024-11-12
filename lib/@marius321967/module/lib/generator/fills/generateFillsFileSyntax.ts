@@ -1,10 +1,10 @@
-import { FunctionFill } from '../../parser/fills/structs';
+import { FunctionFillMember } from '../../parser/fills/structs';
 import { addFillToFile } from './addFillToFile';
 import { generateFillSyntax } from './generateFillSyntax';
 import { FillFileSyntax } from './structs';
 
 export const generateFillsFile = (
-  fills: FunctionFill[],
+  fills: FunctionFillMember[],
   fillPath: string,
 ): FillFileSyntax => {
   let fillFileSyntax: FillFileSyntax = { fillExportNodes: [], importNodes: [] };

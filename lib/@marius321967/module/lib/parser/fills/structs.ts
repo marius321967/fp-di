@@ -1,6 +1,11 @@
-import ts from 'typescript';
+import ts, { CallExpression } from 'typescript';
+import { BlueprintGetter } from '../../repositories/blueprints';
 import { Value } from '../../repositories/values';
 import { Blueprints, FunctionLikeNode, ModuleMember } from '../../types';
+
+type FillableMember<T> = T & {
+  exportedAs: ModuleMember<FunctionLikeNode>;
+};
 
 export type FunctionFill = {
   values: Value[];
@@ -9,13 +14,31 @@ export type FunctionFill = {
   blueprints?: Blueprints;
 };
 
+/** Typed - function that returns a value fulfilling at least one Blueprint */
 export type TypedFunctionFill = Required<FunctionFill>;
 
+export type TypedFunctionFillMember = TypedFunctionFill & {
+  exportedAs: ModuleMember<CallExpression>;
+};
+export type FunctionFillMember = FunctionFill & {
+  exportedAs: ModuleMember<CallExpression>;
+};
+
+// TODO consider renaming to Fillable
 export type EligibleFillable = {
-  declarationNode: ts.VariableDeclaration;
-  initializerNode: FunctionLikeNode;
-  /** Blueprints matching initializerNode.type. */
-  blueprints: Blueprints;
-  /** Extracted blueprints for each item in initializerNode.parameters */
+  /** Extracted blueprints for each item in exportedAs.expression.parameters */
   parameterBlueprints: Blueprints[];
+  /** Blueprints matching exportedAs.expression.type */
+  blueprints?: Blueprints;
+};
+
+/** Typed - function that will return a value fulfilling at least one Blueprint  */
+export type TypedEligibleFillable = Required<EligibleFillable>;
+
+export type EligibleFillableMember = FillableMember<EligibleFillable>;
+export type TypedEligibleFillableMember = FillableMember<TypedEligibleFillable>;
+
+export type EligibleFillParseContext = {
+  typeChecker: ts.TypeChecker;
+  getBlueprint: BlueprintGetter;
 };

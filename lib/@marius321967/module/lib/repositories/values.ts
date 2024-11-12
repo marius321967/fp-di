@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import { resolveOriginalSymbol } from '../helpers/symbols';
+import { ModuleMember } from '../types';
 
 export type Value = TypelessValue & {
   typeSymbol: ts.Symbol;
@@ -7,10 +8,7 @@ export type Value = TypelessValue & {
 
 /** Value that does not bind to a specific Blueprint */
 export type TypelessValue = {
-  valueDeclaration: ts.VariableDeclaration;
-  exportIdentifier: ts.Identifier;
-  exportedAs: string;
-  filename: string;
+  member: ModuleMember<unknown>;
 };
 
 export type ValueMap = Value[];
@@ -19,7 +17,7 @@ export type ValueMap = Value[];
 // forbid TypeAlias flag symbols
 export type ValueAdder = (
   typeSymbol: ts.Symbol,
-  valueDeclaration: ts.VariableDeclaration,
+  member: ModuleMember<unknown>,
 ) => void;
 
 /**
@@ -42,7 +40,7 @@ export const combineValueRepositories = (
   repo2: ValueRepository,
 ): ValueRepository => {
   repo2.getValues().forEach((item) => {
-    repo1.addValue(item.typeSymbol, item.valueDeclaration);
+    repo1.addValue(item.typeSymbol, item.member);
   });
 
   return repo1;
@@ -52,8 +50,8 @@ export const createValueRepository = (
   typeChecker: ts.TypeChecker,
   items: ValueMap = [],
 ): ValueRepository => {
-  const addValue: ValueAdder = (typeSymbol, valueDeclaration) =>
-    items.push(buildValueMapEntry(typeSymbol, typeChecker, valueDeclaration));
+  const addValue: ValueAdder = (typeSymbol, member) =>
+    items.push(buildValueMapEntry(typeSymbol, typeChecker, member));
 
   const getValue: ValueGetter = (typeSymbol) => {
     const originalSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
@@ -75,22 +73,12 @@ export const createValueRepository = (
 const buildValueMapEntry = (
   typeSymbol: ts.Symbol,
   typeChecker: ts.TypeChecker,
-  valueDeclaration: ts.VariableDeclaration,
+  member: ModuleMember<unknown>,
 ): Value => {
   const originalTypeSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
-  const exportIdentifier = valueDeclaration.name;
-
-  if (!ts.isIdentifier(exportIdentifier)) {
-    throw new Error(
-      `Binding pattern value declarations not yet supported (eg., [${exportIdentifier.getText()}])`,
-    );
-  }
 
   return {
     typeSymbol: originalTypeSymbol,
-    valueDeclaration,
-    filename: valueDeclaration.getSourceFile().fileName,
-    exportedAs: exportIdentifier.getText(),
-    exportIdentifier,
+    member,
   };
 };

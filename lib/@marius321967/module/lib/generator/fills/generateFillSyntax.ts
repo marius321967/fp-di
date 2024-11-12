@@ -5,8 +5,9 @@ import {
   orderImportFromTo,
   orderImportTo,
 } from '../../imports';
-import { FunctionFill } from '../../parser/fills/structs';
+import { FunctionFill, FunctionFillMember } from '../../parser/fills/structs';
 import { FunctionLikeNode, ModuleMember } from '../../types';
+import { getMemberImportIdentifier } from '../getDefaultImportName';
 import {
   createImportDeclaration,
   createIntersectionTypeFromBlueprints,
@@ -24,7 +25,7 @@ import {
  * @returns Export statement of function fill; import statements for function being filled and fill Values
  */
 export const generateFillSyntax = (
-  fill: FunctionFill,
+  fill: FunctionFillMember,
   fillModulePath: string,
 ): FillSyntax => {
   const fulfilledBlueprintType = fill.blueprints
@@ -33,7 +34,7 @@ export const generateFillSyntax = (
 
   const functionExportNode = createSingleExportStatement(
     generateFillName(fill.target.exportedAs),
-    createFillInitializer(fill),
+    fill.exportedAs.expression,
     fulfilledBlueprintType,
   );
 
@@ -58,7 +59,7 @@ export const generateFillSyntax = (
 export const createFillInitializer = ({
   target,
   values,
-}: FunctionFill | FunctionFill): ts.CallExpression => {
+}: FunctionFill): ts.CallExpression => {
   const importedFillableIdentifier =
     target.exportedAs.type === 'default'
       ? generateFillableDefaultImportIdentifier()
@@ -67,7 +68,7 @@ export const createFillInitializer = ({
   return ts.factory.createCallExpression(
     importedFillableIdentifier,
     undefined,
-    values.map((value) => value.exportIdentifier),
+    values.map((value) => getMemberImportIdentifier(value.member)),
   );
 };
 

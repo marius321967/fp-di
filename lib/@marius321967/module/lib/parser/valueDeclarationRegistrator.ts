@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import { getSymbolAtLocation } from '../helpers/symbols';
 import { ValueAdder } from '../repositories/values';
+import { variableDeclarationToExportAs } from './fills/tryExtractEligibleFillable';
 
 export const valueDeclarationRegistrator =
   (addValue: ValueAdder, typeChecker: ts.TypeChecker) =>
@@ -8,5 +9,9 @@ export const valueDeclarationRegistrator =
     const localIdentifier = node.type.typeName;
     const typeSymbol = getSymbolAtLocation(localIdentifier, typeChecker);
 
-    addValue(typeSymbol, node);
+    addValue(typeSymbol, {
+      expression: node.initializer,
+      filePath: node.getSourceFile().fileName,
+      exportedAs: variableDeclarationToExportAs(node),
+    });
   };

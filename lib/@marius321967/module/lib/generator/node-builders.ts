@@ -5,7 +5,7 @@ import { Value } from '../repositories/values';
 import { Blueprints } from '../types';
 
 const isImportNeeded = (value: Value, importTo: string): boolean =>
-  path.relative(value.filename, importTo) !== '';
+  path.relative(value.member.filePath, importTo) !== '';
 
 export const createStartArgumentImports = (
   startArguments: Value[],
@@ -16,17 +16,6 @@ export const createStartArgumentImports = (
     .map((argumentIdentifier) =>
       importValue(argumentIdentifier, startFilename),
     );
-};
-
-export const createEntrypointImport = (
-  entrypointIdentifier: ts.Identifier,
-  entrypointImportPath: string,
-): ts.ImportDeclaration => {
-  return ts.factory.createImportDeclaration(
-    undefined,
-    createDefaultImportClause(entrypointIdentifier),
-    ts.factory.createStringLiteral(entrypointImportPath),
-  );
 };
 
 export const createStatements = (

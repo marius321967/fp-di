@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import { ProgramEntrypointExport } from './parser/structs';
+import { FunctionLikeNode } from './types';
 
 export const isExportedTypeDeclaration = (
   node: ts.Node,
@@ -32,8 +33,15 @@ export const isNamedExportDeclaration = (
   );
 };
 
+export const isDefaultExportDeclaration = (
+  node: ts.Node,
+): node is ts.ExportAssignment => ts.isExportAssignment(node);
+
 export const isEntrypointExport = (
   node: ts.Node,
 ): node is ProgramEntrypointExport => {
   return ts.isExportAssignment(node) && ts.isArrowFunction(node.expression);
 };
+
+export const isFunctionLikeNode = (node: ts.Node): node is FunctionLikeNode =>
+  ts.isArrowFunction(node) || ts.isFunctionDeclaration(node);

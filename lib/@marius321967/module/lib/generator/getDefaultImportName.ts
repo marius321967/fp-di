@@ -1,0 +1,17 @@
+import { basename } from 'path';
+import ts from 'typescript';
+import { ModuleMember } from '../types';
+
+export const getDefaultImportName = (filePath: string): string => {
+  const moduleName = basename(filePath).replace(/\.ts$/, ''); // TODO remove extensions generally
+
+  return `default_${moduleName}`;
+};
+
+export const getMemberImportIdentifier = (
+  member: ModuleMember<unknown>,
+): ts.Identifier =>
+  member.exportedAs.type === 'default'
+    ? ts.factory.createIdentifier(getDefaultImportName(member.filePath))
+    : // Not using identifierNode because it's for export, not import
+      ts.factory.createIdentifier(member.exportedAs.name);

@@ -1,6 +1,8 @@
 import path from 'path';
 import ts from 'typescript';
+import { getDefaultImportName } from './generator/getDefaultImportName';
 import {
+  createDefaultImportClause,
   createImportDeclaration,
   createNamedImportClause,
 } from './generator/node-builders';
@@ -45,11 +47,33 @@ export const relativizeImportPath = (
 ): string | '' =>
   './' + path.relative(path.dirname(importTo), importFrom).replace(/\.ts$/, '');
 
+export const importEntrypoint = (
+  importAs: ts.Identifier,
+  importFrom: string,
+  importTo: string,
+): ts.ImportDeclaration => {
+  const importOrder = orderImportFromTo(importAs, importFrom, importTo);
+
+  return createImportDeclaration(
+    createDefaultImportClause(importOrder.moduleExportIdentifier),
+    importOrder.modulePath,
+  );
+};
+
 export const importValue = (
   value: Value,
   importTo: string,
 ): ts.ImportDeclaration => {
-  const importOrder = orderImportTo(value.exportIdentifier, importTo);
+  const importOrder =
+    value.member.exportedAs.type === 'default'
+      ? orderImportFromTo(
+          ts.factory.createIdentifier(
+            getDefaultImportName(value.member.filePath),
+          ),
+          value.member.filePath,
+          importTo,
+        )
+      : orderImportTo(value.member.exportedAs.identifierNode, importTo);
 
   return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),
