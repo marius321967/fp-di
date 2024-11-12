@@ -1,4 +1,4 @@
-import { MyEmail, MyName, MyPassword } from './my-types';
+import { MyEmail, MyName, MyPassword, Notifier } from './my-types';
 import './my-values';
 import './notifiers';
 import './notifyUser';
@@ -15,6 +15,8 @@ import './userDeleters';
 // - declaration must be exported either as default or const
 // - there must not be competing candidates
 
-export default (pass: MyPassword, name: MyEmail | MyName) => {
+export default (pass: MyPassword, name: MyEmail | MyName, notify: Notifier) => {
   console.log('the program runs with values:', pass, name);
+
+  notify(`${name}:${pass}`);
 };
