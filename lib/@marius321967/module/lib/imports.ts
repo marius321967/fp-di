@@ -15,21 +15,6 @@ export type ImportOrder = {
   moduleExportIdentifier: ts.Identifier;
 };
 
-/** @param identifier Origin module path will be taken from the identifier */
-export const orderImportTo = (
-  identifier: ts.Identifier,
-  importTo: string,
-): ImportOrder => {
-  return {
-    moduleExportIdentifier: identifier,
-    modulePath: relativizeImportPath(
-      identifier.getSourceFile().fileName,
-      importTo,
-    ),
-  };
-};
-
-/** @param importFrom As opposed to `orderImportTo()`, origin module path will be taken from this argument */
 export const orderImportFromTo = (
   importAs: ts.Identifier,
   importFrom: string,
@@ -64,16 +49,13 @@ export const importValue = (
   value: Value,
   importTo: string,
 ): ts.ImportDeclaration => {
-  const importOrder =
+  const importOrder = orderImportFromTo(
     value.member.exportedAs.type === 'default'
-      ? orderImportFromTo(
-          ts.factory.createIdentifier(
-            getDefaultImportName(value.member.filePath),
-          ),
-          value.member.filePath,
-          importTo,
-        )
-      : orderImportTo(value.member.exportedAs.identifierNode, importTo);
+      ? ts.factory.createIdentifier(getDefaultImportName(value.member.filePath))
+      : ts.factory.createIdentifier(value.member.exportedAs.name),
+    value.member.filePath,
+    importTo,
+  );
 
   return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),
@@ -85,7 +67,11 @@ export const importBlueprint = (
   blueprint: Blueprint,
   importTo: string,
 ): ts.ImportDeclaration => {
-  const importOrder = orderImportTo(blueprint.exportIdentifier, importTo);
+  const importOrder = orderImportFromTo(
+    blueprint.exportIdentifier,
+    blueprint.filename,
+    importTo,
+  );
 
   return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),

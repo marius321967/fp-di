@@ -12,9 +12,7 @@ export type ParameterContainer = Pick<FunctionLikeNode, 'parameters'>;
 
 export type Blueprints = Blueprint[];
 
-export type ExportAs =
-  | { type: 'default' }
-  | { type: 'named'; name: string; identifierNode: ts.Identifier };
+export type ExportAs = { type: 'default' } | { type: 'named'; name: string };
 
 export type ModuleMember<T> = {
   filePath: string;

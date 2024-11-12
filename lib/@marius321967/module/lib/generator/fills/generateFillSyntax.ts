@@ -1,10 +1,5 @@
 import ts from 'typescript';
-import {
-  importBlueprint,
-  importValue,
-  orderImportFromTo,
-  orderImportTo,
-} from '../../imports';
+import { importBlueprint, importValue, orderImportFromTo } from '../../imports';
 import { FunctionFill, FunctionFillMember } from '../../parser/fills/structs';
 import { FunctionLikeNode, ModuleMember } from '../../types';
 import { getMemberImportIdentifier } from '../getDefaultImportName';
@@ -63,7 +58,7 @@ export const createFillInitializer = ({
   const importedFillableIdentifier =
     target.exportedAs.type === 'default'
       ? generateFillableDefaultImportIdentifier()
-      : target.exportedAs.identifierNode;
+      : ts.factory.createIdentifier(target.exportedAs.name);
 
   return ts.factory.createCallExpression(
     importedFillableIdentifier,
@@ -76,14 +71,13 @@ export const importFillable = (
   fillable: ModuleMember<FunctionLikeNode>,
   importTo: string,
 ): ts.ImportDeclaration => {
-  const importOrder =
+  const importOrder = orderImportFromTo(
     fillable.exportedAs.type === 'default'
-      ? orderImportFromTo(
-          generateFillableDefaultImportIdentifier(),
-          fillable.expression.getSourceFile().fileName,
-          importTo,
-        )
-      : orderImportTo(fillable.exportedAs.identifierNode, importTo);
+      ? generateFillableDefaultImportIdentifier()
+      : ts.factory.createIdentifier(fillable.exportedAs.name),
+    fillable.expression.getSourceFile().fileName,
+    importTo,
+  );
 
   return createImportDeclaration(
     createNamedImportClause(importOrder.moduleExportIdentifier),

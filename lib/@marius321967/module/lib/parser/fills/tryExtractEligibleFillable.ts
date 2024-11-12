@@ -114,11 +114,7 @@ export const variableDeclarationToExportAs = (
     throw new Error(`Node [${node.name.getText()}] is not an identifier`);
   }
 
-  return {
-    type: 'named',
-    identifierNode: node.name,
-    name: node.name.getText(),
-  };
+  return { type: 'named', name: node.name.getText() };
 };
 
 export const exportAssignmentToExportAs = (): ExportAs => ({

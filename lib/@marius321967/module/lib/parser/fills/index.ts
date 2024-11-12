@@ -145,9 +145,6 @@ const makeMemberForFill = (
     exportedAs: {
       type: 'named',
       name: generateFillName(fill.target.exportedAs),
-      identifierNode: ts.factory.createIdentifier(
-        generateFillName(fill.target.exportedAs),
-      ),
     },
     filePath: generateFillModulePath(fill.target.filePath),
   };
