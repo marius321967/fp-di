@@ -8,6 +8,7 @@ import { makeFillsPass } from './lib/parser/fills';
 import { parseEligibleFillables } from './lib/parser/fills/parseEligibleFillables';
 import {
   EligibleFillableMember,
+  FunctionFill,
   TypedFunctionFillMember,
 } from './lib/parser/fills/structs';
 import { probeEligibleFillable } from './lib/parser/fills/tryExtractEligibleFillable';
@@ -46,8 +47,9 @@ export const transform = (programDir: string): void => {
     parseResult.blueprints.getBlueprint,
   );
   let fills: TypedFunctionFillMember[] = [];
+  let filledEntrypoint: FunctionFill | null = null;
 
-  while (true) {
+  while (!filledEntrypoint) {
     const passResult = makeFillsPass(remainingFillables, parseResult);
 
     if (passResult.newFills.length === 0) {
@@ -59,18 +61,14 @@ export const transform = (programDir: string): void => {
 
     addFillsToValues(passResult.newFills, parseResult.values.addValue);
 
-    const filledEntrypoint = tryFillEligibleFillable(
+    filledEntrypoint = tryFillEligibleFillable(
       entrypointFillableMember,
       parseResult.values.getValue,
     );
-
-    if (!!filledEntrypoint) {
-      generateStart(filledEntrypoint, getStartPath(programEntrypointPath));
-      compileFills(fills);
-
-      break;
-    }
   }
+
+  compileFills(fills);
+  generateStart(filledEntrypoint, getStartPath(programEntrypointPath));
 };
 
 const getStartPath = (entrypointPath: string): string => {
