@@ -1,15 +1,17 @@
 import path from 'path';
 import { compileFills } from './lib/generator/fills';
+import { tryFillEligibleFillable } from './lib/generator/fills/tryFillEligibleFillable';
 import { generateStart } from './lib/generator/generateStart';
 import { assertIsPresent } from './lib/helpers/assert';
 import { parseProgram } from './lib/parser';
-import { makeFillsPass, tryFillEligibleFillable } from './lib/parser/fills';
+import { makeFillsPass } from './lib/parser/fills';
+import { parseEligibleFillables } from './lib/parser/fills/parseEligibleFillables';
 import {
   EligibleFillableMember,
-  FunctionFillMember,
   TypedFunctionFillMember,
 } from './lib/parser/fills/structs';
 import { probeEligibleFillable } from './lib/parser/fills/tryExtractEligibleFillable';
+import { ValueAdder } from './lib/repositories/values';
 import { prepareProgram } from './lib/tools';
 
 export const transform = (programDir: string): void => {
@@ -38,16 +40,24 @@ export const transform = (programDir: string): void => {
     exportedAs: parseResult.entrypoint,
   };
 
+  let remainingFillables = parseEligibleFillables(
+    programFiles,
+    program,
+    parseResult.blueprints.getBlueprint,
+  );
   let fills: TypedFunctionFillMember[] = [];
 
   while (true) {
-    const newFills = makeFillsPass(programFiles, program, parseResult);
+    const passResult = makeFillsPass(remainingFillables, parseResult);
 
-    if (newFills.length === 0) {
+    if (passResult.newFills.length === 0) {
       throw new Error('Entrypoint function could not be filled');
     }
 
-    fills = temporary_addNewFills(fills, newFills);
+    remainingFillables = passResult.unfilledEligibleFillables;
+    fills = [...fills, ...passResult.newFills];
+
+    addFillsToValues(passResult.newFills, parseResult.values.addValue);
 
     const filledEntrypoint = tryFillEligibleFillable(
       entrypointFillableMember,
@@ -69,29 +79,13 @@ const getStartPath = (entrypointPath: string): string => {
   return path.join(programDir, 'start.ts');
 };
 
-const temporary_fillsMatch = (
-  f1: FunctionFillMember,
-  f2: FunctionFillMember,
-): boolean => {
-  if (
-    f1.exportedAs.filePath !== f2.exportedAs.filePath ||
-    f1.exportedAs.exportedAs.type !== f2.exportedAs.exportedAs.type
-  )
-    return false;
-
-  return f1.exportedAs.exportedAs.type === 'named' &&
-    f2.exportedAs.exportedAs.type === 'named'
-    ? f1.exportedAs.exportedAs.name === f2.exportedAs.exportedAs.name
-    : true;
-};
-
-const temporary_addNewFills = (
+const addFillsToValues = (
   fills: TypedFunctionFillMember[],
-  newFills: TypedFunctionFillMember[],
-): TypedFunctionFillMember[] => {
-  const newFillsFiltered = newFills.filter(
-    (fill) => !fills.some((oldFill) => temporary_fillsMatch(oldFill, fill)),
-  );
-
-  return [...fills, ...newFillsFiltered];
+  addValue: ValueAdder,
+): void => {
+  fills.forEach((fill) => {
+    fill.blueprints.forEach((blueprint) => {
+      addValue(blueprint.originalSymbol, fill.exportedAs);
+    });
+  });
 };
