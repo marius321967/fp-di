@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import { BlueprintRepository } from '../repositories/blueprints';
 import { ValueRepository } from '../repositories/values';
-import { FunctionLikeNode, ModuleMember } from '../types';
+import { EligibleFillableMember } from './fills/structs';
 
 export type DependencyContext = {
   blueprints: BlueprintRepository;
@@ -9,7 +9,7 @@ export type DependencyContext = {
 };
 
 export type ParseResult = DependencyContext & {
-  entrypoint: ModuleMember<FunctionLikeNode>;
+  entrypoint: EligibleFillableMember;
 };
 
 export type ProgramEntrypointExport = Omit<

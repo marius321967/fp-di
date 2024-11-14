@@ -10,6 +10,7 @@ import {
   createValueRepository,
   ValueAdder,
 } from '../repositories/values';
+import { probeEligibleFillable } from './fills/tryExtractEligibleFillable';
 import { findProgramEntrypoint } from './findProgramEntrypoint';
 import { isEligibleValue } from './isEligibleValue';
 import { parseFile } from './parseFile';
@@ -21,13 +22,10 @@ export const parseProgram = (
   entrypointFile: string,
   program: ts.Program,
 ): ParseResult => {
-  const { blueprints, values } = programFiles.reduce(
-    programParseReducer(program),
-    {
-      blueprints: createBlueprintRepository(program.getTypeChecker()),
-      values: createValueRepository(program.getTypeChecker()),
-    },
-  );
+  const dependencyContext = programFiles.reduce(programParseReducer(program), {
+    blueprints: createBlueprintRepository(program.getTypeChecker()),
+    values: createValueRepository(program.getTypeChecker()),
+  });
 
   const entrypoint = findProgramEntrypoint(program, entrypointFile);
 
@@ -36,10 +34,23 @@ export const parseProgram = (
     'No entrypoint found. Must be arrow function exported as default.',
   );
 
+  const entrypointFillable = probeEligibleFillable(
+    entrypoint.expression,
+    program.getTypeChecker(),
+    dependencyContext.blueprints.getBlueprint,
+  );
+
+  assertIsPresent(
+    entrypointFillable,
+    'Entrypoint function cannot be injected with Values',
+  );
+
   return {
-    entrypoint,
-    blueprints,
-    values,
+    ...dependencyContext,
+    entrypoint: {
+      ...entrypointFillable,
+      exportedAs: entrypoint,
+    },
   };
 };
 

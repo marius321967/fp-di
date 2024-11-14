@@ -2,15 +2,12 @@ import { compileFills } from './lib/generator/fills';
 import { makeFillsPass } from './lib/generator/fills/makeFillsPass';
 import { tryFillEligibleFillable } from './lib/generator/fills/tryFillEligibleFillable';
 import { generateStart } from './lib/generator/generateStart';
-import { assertIsPresent } from './lib/helpers/assert';
 import { parseProgram } from './lib/parser';
 import { parseEligibleFillables } from './lib/parser/fills/parseEligibleFillables';
 import {
-  EligibleFillableMember,
   FunctionFill,
   TypedFunctionFillMember,
 } from './lib/parser/fills/structs';
-import { probeEligibleFillable } from './lib/parser/fills/tryExtractEligibleFillable';
 import { ValueAdder } from './lib/repositories/values';
 import { getStartPath, prepareProgram } from './lib/tools';
 
@@ -23,22 +20,6 @@ export const transform = (programDir: string): void => {
     programEntrypointPath,
     program,
   );
-
-  const entrypointFillable = probeEligibleFillable(
-    parseResult.entrypoint.expression,
-    program.getTypeChecker(),
-    parseResult.blueprints.getBlueprint,
-  );
-
-  assertIsPresent(
-    entrypointFillable,
-    'Entrypoint function cannot be injected with Values',
-  );
-
-  const entrypointFillableMember: EligibleFillableMember = {
-    ...entrypointFillable,
-    exportedAs: parseResult.entrypoint,
-  };
 
   let remainingFillables = parseEligibleFillables(
     programFiles,
@@ -61,7 +42,7 @@ export const transform = (programDir: string): void => {
     addFillsToValues(passResult.newFills, parseResult.values.addValue);
 
     filledEntrypoint = tryFillEligibleFillable(
-      entrypointFillableMember,
+      parseResult.entrypoint,
       parseResult.values.getValue,
     );
   }
