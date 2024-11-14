@@ -1,10 +1,9 @@
-import path from 'path';
 import { compileFills } from './lib/generator/fills';
+import { makeFillsPass } from './lib/generator/fills/makeFillsPass';
 import { tryFillEligibleFillable } from './lib/generator/fills/tryFillEligibleFillable';
 import { generateStart } from './lib/generator/generateStart';
 import { assertIsPresent } from './lib/helpers/assert';
 import { parseProgram } from './lib/parser';
-import { makeFillsPass } from './lib/parser/fills';
 import { parseEligibleFillables } from './lib/parser/fills/parseEligibleFillables';
 import {
   EligibleFillableMember,
@@ -13,7 +12,7 @@ import {
 } from './lib/parser/fills/structs';
 import { probeEligibleFillable } from './lib/parser/fills/tryExtractEligibleFillable';
 import { ValueAdder } from './lib/repositories/values';
-import { prepareProgram } from './lib/tools';
+import { getStartPath, prepareProgram } from './lib/tools';
 
 export const transform = (programDir: string): void => {
   const { program, programFiles, programEntrypointPath } =
@@ -69,12 +68,6 @@ export const transform = (programDir: string): void => {
 
   compileFills(fills);
   generateStart(filledEntrypoint, getStartPath(programEntrypointPath));
-};
-
-const getStartPath = (entrypointPath: string): string => {
-  const programDir = path.dirname(entrypointPath);
-
-  return path.join(programDir, 'start.ts');
 };
 
 const addFillsToValues = (

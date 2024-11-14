@@ -1,4 +1,11 @@
+import path from 'path';
 import ts from 'typescript';
+
+export const getStartPath = (entrypointPath: string): string => {
+  const programDir = path.dirname(entrypointPath);
+
+  return path.join(programDir, 'start.ts');
+};
 
 export const getParsedConfig = (
   basePath: string,

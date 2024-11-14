@@ -1,11 +1,11 @@
 import ts from 'typescript';
 import {
-  generateFillModulePath,
-  generateFillName,
-} from '../../generator/fills/fill-naming';
-import { createFillInitializer } from '../../generator/fills/generateFillSyntax';
+  TypedFunctionFill,
+  TypedFunctionFillMember,
+} from '../../parser/fills/structs';
 import { ModuleMember } from '../../types';
-import { TypedFunctionFill, TypedFunctionFillMember } from './structs';
+import { generateFillModulePath, generateFillName } from './fill-naming';
+import { createFillInitializer } from './generateFillSyntax';
 
 export const introduceFunctionFill = (
   fill: TypedFunctionFill,

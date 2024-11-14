@@ -7,18 +7,6 @@ type ModuleFills = {
   [fillFilePath: string]: TypedFunctionFillMember[];
 };
 
-const groupModuleFills = (fills: TypedFunctionFillMember[]): ModuleFills => {
-  const result: ModuleFills = {};
-
-  fills.forEach((fill) => {
-    const entry = result[fill.exportedAs.filePath];
-
-    result[fill.exportedAs.filePath] = entry ? [...entry, fill] : [fill];
-  });
-
-  return result;
-};
-
 export const compileFills = (fills: TypedFunctionFillMember[]): void => {
   const moduleFills: ModuleFills = groupModuleFills(fills);
 
@@ -32,4 +20,16 @@ export const compileFills = (fills: TypedFunctionFillMember[]): void => {
 
     fs.writeFileSync(fillFilePath, sourceText);
   });
+};
+
+const groupModuleFills = (fills: TypedFunctionFillMember[]): ModuleFills => {
+  const result: ModuleFills = {};
+
+  fills.forEach((fill) => {
+    const entry = result[fill.exportedAs.filePath];
+
+    result[fill.exportedAs.filePath] = entry ? [...entry, fill] : [fill];
+  });
+
+  return result;
 };

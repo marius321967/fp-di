@@ -1,17 +1,8 @@
-import { tryFillTypedEligibleFillable } from '../../generator/fills/tryFillTypedEligibleFillable';
-import { DependencyContext } from '../structs';
+import { TypedEligibleFillableMember } from '../../parser/fills/structs';
+import { DependencyContext } from '../../parser/structs';
 import { introduceFunctionFill } from './introduceFunctionFill';
-import {
-  TypedEligibleFillableMember,
-  TypedFunctionFillMember,
-} from './structs';
-
-type FillsPassResult = {
-  /** Fillables that could not be fulfilled in this pass */
-  unfilledEligibleFillables: TypedEligibleFillableMember[];
-  /** Successful function fills from this pass */
-  newFills: TypedFunctionFillMember[];
-};
+import { FillsPassResult } from './structs';
+import { tryFillTypedEligibleFillable } from './tryFillTypedEligibleFillable';
 
 /**
  * @param context Used to access existing metadata for filling functions.
