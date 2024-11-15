@@ -1,5 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
+import { createFillableIdentifier } from './generator/fills/createFillableIdentifier';
 import { getDefaultImportName } from './generator/getDefaultImportName';
 import {
   createDefaultImportClause,
@@ -8,7 +9,9 @@ import {
 } from './generator/node-builders';
 import { Blueprint } from './repositories/blueprints';
 import { Value } from './repositories/values';
+import { FunctionLikeNode, ModuleMember } from './types';
 
+// TODO rethink import orders. Does not specify whether target is default or named
 export type ImportOrder = {
   /** Full abstract path */
   modulePath: string;
@@ -31,19 +34,6 @@ export const relativizeImportPath = (
   importTo: string,
 ): string | '' =>
   './' + path.relative(path.dirname(importTo), importFrom).replace(/\.ts$/, '');
-
-export const importEntrypoint = (
-  importAs: ts.Identifier,
-  importFrom: string,
-  importTo: string,
-): ts.ImportDeclaration => {
-  const importOrder = orderImportFromTo(importAs, importFrom, importTo);
-
-  return createImportDeclaration(
-    createDefaultImportClause(importOrder.moduleExportIdentifier),
-    importOrder.modulePath,
-  );
-};
 
 export const importValue = (
   value: Value,
@@ -77,4 +67,22 @@ export const importBlueprint = (
     createNamedImportClause(importOrder.moduleExportIdentifier),
     importOrder.modulePath,
   );
+};
+
+export const importFillable = (
+  fillable: ModuleMember<FunctionLikeNode>,
+  importTo: string,
+): ts.ImportDeclaration => {
+  const importOrder = orderImportFromTo(
+    createFillableIdentifier(fillable),
+    fillable.expression.getSourceFile().fileName,
+    importTo,
+  );
+
+  const importClause =
+    fillable.exportedAs.type === 'default'
+      ? createDefaultImportClause(importOrder.moduleExportIdentifier)
+      : createNamedImportClause(importOrder.moduleExportIdentifier);
+
+  return createImportDeclaration(importClause, importOrder.modulePath);
 };

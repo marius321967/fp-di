@@ -1,20 +1,11 @@
-import ts from 'typescript';
-import { unique } from '../../helpers/structs';
-import { importBlueprint, importValue, orderImportFromTo } from '../../imports';
-import { FunctionFill, FunctionFillMember } from '../../parser/fills/structs';
-import { FunctionLikeNode, ModuleMember } from '../../types';
-import { getMemberImportIdentifier } from '../getDefaultImportName';
+import { FunctionFillMember } from '../../parser/fills/structs';
 import {
-  createImportDeclaration,
   createIntersectionTypeFromBlueprints,
-  createNamedImportClause,
-  createSingleExportStatement,
+  createSingleExportStatement
 } from '../node-builders';
 import { FillSyntax } from '../structs';
-import {
-  generateFillableDefaultImportIdentifier,
-  generateFillName,
-} from './fill-naming';
+import { generateFillName } from './fill-naming';
+import { generateFillImports } from './generateFillImports';
 
 /**
  * Generate AST nodes for a fill file
@@ -34,54 +25,8 @@ export const generateFillSyntax = (
     fulfilledBlueprintType,
   );
 
-  const valueImports = unique(fill.values).map((value) =>
-    importValue(value, fillModulePath),
-  );
-
-  const blueprintImports = fill.blueprints
-    ? fill.blueprints.map((blueprint) =>
-        importBlueprint(blueprint, fillModulePath),
-      )
-    : [];
-
-  const filledFunctionImport = importFillable(fill.target, fillModulePath);
-
   return {
     fillExportNode: functionExportNode,
-    importNodes: [filledFunctionImport, ...valueImports, ...blueprintImports],
+    importNodes: generateFillImports(fill, fillModulePath),
   };
-};
-
-export const createFillInitializer = ({
-  target,
-  values,
-}: FunctionFill): ts.CallExpression => {
-  const importedFillableIdentifier =
-    target.exportedAs.type === 'default'
-      ? generateFillableDefaultImportIdentifier()
-      : ts.factory.createIdentifier(target.exportedAs.name);
-
-  return ts.factory.createCallExpression(
-    importedFillableIdentifier,
-    undefined,
-    values.map((value) => getMemberImportIdentifier(value.member)),
-  );
-};
-
-export const importFillable = (
-  fillable: ModuleMember<FunctionLikeNode>,
-  importTo: string,
-): ts.ImportDeclaration => {
-  const importOrder = orderImportFromTo(
-    fillable.exportedAs.type === 'default'
-      ? generateFillableDefaultImportIdentifier()
-      : ts.factory.createIdentifier(fillable.exportedAs.name),
-    fillable.expression.getSourceFile().fileName,
-    importTo,
-  );
-
-  return createImportDeclaration(
-    createNamedImportClause(importOrder.moduleExportIdentifier),
-    importOrder.modulePath,
-  );
 };

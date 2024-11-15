@@ -3,6 +3,7 @@ import ts from 'typescript';
 import { importValue } from '../imports';
 import { Value } from '../repositories/values';
 import { Blueprints } from '../types';
+import { getMemberImportIdentifier } from './getDefaultImportName';
 
 const isImportNeeded = (value: Value, importTo: string): boolean =>
   path.relative(value.member.filePath, importTo) !== '';
@@ -84,4 +85,14 @@ export const createIntersectionTypeFromBlueprints = (
     blueprints.map((blueprint) =>
       ts.factory.createTypeReferenceNode(blueprint.exportedAs),
     ),
+  );
+
+export const createFillableCallExpression = (
+  fillableIdentifier: ts.Identifier,
+  values: Value[],
+): ts.CallExpression =>
+  ts.factory.createCallExpression(
+    fillableIdentifier,
+    undefined,
+    values.map(({ member }) => getMemberImportIdentifier(member)),
   );

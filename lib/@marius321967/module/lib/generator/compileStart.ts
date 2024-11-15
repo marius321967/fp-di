@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { FunctionFill } from '../parser/fills/structs';
-import { generateStartSyntax } from './generateStartSyntax';
+import { generateStartSyntax } from './fills/generateStartSyntax';
 import { printFile } from './printFile';
 
 export const compileStart = (

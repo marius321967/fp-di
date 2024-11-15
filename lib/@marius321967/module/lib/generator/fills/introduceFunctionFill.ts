@@ -4,8 +4,8 @@ import {
   TypedFunctionFillMember,
 } from '../../parser/fills/structs';
 import { ModuleMember } from '../../types';
+import { createFillInitializer } from './createFillInitializer';
 import { generateFillModulePath, generateFillName } from './fill-naming';
-import { createFillInitializer } from './generateFillSyntax';
 
 export const introduceFunctionFill = (
   fill: TypedFunctionFill,
