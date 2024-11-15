@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { unique } from '../helpers/structs';
 import { importEntrypoint, importValue } from '../imports';
 import { FunctionFill } from '../parser/fills/structs';
 import { getMemberImportIdentifier } from './getDefaultImportName';
@@ -15,7 +16,7 @@ export const generateStartSyntax = (
   const entrypointImportIdentifier = ts.factory.createIdentifier('start');
   const entrypointPath = entrypointFill.target.filePath;
 
-  const valueImports = entrypointFill.values.map((value) =>
+  const valueImports = unique(entrypointFill.values).map((value) =>
     importValue(value, startPath),
   );
   const entrypointImport = importEntrypoint(

@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { unique } from '../../helpers/structs';
 import { importBlueprint, importValue, orderImportFromTo } from '../../imports';
 import { FunctionFill, FunctionFillMember } from '../../parser/fills/structs';
 import { FunctionLikeNode, ModuleMember } from '../../types';
@@ -33,7 +34,7 @@ export const generateFillSyntax = (
     fulfilledBlueprintType,
   );
 
-  const valueImports = fill.values.map((value) =>
+  const valueImports = unique(fill.values).map((value) =>
     importValue(value, fillModulePath),
   );
 
