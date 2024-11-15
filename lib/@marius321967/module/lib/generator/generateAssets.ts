@@ -1,10 +1,11 @@
 import { parseFillables } from '../parser/fills/parseFillables';
-import { FunctionFill, TypedFunctionFillMember } from '../parser/fills/structs';
+import { TypedFunctionFillMember } from '../parser/fills/structs';
 import { ParseResult } from '../parser/structs';
 import { getStartPath } from '../tools';
 import { PreparedProgram } from '../types';
 import { compileStart } from './compileStart';
-import { addFillsToValues, compileFills } from './fills';
+import { compileFills } from './fills';
+import { addFillsToValues } from './fills/addFillstoValues';
 import { makeFillsPass } from './fills/makeFillsPass';
 import { tryFillFillable } from './fills/tryFillFillable';
 
@@ -17,8 +18,13 @@ export const generateAssets = (
     program,
     parseResult.blueprints.getBlueprint,
   );
+
   let fills: TypedFunctionFillMember[] = [];
-  let filledEntrypoint: FunctionFill | null = null;
+
+  let filledEntrypoint = tryFillFillable(
+    parseResult.entrypoint,
+    parseResult.values.getValue,
+  );
 
   while (!filledEntrypoint) {
     const passResult = makeFillsPass(remainingFillables, parseResult);
