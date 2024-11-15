@@ -1,15 +1,12 @@
-import {
-  EligibleFillableMember,
-  FunctionFill,
-} from '../../parser/fills/structs';
+import { FillableMember, FunctionFill } from '../../parser/fills/structs';
 import { Value, ValueGetter } from '../../repositories/values';
 import { resolveValueFromCandidateBlueprints } from '../resolveValueFromCandidateBlueprints';
 
-export const tryFillEligibleFillable = (
-  eligibleFillable: EligibleFillableMember,
+export const tryFillFillable = (
+  fillable: FillableMember,
   getValue: ValueGetter,
 ): FunctionFill | null => {
-  const values = eligibleFillable.parameterBlueprints.map((blueprints) => {
+  const values = fillable.parameterBlueprints.map((blueprints) => {
     return resolveValueFromCandidateBlueprints(blueprints, getValue);
   });
 
@@ -18,7 +15,7 @@ export const tryFillEligibleFillable = (
   }
 
   return {
-    target: eligibleFillable.exportedAs,
+    target: fillable.exportedAs,
     values: values as Value[],
   };
 };

@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import { getSymbolAtLocation } from '../helpers/symbols';
 import { ValueAdder } from '../repositories/values';
-import { variableDeclarationToExportAs } from './fills/tryExtractEligibleFillable';
+import { variableDeclarationToExportAs } from './fills/tryExtractFillable';
 
 export const valueDeclarationRegistrator =
   (addValue: ValueAdder, typeChecker: ts.TypeChecker) =>

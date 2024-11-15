@@ -11,7 +11,7 @@ import {
   ValueAdder,
 } from '../repositories/values';
 import { PreparedProgram } from '../types';
-import { probeEligibleFillable } from './fills/tryExtractEligibleFillable';
+import { probeFillable } from './fills/tryExtractFillable';
 import { findProgramEntrypoint } from './findProgramEntrypoint';
 import { isEligibleValue } from './isEligibleValue';
 import { parseFile } from './parseFile';
@@ -35,7 +35,7 @@ export const parseProgram = ({
     'No entrypoint found. Must be arrow function exported as default.',
   );
 
-  const entrypointFillable = probeEligibleFillable(
+  const entrypointFillable = probeFillable(
     entrypoint.expression,
     program.getTypeChecker(),
     dependencyContext.blueprints.getBlueprint,

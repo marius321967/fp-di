@@ -4,29 +4,29 @@ import { isFunctionLikeNode } from '../../node.type-guards';
 import { BlueprintGetter } from '../../repositories/blueprints';
 import { ExportAs } from '../../types';
 import { matchParametersBlueprints, tryExtractBlueprints } from './blueprints';
-import { EligibleFillable, EligibleFillableMember } from './structs';
+import { Fillable, FillableMember } from './structs';
 
-export const probeNamedExportForEligibleFillable = (
+export const probeNamedExportForFillable = (
   node: ts.VariableDeclaration,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): EligibleFillable | null => {
-  // TODO remove double-check for function here and in probeEligibleFillable
+): Fillable | null => {
+  // TODO remove double-check for function here and in probeFillable
   if (!node.initializer || !ts.isArrowFunction(node.initializer)) {
     return null;
   }
 
-  return probeEligibleFillable(node.initializer, typeChecker, getBlueprint);
+  return probeFillable(node.initializer, typeChecker, getBlueprint);
 };
 
-export const probeNamedExportsForEligibleFillable = (
+export const probeNamedExportsForFillable = (
   node: ts.VariableStatement,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): EligibleFillableMember[] => {
+): FillableMember[] => {
   return node.declarationList.declarations
-    .map<EligibleFillableMember | null>((declaration) => {
-      const fillable = probeNamedExportForEligibleFillable(
+    .map<FillableMember | null>((declaration) => {
+      const fillable = probeNamedExportForFillable(
         declaration,
         typeChecker,
         getBlueprint,
@@ -51,28 +51,28 @@ export const probeNamedExportsForEligibleFillable = (
     .filter(excludeNull);
 };
 
-export const probeDefaultExportForEligibleFillable = (
+export const probeDefaultExportForFillable = (
   node: ts.ExportAssignment,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): EligibleFillable | null => {
-  // TODO remove double-check for function here and in probeEligibleFillable
+): Fillable | null => {
+  // TODO remove double-check for function here and in probeFillable
   if (!node.expression || !ts.isArrowFunction(node.expression)) {
     return null;
   }
 
-  return probeEligibleFillable(node.expression, typeChecker, getBlueprint);
+  return probeFillable(node.expression, typeChecker, getBlueprint);
 };
 
 /**
  * Investigate expression and return parsed information if node is a function that can be filled by dependency injection.
  * @todo TODO handle function x() {}
  */
-export const probeEligibleFillable = (
+export const probeFillable = (
   expression: ts.Node,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): Omit<EligibleFillableMember, 'exportedAs'> | null => {
+): Omit<FillableMember, 'exportedAs'> | null => {
   if (!ts.isArrowFunction(expression)) {
     return null;
   }

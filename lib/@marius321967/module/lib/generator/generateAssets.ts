@@ -1,4 +1,4 @@
-import { parseEligibleFillables } from '../parser/fills/parseEligibleFillables';
+import { parseFillables } from '../parser/fills/parseFillables';
 import { FunctionFill, TypedFunctionFillMember } from '../parser/fills/structs';
 import { ParseResult } from '../parser/structs';
 import { getStartPath } from '../tools';
@@ -6,13 +6,13 @@ import { PreparedProgram } from '../types';
 import { compileStart } from './compileStart';
 import { addFillsToValues, compileFills } from './fills';
 import { makeFillsPass } from './fills/makeFillsPass';
-import { tryFillEligibleFillable } from './fills/tryFillEligibleFillable';
+import { tryFillFillable } from './fills/tryFillFillable';
 
 export const generateAssets = (
   parseResult: ParseResult,
   { programFiles, program, programEntrypointPath }: PreparedProgram,
 ): void => {
-  let remainingFillables = parseEligibleFillables(
+  let remainingFillables = parseFillables(
     programFiles,
     program,
     parseResult.blueprints.getBlueprint,
@@ -27,12 +27,12 @@ export const generateAssets = (
       throw new Error('Entrypoint function could not be filled');
     }
 
-    remainingFillables = passResult.unfilledEligibleFillables;
+    remainingFillables = passResult.unfilledFillables;
     fills = [...fills, ...passResult.newFills];
 
     addFillsToValues(passResult.newFills, parseResult.values.addValue);
 
-    filledEntrypoint = tryFillEligibleFillable(
+    filledEntrypoint = tryFillFillable(
       parseResult.entrypoint,
       parseResult.values.getValue,
     );

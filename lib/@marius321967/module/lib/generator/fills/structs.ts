@@ -1,6 +1,6 @@
 import ts from 'typescript';
 import {
-  TypedEligibleFillableMember,
+  TypedFillableMember,
   TypedFunctionFillMember,
 } from '../../parser/fills/structs';
 
@@ -11,7 +11,7 @@ export type FillFileSyntax = {
 
 export type FillsPassResult = {
   /** Fillables that could not be fulfilled in this pass */
-  unfilledEligibleFillables: TypedEligibleFillableMember[];
+  unfilledFillables: TypedFillableMember[];
   /** Successful function fills from this pass */
   newFills: TypedFunctionFillMember[];
 };

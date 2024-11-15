@@ -25,7 +25,7 @@ export type FunctionFillMember = FunctionFill & {
 };
 
 // TODO consider renaming to Fillable
-export type EligibleFillable = {
+export type Fillable = {
   /** Extracted blueprints for each item in exportedAs.expression.parameters */
   parameterBlueprints: Blueprints[];
   /** Blueprints matching exportedAs.expression.type */
@@ -33,10 +33,10 @@ export type EligibleFillable = {
 };
 
 /** Typed - function that will return a value fulfilling at least one Blueprint  */
-export type TypedEligibleFillable = Required<EligibleFillable>;
+export type TypedFillable = Required<Fillable>;
 
-export type EligibleFillableMember = FillableMember<EligibleFillable>;
-export type TypedEligibleFillableMember = FillableMember<TypedEligibleFillable>;
+export type FillableMember = FillableMember<Fillable>;
+export type TypedFillableMember = FillableMember<TypedFillable>;
 
 export type EligibleFillParseContext = {
   typeChecker: ts.TypeChecker;

@@ -6,48 +6,44 @@ import {
 } from '../../node.type-guards';
 import { BlueprintGetter } from '../../repositories/blueprints';
 import { FunctionLikeNode } from '../../types';
-import { TypedEligibleFillable, TypedEligibleFillableMember } from './structs';
+import { TypedFillable, TypedFillableMember } from './structs';
 import {
   exportAssignmentToExportAs,
-  probeDefaultExportForEligibleFillable,
-  probeNamedExportsForEligibleFillable,
-} from './tryExtractEligibleFillable';
+  probeDefaultExportForFillable,
+  probeNamedExportsForFillable,
+} from './tryExtractFillable';
 
-export const fileEligibleFillableReducer =
+export const fileFillableReducer =
   (program: ts.Program, getBlueprint: BlueprintGetter) =>
-  (
-    acc: TypedEligibleFillableMember[],
-    node: ts.Node,
-  ): TypedEligibleFillableMember[] => {
+  (acc: TypedFillableMember[], node: ts.Node): TypedFillableMember[] => {
     // export const x = ...;
     if (isExportedVariableDeclaration(node)) {
-      const eligibleFillableMembers = probeNamedExportsForEligibleFillable(
+      const fillableMembers = probeNamedExportsForFillable(
         node,
         program.getTypeChecker(),
         getBlueprint,
       ).filter(
-        (eligibleFillable): eligibleFillable is TypedEligibleFillableMember =>
-          !!eligibleFillable.blueprints,
+        (fillable): fillable is TypedFillableMember => !!fillable.blueprints,
       );
 
-      return [...acc, ...eligibleFillableMembers];
+      return [...acc, ...fillableMembers];
     }
 
     // export default ...;
     if (isDefaultExportDeclaration(node)) {
-      const eligibleFillable = probeDefaultExportForEligibleFillable(
+      const fillable = probeDefaultExportForFillable(
         node,
         program.getTypeChecker(),
         getBlueprint,
       );
 
-      return eligibleFillable &&
-        eligibleFillable.blueprints &&
+      return fillable &&
+        fillable.blueprints &&
         isFunctionLikeNode(node.expression)
         ? [
             ...acc,
             {
-              ...(eligibleFillable as TypedEligibleFillable),
+              ...(fillable as TypedFillable),
               exportedAs: {
                 expression: node.expression as FunctionLikeNode,
                 exportedAs: exportAssignmentToExportAs(),

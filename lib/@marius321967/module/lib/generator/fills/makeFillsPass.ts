@@ -1,42 +1,33 @@
-import { TypedEligibleFillableMember } from '../../parser/fills/structs';
+import { TypedFillableMember } from '../../parser/fills/structs';
 import { DependencyContext } from '../../parser/structs';
 import { introduceFunctionFill } from './introduceFunctionFill';
 import { FillsPassResult } from './structs';
-import { tryFillTypedEligibleFillable } from './tryFillTypedEligibleFillable';
+import { tryFillTypedFillable } from './tryFillTypedFillable';
 
 /**
  * @param context Used to access existing metadata for filling functions.
  */
 export const makeFillsPass = (
-  eligibleFillables: TypedEligibleFillableMember[],
+  fillables: TypedFillableMember[],
   context: DependencyContext,
 ): FillsPassResult =>
-  eligibleFillables.reduce<FillsPassResult>(fillsPassReducer(context), {
-    unfilledEligibleFillables: [],
+  fillables.reduce<FillsPassResult>(fillsPassReducer(context), {
+    unfilledFillables: [],
     newFills: [],
   });
 
 const fillsPassReducer =
   (context: DependencyContext) =>
-  (
-    acc: FillsPassResult,
-    eligibleFillable: TypedEligibleFillableMember,
-  ): FillsPassResult => {
-    const fill = tryFillTypedEligibleFillable(
-      eligibleFillable,
-      context.values.getValue,
-    );
+  (acc: FillsPassResult, fillable: TypedFillableMember): FillsPassResult => {
+    const fill = tryFillTypedFillable(fillable, context.values.getValue);
 
     return fill
       ? {
-          unfilledEligibleFillables: acc.unfilledEligibleFillables,
+          unfilledFillables: acc.unfilledFillables,
           newFills: [...acc.newFills, introduceFunctionFill(fill)],
         }
       : {
-          unfilledEligibleFillables: [
-            ...acc.unfilledEligibleFillables,
-            eligibleFillable,
-          ],
+          unfilledFillables: [...acc.unfilledFillables, fillable],
           newFills: acc.newFills,
         };
   };

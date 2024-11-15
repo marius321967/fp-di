@@ -1,27 +1,24 @@
 import ts from 'typescript';
 import { assertIsPresent } from '../../helpers/assert';
 import { BlueprintGetter } from '../../repositories/blueprints';
-import { fileEligibleFillableReducer } from './fileEligibleFillableReducer';
-import { TypedEligibleFillableMember } from './structs';
+import { fileFillableReducer } from './fileFillableReducer';
+import { TypedFillableMember } from './structs';
 
-export const parseEligibleFillables = (
+export const parseFillables = (
   programFiles: string[],
   program: ts.Program,
   getBlueprint: BlueprintGetter,
-): TypedEligibleFillableMember[] =>
-  programFiles.reduce<TypedEligibleFillableMember[]>(
-    (acc, path) => [
-      ...acc,
-      ...parseFileEligibleFillables(path, program, getBlueprint),
-    ],
+): TypedFillableMember[] =>
+  programFiles.reduce<TypedFillableMember[]>(
+    (acc, path) => [...acc, ...parseFileFillables(path, program, getBlueprint)],
     [],
   );
 
-export const parseFileEligibleFillables = (
+export const parseFileFillables = (
   modulePath: string,
   program: ts.Program,
   getBlueprint: BlueprintGetter,
-): TypedEligibleFillableMember[] => {
+): TypedFillableMember[] => {
   const source = program.getSourceFile(modulePath);
   assertIsPresent(source, `File [${modulePath}] not found in program`);
 
@@ -29,5 +26,5 @@ export const parseFileEligibleFillables = (
     .getChildren()
     .map((node) => node.getChildren())
     .reduce((acc, children) => [...acc, ...children], [])
-    .reduce(fileEligibleFillableReducer(program, getBlueprint), []);
+    .reduce(fileFillableReducer(program, getBlueprint), []);
 };
