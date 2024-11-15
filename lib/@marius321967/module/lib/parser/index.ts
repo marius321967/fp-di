@@ -10,6 +10,7 @@ import {
   createValueRepository,
   ValueAdder,
 } from '../repositories/values';
+import { PreparedProgram } from '../types';
 import { probeEligibleFillable } from './fills/tryExtractEligibleFillable';
 import { findProgramEntrypoint } from './findProgramEntrypoint';
 import { isEligibleValue } from './isEligibleValue';
@@ -17,17 +18,17 @@ import { parseFile } from './parseFile';
 import { DependencyContext, ParseResult } from './structs';
 import { valueDeclarationRegistrator } from './valueDeclarationRegistrator';
 
-export const parseProgram = (
-  programFiles: string[],
-  entrypointFile: string,
-  program: ts.Program,
-): ParseResult => {
+export const parseProgram = ({
+  program,
+  programFiles,
+  programEntrypointPath,
+}: PreparedProgram): ParseResult => {
   const dependencyContext = programFiles.reduce(programParseReducer(program), {
     blueprints: createBlueprintRepository(program.getTypeChecker()),
     values: createValueRepository(program.getTypeChecker()),
   });
 
-  const entrypoint = findProgramEntrypoint(program, entrypointFile);
+  const entrypoint = findProgramEntrypoint(program, programEntrypointPath);
 
   assertIsPresent(
     entrypoint,

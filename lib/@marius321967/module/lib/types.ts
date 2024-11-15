@@ -19,3 +19,9 @@ export type ModuleMember<T> = {
   exportedAs: ExportAs;
   expression: T;
 };
+
+export type PreparedProgram = {
+  program: ts.Program;
+  programFiles: string[];
+  programEntrypointPath: string;
+};

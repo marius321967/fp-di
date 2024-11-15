@@ -3,7 +3,7 @@ import { FunctionFill } from '../parser/fills/structs';
 import { generateStartSyntax } from './generateStartSyntax';
 import { printFile } from './printFile';
 
-export const generateStart = (
+export const compileStart = (
   entrypointFill: FunctionFill,
   startPath: string,
 ): void => {

@@ -1,5 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
+import { PreparedProgram } from './types';
 
 export const getStartPath = (entrypointPath: string): string => {
   const programDir = path.dirname(entrypointPath);
@@ -17,13 +18,7 @@ export const getParsedConfig = (
     basePath,
   );
 
-export const prepareProgram = (
-  programDir: string,
-): {
-  program: ts.Program;
-  programFiles: string[];
-  programEntrypointPath: string;
-} => {
+export const prepareProgram = (programDir: string): PreparedProgram => {
   const config = getParsedConfig(programDir, programDir + '/tsconfig.json');
 
   const programFiles = config.fileNames.filter(
