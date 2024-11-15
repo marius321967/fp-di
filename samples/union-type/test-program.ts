@@ -1,3 +1,4 @@
+import './config';
 import { EmailServiceAddress, SmsServiceAddress } from './types';
 
 export default (
