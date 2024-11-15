@@ -3,10 +3,10 @@ import { resolveOriginalSymbol } from '../helpers/symbols';
 import { ModuleMember } from '../types';
 
 export type Value = TypelessValue & {
-  typeSymbol: ts.Symbol;
+  typeSymbols: ts.Symbol[];
 };
 
-/** Value that does not bind to a specific Blueprint */
+/** Value that does not bind to specific Blueprints */
 export type TypelessValue = {
   member: ModuleMember<unknown>;
 };
@@ -16,7 +16,7 @@ export type ValueMap = Value[];
 // TODO: determine where original symbol should be resolve (inside or outside this fn), then if needed
 // forbid TypeAlias flag symbols
 export type ValueAdder = (
-  typeSymbol: ts.Symbol,
+  typeSymbols: ts.Symbol[],
   member: ModuleMember<unknown>,
 ) => void;
 
@@ -40,7 +40,7 @@ export const combineValueRepositories = (
   repo2: ValueRepository,
 ): ValueRepository => {
   repo2.getValues().forEach((item) => {
-    repo1.addValue(item.typeSymbol, item.member);
+    repo1.addValue(item.typeSymbols, item.member);
   });
 
   return repo1;
@@ -50,13 +50,15 @@ export const createValueRepository = (
   typeChecker: ts.TypeChecker,
   items: ValueMap = [],
 ): ValueRepository => {
-  const addValue: ValueAdder = (typeSymbol, member) =>
-    items.push(buildValueMapEntry(typeSymbol, typeChecker, member));
+  const addValue: ValueAdder = (typeSymbols, member) =>
+    items.push(buildValueMapEntry(typeSymbols, typeChecker, member));
 
   const getValue: ValueGetter = (typeSymbol) => {
     const originalSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
 
-    return items.find((entry) => entry.typeSymbol === originalSymbol) || null;
+    return (
+      items.find((entry) => entry.typeSymbols.includes(originalSymbol)) || null
+    );
   };
 
   const getValues: ValueListGetter = () => items;
@@ -71,14 +73,12 @@ export const createValueRepository = (
 };
 
 const buildValueMapEntry = (
-  typeSymbol: ts.Symbol,
+  typeSymbols: ts.Symbol[],
   typeChecker: ts.TypeChecker,
   member: ModuleMember<unknown>,
-): Value => {
-  const originalTypeSymbol = resolveOriginalSymbol(typeSymbol, typeChecker);
-
-  return {
-    typeSymbol: originalTypeSymbol,
-    member,
-  };
-};
+): Value => ({
+  typeSymbols: typeSymbols.map((typeSymbol) =>
+    resolveOriginalSymbol(typeSymbol, typeChecker),
+  ),
+  member,
+});

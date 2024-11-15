@@ -1,22 +1,18 @@
-import ts, { TypeReferenceNode } from 'typescript';
+import ts from 'typescript';
 import { assertIsPresent } from '../helpers/assert';
 import {
-  BlueprintAdder,
   combineBlueprintRepositories,
   createBlueprintRepository,
 } from '../repositories/blueprints';
 import {
   combineValueRepositories,
   createValueRepository,
-  ValueAdder,
 } from '../repositories/values';
 import { PreparedProgram } from '../types';
 import { probeFillable } from './fills/tryExtractFillable';
 import { findProgramEntrypoint } from './findProgramEntrypoint';
-import { isEligibleValue } from './isEligibleValue';
 import { parseFile } from './parseFile';
 import { DependencyContext, ParseResult } from './structs';
-import { valueDeclarationRegistrator } from './valueDeclarationRegistrator';
 
 export const parseProgram = ({
   program,
@@ -68,26 +64,3 @@ export const programParseReducer =
       values: combineValueRepositories(acc.values, result.values),
     };
   };
-
-export const registerTypeDeclaration = (
-  node: ts.TypeAliasDeclaration,
-  addBlueprint: BlueprintAdder,
-): void => {
-  addBlueprint(node);
-};
-
-export const registerEligibleValueDeclarations = (
-  node: ts.VariableStatement,
-  typeChecker: ts.TypeChecker,
-  addValue: ValueAdder,
-): void => {
-  node.declarationList.declarations
-    .filter(isEligibleValue)
-    .forEach(valueDeclarationRegistrator(addValue, typeChecker));
-};
-
-export const registerValueDeclaration = (
-  node: ts.VariableDeclaration & { type: TypeReferenceNode },
-  typeChecker: ts.TypeChecker,
-  addValue: ValueAdder,
-): void => valueDeclarationRegistrator(addValue, typeChecker)(node);

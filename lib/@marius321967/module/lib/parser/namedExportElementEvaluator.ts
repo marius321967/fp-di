@@ -1,7 +1,8 @@
 import ts from 'typescript';
-import { registerTypeDeclaration, registerValueDeclaration } from '.';
 import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem';
 import { isEligibleValue } from './isEligibleValue';
+import { registerTypeDeclaration } from './registerTypeDeclaration';
+import { registerValueDeclaration } from './registerValueDeclaration';
 import { DependencyContext } from './structs';
 
 export const namedExportElementEvaluator =

@@ -3,12 +3,10 @@ import {
   isExportedVariableDeclaration,
   isNamedExportDeclaration,
 } from '../node.type-guards';
-import {
-  registerEligibleValueDeclarations,
-  registerTypeDeclaration,
-} from './index';
 import { isEligibleBlueprint } from './isEligibleBlueprint';
 import { namedExportElementEvaluator } from './namedExportElementEvaluator';
+import { registerEligibleValueDeclarations } from './registerEligibleValueDeclarations';
+import { registerTypeDeclaration } from './registerTypeDeclaration';
 import { DependencyContext } from './structs';
 
 export const rootNodeWalker =

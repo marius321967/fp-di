@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { TypedFunctionFillMember } from '../../parser/fills/structs';
-import { ValueAdder } from '../../repositories/values';
 import { printFile } from '../printFile';
 import { generateFillsFile } from './generateFillsFileSyntax';
 
@@ -33,15 +32,4 @@ const groupModuleFills = (fills: TypedFunctionFillMember[]): ModuleFills => {
   });
 
   return result;
-};
-
-export const addFillsToValues = (
-  fills: TypedFunctionFillMember[],
-  addValue: ValueAdder,
-): void => {
-  fills.forEach((fill) => {
-    fill.blueprints.forEach((blueprint) => {
-      addValue(blueprint.originalSymbol, fill.exportedAs);
-    });
-  });
 };
