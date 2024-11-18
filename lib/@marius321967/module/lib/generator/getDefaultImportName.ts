@@ -1,9 +1,9 @@
-import { basename } from 'path';
+import { basename, extname } from 'path';
 import ts from 'typescript';
 import { ModuleMember } from '../types';
 
 export const getDefaultImportName = (filePath: string): string => {
-  const moduleName = basename(filePath).replace(/\.ts$/, ''); // TODO remove extensions generally
+  const moduleName = basename(filePath, extname(filePath));
 
   return `default_${moduleName}`;
 };
