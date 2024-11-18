@@ -24,7 +24,6 @@ export type FunctionFillMember = FunctionFill & {
   exportedAs: ModuleMember<CallExpression>;
 };
 
-// TODO consider renaming to Fillable
 export type Fillable = {
   /** Extracted blueprints for each item in exportedAs.expression.parameters */
   parameterBlueprints: Blueprints[];
