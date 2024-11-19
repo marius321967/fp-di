@@ -6,6 +6,7 @@ import { isEligibleValue } from './isEligibleValue';
 import { registerTypeDeclaration } from './registerTypeDeclaration';
 import { registerValueDeclaration } from './registerValueDeclaration';
 
+// TODO reuse common functionality with namedExportElementEvaluator()
 export const evaluateDefaultExport = (
   exportNode: ts.ExportAssignment,
   { blueprints, values, typeChecker }: InterestProcessorContext,
