@@ -3,7 +3,7 @@ import { BlueprintGetter } from '../../repositories/blueprints';
 import { Value } from '../../repositories/values';
 import { Blueprints, FunctionLikeNode, ModuleMember } from '../../types';
 
-type FillableMember<T> = T & {
+type HasMember<T> = T & {
   exportedAs: ModuleMember<FunctionLikeNode>;
 };
 
@@ -34,8 +34,8 @@ export type Fillable = {
 /** Typed - function that will return a value fulfilling at least one Blueprint  */
 export type TypedFillable = Required<Fillable>;
 
-export type FillableMember = FillableMember<Fillable>;
-export type TypedFillableMember = FillableMember<TypedFillable>;
+export type FillableMember = HasMember<Fillable>;
+export type TypedFillableMember = HasMember<TypedFillable>;
 
 export type EligibleFillParseContext = {
   typeChecker: ts.TypeChecker;
