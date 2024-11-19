@@ -48,7 +48,9 @@ export const importValue = (
   );
 
   return createImportDeclaration(
-    createNamedImportClause(importOrder.moduleExportIdentifier),
+    value.member.exportedAs.type === 'default'
+      ? createDefaultImportClause(importOrder.moduleExportIdentifier)
+      : createNamedImportClause(importOrder.moduleExportIdentifier),
     importOrder.modulePath,
   );
 };

@@ -1,8 +1,10 @@
 import ts from 'typescript';
 import {
+  isDefaultExportDeclaration,
   isExportedVariableDeclaration,
   isNamedExportDeclaration,
 } from '../node.type-guards';
+import { evaluateDefaultExport } from './evaluateDefaultExport';
 import { isEligibleBlueprint } from './isEligibleBlueprint';
 import { namedExportElementEvaluator } from './namedExportElementEvaluator';
 import { registerEligibleValueDeclarations } from './registerEligibleValueDeclarations';
@@ -37,5 +39,10 @@ export const rootNodeWalker =
     }
 
     // export default x;
-    // TODO: handle default exports
+    if (isDefaultExportDeclaration(node)) {
+      evaluateDefaultExport(node, program.getTypeChecker(), {
+        blueprints,
+        values,
+      });
+    }
   };

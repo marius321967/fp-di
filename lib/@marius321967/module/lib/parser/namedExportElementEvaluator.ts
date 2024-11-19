@@ -1,4 +1,5 @@
 import ts from 'typescript';
+import { exportedAsNamed } from '../helpers/structs';
 import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem';
 import { isEligibleValue } from './isEligibleValue';
 import { registerTypeDeclaration } from './registerTypeDeclaration';
@@ -24,7 +25,12 @@ export const namedExportElementEvaluator =
       ts.isVariableDeclaration(declarationNode) &&
       isEligibleValue(declarationNode)
     ) {
-      registerValueDeclaration(declarationNode, typeChecker, values.addValue);
+      registerValueDeclaration(
+        values.addValue,
+        typeChecker,
+        declarationNode,
+        exportedAsNamed(exportNode.name.getText()),
+      );
     }
 
     if (ts.isTypeAliasDeclaration(declarationNode)) {

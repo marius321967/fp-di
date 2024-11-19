@@ -1,11 +1,24 @@
-import ts, { TypeReferenceNode } from 'typescript';
+import ts from 'typescript';
+import { getSymbolAtLocation } from '../helpers/symbols';
 import { ValueAdder } from '../repositories/values';
-import { valueDeclarationRegistrator } from './valueDeclarationRegistrator';
+import { ExportAs } from '../types';
+import { toOfferedTypes } from './toOfferedTypes';
 
 export const registerValueDeclaration = (
-  node: ts.VariableDeclaration & {
-    type: TypeReferenceNode | ts.IntersectionTypeNode;
-  },
-  typeChecker: ts.TypeChecker,
   addValue: ValueAdder,
-): void => valueDeclarationRegistrator(addValue, typeChecker)(node);
+  typeChecker: ts.TypeChecker,
+  node: ts.VariableDeclaration & {
+    type: ts.TypeReferenceNode | ts.IntersectionTypeNode;
+  },
+  exportedAs: ExportAs,
+): void => {
+  const localTypeSymbols = toOfferedTypes(node.type).map((typeReference) =>
+    getSymbolAtLocation(typeReference.typeName, typeChecker),
+  );
+
+  addValue(localTypeSymbols, {
+    expression: node.initializer,
+    filePath: node.getSourceFile().fileName,
+    exportedAs,
+  });
+};
