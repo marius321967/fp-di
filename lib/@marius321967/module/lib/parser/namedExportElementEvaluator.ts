@@ -1,10 +1,22 @@
 import ts from 'typescript';
 import { exportedAsNamed } from '../helpers/structs';
 import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem';
+import { InterestProcessorContext } from './interest';
 import { isEligibleValue } from './isEligibleValue';
 import { registerTypeDeclaration } from './registerTypeDeclaration';
 import { registerValueDeclaration } from './registerValueDeclaration';
 import { DependencyContext } from './structs';
+
+export const processNamedExportDeclaration = (
+  node: ts.ExportDeclaration & {
+    exportClause: ts.NamedExports;
+  },
+  context: InterestProcessorContext,
+) => {
+  node.exportClause.elements.forEach(
+    namedExportElementEvaluator(context.typeChecker, context),
+  );
+};
 
 export const namedExportElementEvaluator =
   (typeChecker: ts.TypeChecker, { blueprints, values }: DependencyContext) =>
@@ -34,6 +46,6 @@ export const namedExportElementEvaluator =
     }
 
     if (ts.isTypeAliasDeclaration(declarationNode)) {
-      registerTypeDeclaration(declarationNode, blueprints.addBlueprint);
+      registerTypeDeclaration(declarationNode, { blueprints, values });
     }
   };

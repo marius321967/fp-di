@@ -1,15 +1,14 @@
 import ts from 'typescript';
 import { exportedAsDefault } from '../helpers/structs';
+import { InterestProcessorContext } from './interest';
 import { isEligibleBlueprint } from './isEligibleBlueprint';
 import { isEligibleValue } from './isEligibleValue';
 import { registerTypeDeclaration } from './registerTypeDeclaration';
 import { registerValueDeclaration } from './registerValueDeclaration';
-import { DependencyContext } from './structs';
 
 export const evaluateDefaultExport = (
   exportNode: ts.ExportAssignment,
-  typeChecker: ts.TypeChecker,
-  { blueprints, values }: DependencyContext,
+  { blueprints, values, typeChecker }: InterestProcessorContext,
 ): void => {
   const expression = exportNode.expression;
   if (ts.isIdentifier(expression)) {
@@ -23,7 +22,7 @@ export const evaluateDefaultExport = (
 
       const declaration = sym.declarations[0];
       if (isEligibleBlueprint(declaration)) {
-        registerTypeDeclaration(declaration, blueprints.addBlueprint);
+        registerTypeDeclaration(declaration, { blueprints, values });
       }
 
       if (

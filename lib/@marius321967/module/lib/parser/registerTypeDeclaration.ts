@@ -1,9 +1,9 @@
 import ts from 'typescript';
-import { BlueprintAdder } from '../repositories/blueprints';
+import { DependencyContext } from './structs';
 
 export const registerTypeDeclaration = (
   node: ts.TypeAliasDeclaration,
-  addBlueprint: BlueprintAdder,
+  dependencyContext: DependencyContext,
 ): void => {
-  addBlueprint(node);
+  dependencyContext.blueprints.addBlueprint(node);
 };
