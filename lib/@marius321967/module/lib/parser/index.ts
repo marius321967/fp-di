@@ -46,7 +46,7 @@ export const parseProgram = ({
     ...dependencyContext,
     entrypoint: {
       ...entrypointFillable,
-      exportedAs: entrypoint,
+      member: entrypoint,
     },
   };
 };

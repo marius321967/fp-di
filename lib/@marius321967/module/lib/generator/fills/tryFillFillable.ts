@@ -15,7 +15,7 @@ export const tryFillFillable = (
   }
 
   return {
-    target: fillable.exportedAs,
+    target: fillable.member,
     values: values as Value[],
   };
 };

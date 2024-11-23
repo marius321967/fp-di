@@ -11,7 +11,7 @@ export const introduceFunctionFill = (
   fill: TypedFunctionFill,
 ): TypedFunctionFillMember => ({
   ...fill,
-  exportedAs: makeMemberForFill(fill),
+  member: makeMemberForFill(fill),
 });
 
 const makeMemberForFill = (

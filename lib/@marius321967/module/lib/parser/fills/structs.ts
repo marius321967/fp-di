@@ -4,7 +4,7 @@ import { Value } from '../../repositories/values';
 import { Blueprints, FunctionLikeNode, ModuleMember } from '../../types';
 
 type HasMember<T> = T & {
-  exportedAs: ModuleMember<FunctionLikeNode>;
+  member: ModuleMember<FunctionLikeNode>;
 };
 
 export type FunctionFill = {
@@ -18,10 +18,10 @@ export type FunctionFill = {
 export type TypedFunctionFill = Required<FunctionFill>;
 
 export type TypedFunctionFillMember = TypedFunctionFill & {
-  exportedAs: ModuleMember<CallExpression>;
+  member: ModuleMember<CallExpression>;
 };
 export type FunctionFillMember = FunctionFill & {
-  exportedAs: ModuleMember<CallExpression>;
+  member: ModuleMember<CallExpression>;
 };
 
 export type Fillable = {

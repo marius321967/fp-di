@@ -41,7 +41,7 @@ export const probeNamedExportsForFillable = (
 
       return {
         ...fillable,
-        exportedAs: {
+        member: {
           expression: declaration.initializer,
           exportedAs: variableDeclarationToExportAs(declaration),
           filePath: node.getSourceFile().fileName,
@@ -72,7 +72,7 @@ export const probeFillable = (
   expression: ts.Node,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): Omit<FillableMember, 'exportedAs'> | null => {
+): Omit<FillableMember, 'member'> | null => {
   if (!ts.isArrowFunction(expression)) {
     return null;
   }

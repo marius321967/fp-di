@@ -44,7 +44,7 @@ export const fileFillableReducer =
             ...acc,
             {
               ...(fillable as TypedFillable),
-              exportedAs: {
+              member: {
                 expression: node.expression as FunctionLikeNode,
                 exportedAs: exportAssignmentToExportAs(),
                 filePath: node.getSourceFile().fileName,

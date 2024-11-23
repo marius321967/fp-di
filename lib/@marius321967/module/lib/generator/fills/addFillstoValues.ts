@@ -10,6 +10,6 @@ export const addFillsToValues = (
       ({ originalSymbol }) => originalSymbol,
     );
 
-    addValue(originalSymbols, fill.exportedAs);
+    addValue(originalSymbols, fill.member);
   });
 };

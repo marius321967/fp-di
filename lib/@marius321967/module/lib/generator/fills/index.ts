@@ -26,9 +26,9 @@ const groupModuleFills = (fills: TypedFunctionFillMember[]): ModuleFills => {
   const result: ModuleFills = {};
 
   fills.forEach((fill) => {
-    const entry = result[fill.exportedAs.filePath];
+    const entry = result[fill.member.filePath];
 
-    result[fill.exportedAs.filePath] = entry ? [...entry, fill] : [fill];
+    result[fill.member.filePath] = entry ? [...entry, fill] : [fill];
   });
 
   return result;

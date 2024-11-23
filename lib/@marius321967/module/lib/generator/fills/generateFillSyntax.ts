@@ -1,7 +1,7 @@
 import { FunctionFillMember } from '../../parser/fills/structs';
 import {
   createIntersectionTypeFromBlueprints,
-  createSingleExportStatement
+  createSingleExportStatement,
 } from '../node-builders';
 import { FillSyntax } from '../structs';
 import { generateFillName } from './fill-naming';
@@ -21,7 +21,7 @@ export const generateFillSyntax = (
 
   const functionExportNode = createSingleExportStatement(
     generateFillName(fill.target.exportedAs),
-    fill.exportedAs.expression,
+    fill.member.expression,
     fulfilledBlueprintType,
   );
 
