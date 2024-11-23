@@ -79,18 +79,18 @@ export const probeFillable = (
 
   const functionNode = expression;
 
-  const parameterBlueprints = matchParametersBlueprints(
+  const parameters = matchParametersBlueprints(
     functionNode.parameters,
     typeChecker,
     getBlueprint,
   );
 
-  if (!parameterBlueprints) {
+  if (!parameters) {
     return null;
   }
 
   if (!functionNode.type) {
-    return { parameterBlueprints };
+    return { parameters: parameters };
   }
 
   const blueprints = tryExtractBlueprints(
@@ -101,10 +101,10 @@ export const probeFillable = (
 
   return blueprints
     ? {
-        parameterBlueprints: parameterBlueprints,
+        parameters: parameters,
         blueprints,
       }
-    : { parameterBlueprints };
+    : { parameters: parameters };
 };
 
 export const variableDeclarationToExportAs = (

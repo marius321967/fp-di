@@ -3,10 +3,11 @@ import {
   canExtractAcceptedTypes,
   toAcceptedTypes,
 } from '../../generator/fills/toAcceptedTypes';
-import { excludeNull, excludeUndefined } from '../../helpers/structs';
+import { excludeNull } from '../../helpers/structs';
 import { getSymbolAtLocation } from '../../helpers/symbols';
 import { BlueprintGetter } from '../../repositories/blueprints';
 import { Blueprints } from '../../types';
+import { FillableParameter } from './structs';
 
 /**
  * @returns Blueprints extracted for each parameters item. Length always matches parameters.
@@ -16,15 +17,30 @@ export const matchParametersBlueprints = (
   parameters: ts.NodeArray<ts.ParameterDeclaration>,
   typeChecker: ts.TypeChecker,
   getBlueprint: BlueprintGetter,
-): Blueprints[] | null => {
-  const parameterBlueprints = parameters
-    .map(({ type }) => type)
-    .filter(excludeUndefined)
-    .map((typeNode) =>
-      tryExtractBlueprints(typeNode, typeChecker, getBlueprint),
-    );
+): FillableParameter[] | null => {
+  const parameterBlueprints = parameters.map((parameter) =>
+    tryProcessParameter(parameter, typeChecker, getBlueprint),
+  );
 
   return parameterBlueprints.every(excludeNull) ? parameterBlueprints : null;
+};
+
+export const tryProcessParameter = (
+  parameter: ts.ParameterDeclaration,
+  typeChecker: ts.TypeChecker,
+  getBlueprint: BlueprintGetter,
+): FillableParameter | null => {
+  const typeNode = parameter.type;
+
+  if (!typeNode) {
+    return null;
+  }
+
+  const blueprints = tryExtractBlueprints(typeNode, typeChecker, getBlueprint);
+
+  return blueprints && blueprints.length
+    ? { blueprints, isOptional: !!parameter.questionToken }
+    : null;
 };
 
 /** @returns Null if no blueprints could be matched. Array never empty. */

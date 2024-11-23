@@ -24,9 +24,11 @@ export type FunctionFillMember = FunctionFill & {
   member: ModuleMember<CallExpression>;
 };
 
+export type FillableParameter = { blueprints: Blueprints; isOptional: boolean };
+
 export type Fillable = {
   /** Extracted blueprints for each item in exportedAs.expression.parameters */
-  parameterBlueprints: Blueprints[];
+  parameters: FillableParameter[];
   /** Blueprints matching exportedAs.expression.type */
   blueprints?: Blueprints;
 };
