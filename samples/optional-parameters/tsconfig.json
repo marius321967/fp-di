@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strictNullChecks": true
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["./start.ts", "*.example.ts"]
+}
