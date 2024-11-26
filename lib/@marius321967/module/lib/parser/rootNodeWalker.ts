@@ -3,13 +3,13 @@ import {
   isDefaultExportDeclaration,
   isExportedVariableDeclaration,
   isNamedExportDeclaration,
-} from '../node.type-guards';
-import { evaluateDefaultExport } from './evaluateDefaultExport';
-import { isEligibleBlueprint } from './isEligibleBlueprint';
-import { processNamedExportDeclaration } from './namedExportElementEvaluator';
-import { registerEligibleValueDeclarations } from './registerEligibleValueDeclarations';
-import { registerTypeDeclaration } from './registerTypeDeclaration';
-import { DependencyContext } from './structs';
+} from '../node.type-guards.js';
+import { evaluateDefaultExport } from './evaluateDefaultExport.js';
+import { isEligibleBlueprint } from './isEligibleBlueprint.js';
+import { processNamedExportDeclaration } from './namedExportElementEvaluator.js';
+import { registerEligibleValueDeclarations } from './registerEligibleValueDeclarations.js';
+import { registerTypeDeclaration } from './registerTypeDeclaration.js';
+import { DependencyContext } from './structs.js';
 
 /** @deprecated In favor of ROOT_NODE_INTERESTS */
 export const rootNodeWalker =

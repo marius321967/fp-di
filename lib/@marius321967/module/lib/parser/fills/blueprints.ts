@@ -2,12 +2,12 @@ import ts, { TypeNode } from 'typescript';
 import {
   canExtractAcceptedTypes,
   toAcceptedTypes,
-} from '../../generator/fills/toAcceptedTypes';
-import { excludeNull } from '../../helpers/structs';
-import { getSymbolAtLocation } from '../../helpers/symbols';
-import { BlueprintGetter } from '../../repositories/blueprints';
-import { Blueprints } from '../../types';
-import { FillableParameter } from './structs';
+} from '../../generator/fills/toAcceptedTypes.js';
+import { excludeNull } from '../../helpers/structs.js';
+import { getSymbolAtLocation } from '../../helpers/symbols.js';
+import { BlueprintGetter } from '../../repositories/blueprints.js';
+import { Blueprints } from '../../types.js';
+import { FillableParameter } from './structs.js';
 
 /**
  * @returns Blueprints extracted for each parameters item. Length always matches parameters.

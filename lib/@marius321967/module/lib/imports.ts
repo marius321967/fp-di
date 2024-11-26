@@ -1,15 +1,15 @@
 import path from 'path';
 import ts from 'typescript';
-import { createFillableIdentifier } from './generator/fills/createFillableIdentifier';
-import { getDefaultImportName } from './generator/getDefaultImportName';
+import { createFillableIdentifier } from './generator/fills/createFillableIdentifier.js';
+import { getDefaultImportName } from './generator/getDefaultImportName.js';
 import {
   createDefaultImportClause,
   createImportDeclaration,
   createNamedImportClause,
-} from './generator/node-builders';
-import { Blueprint } from './repositories/blueprints';
-import { Value } from './repositories/values';
-import { FunctionLikeNode, ModuleMember } from './types';
+} from './generator/node-builders.js';
+import { Blueprint } from './repositories/blueprints.js';
+import { Value } from './repositories/values.js';
+import { FunctionLikeNode, ModuleMember } from './types.js';
 
 // TODO rethink import orders. Does not specify whether target is default or named
 export type ImportOrder = {

@@ -1,5 +1,8 @@
 import ts from 'typescript';
-import { getSymbolAtLocation, resolveOriginalSymbol } from '../helpers/symbols';
+import {
+  getSymbolAtLocation,
+  resolveOriginalSymbol,
+} from '../helpers/symbols.js';
 
 export type Blueprint = {
   originalSymbol: ts.Symbol;

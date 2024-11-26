@@ -1,6 +1,6 @@
-import { Blueprint } from '../repositories/blueprints';
-import { Value, ValueGetter } from '../repositories/values';
-import { resolveValueFromCandidateSymbols } from './resolveValueFromCandidateSymbols';
+import { Blueprint } from '../repositories/blueprints.js';
+import { Value, ValueGetter } from '../repositories/values.js';
+import { resolveValueFromCandidateSymbols } from './resolveValueFromCandidateSymbols.js';
 
 export const resolveValueFromCandidateBlueprints = (
   blueprints: Blueprint[],

@@ -1,7 +1,7 @@
 import fs from 'fs';
-import { TypedFunctionFillMember } from '../../parser/fills/structs';
-import { printFile } from '../printFile';
-import { generateFillsFile } from './generateFillsFileSyntax';
+import { TypedFunctionFillMember } from '../../parser/fills/structs.js';
+import { printFile } from '../printFile.js';
+import { generateFillsFile } from './generateFillsFileSyntax.js';
 
 type ModuleFills = {
   [fillFilePath: string]: TypedFunctionFillMember[];

@@ -1,7 +1,7 @@
 import ts from 'typescript';
-import { FunctionFill } from '../../parser/fills/structs';
-import { createFillableCallExpression } from '../node-builders';
-import { createFillableIdentifier } from './createFillableIdentifier';
+import { FunctionFill } from '../../parser/fills/structs.js';
+import { createFillableCallExpression } from '../node-builders.js';
+import { createFillableIdentifier } from './createFillableIdentifier.js';
 
 export const createFillInitializer = ({
   target,

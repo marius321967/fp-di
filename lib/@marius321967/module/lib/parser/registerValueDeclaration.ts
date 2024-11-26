@@ -1,8 +1,8 @@
 import ts from 'typescript';
-import { getSymbolAtLocation } from '../helpers/symbols';
-import { ValueAdder } from '../repositories/values';
-import { ExportAs } from '../types';
-import { toOfferedTypes } from './toOfferedTypes';
+import { getSymbolAtLocation } from '../helpers/symbols.js';
+import { ValueAdder } from '../repositories/values.js';
+import { ExportAs } from '../types.js';
+import { toOfferedTypes } from './toOfferedTypes.js';
 
 export const registerValueDeclaration = (
   addValue: ValueAdder,

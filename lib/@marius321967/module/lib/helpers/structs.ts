@@ -1,4 +1,4 @@
-import { ExportAs } from '../types';
+import { ExportAs } from '../types.js';
 
 /** Use in filter() */
 export const excludeNull = <T>(value: T | null): value is T => value !== null;

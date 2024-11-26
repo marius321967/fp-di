@@ -1,11 +1,11 @@
-import { FunctionFillMember } from '../../parser/fills/structs';
+import { FunctionFillMember } from '../../parser/fills/structs.js';
 import {
   createIntersectionTypeFromBlueprints,
   createSingleExportStatement,
-} from '../node-builders';
-import { FillSyntax } from '../structs';
-import { generateFillName } from './fill-naming';
-import { generateFillImports } from './generateFillImports';
+} from '../node-builders.js';
+import { FillSyntax } from '../structs.js';
+import { generateFillName } from './fill-naming.js';
+import { generateFillImports } from './generateFillImports.js';
 
 /**
  * Generate AST nodes for a fill file

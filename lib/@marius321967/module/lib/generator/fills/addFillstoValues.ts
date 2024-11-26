@@ -1,5 +1,5 @@
-import { TypedFunctionFillMember } from '../../parser/fills/structs';
-import { ValueAdder } from '../../repositories/values';
+import { TypedFunctionFillMember } from '../../parser/fills/structs.js';
+import { ValueAdder } from '../../repositories/values.js';
 
 export const addFillsToValues = (
   fills: TypedFunctionFillMember[],

@@ -1,6 +1,6 @@
 import ts from 'typescript';
-import { ProgramEntrypointExport } from './parser/structs';
-import { FunctionLikeNode } from './types';
+import { ProgramEntrypointExport } from './parser/structs.js';
+import { FunctionLikeNode } from './types.js';
 
 export const isExportedTypeDeclaration = (
   node: ts.Node,

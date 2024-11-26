@@ -1,6 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
-import { ExportAs } from '../../types';
+import { ExportAs } from '../../types.js';
 
 export const generateFillModulePath = (targetPath: string): string => {
   const targetDir = path.dirname(targetPath);

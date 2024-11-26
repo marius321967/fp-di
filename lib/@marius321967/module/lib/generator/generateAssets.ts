@@ -1,13 +1,13 @@
-import { parseFillables } from '../parser/fills/parseFillables';
-import { TypedFunctionFillMember } from '../parser/fills/structs';
-import { ParseResult } from '../parser/structs';
-import { getStartPath } from '../tools';
-import { PreparedProgram } from '../types';
-import { compileStart } from './compileStart';
-import { compileFills } from './fills';
-import { addFillsToValues } from './fills/addFillstoValues';
-import { makeFillsPass } from './fills/makeFillsPass';
-import { tryFillFillable } from './fills/tryFillFillable';
+import { parseFillables } from '../parser/fills/parseFillables.js';
+import { TypedFunctionFillMember } from '../parser/fills/structs.js';
+import { ParseResult } from '../parser/structs.js';
+import { getStartPath } from '../tools.js';
+import { PreparedProgram } from '../types.js';
+import { compileStart } from './compileStart.js';
+import { addFillsToValues } from './fills/addFillstoValues.js';
+import { compileFills } from './fills/index.js';
+import { makeFillsPass } from './fills/makeFillsPass.js';
+import { tryFillFillable } from './fills/tryFillFillable.js';
 
 export const generateAssets = (
   parseResult: ParseResult,

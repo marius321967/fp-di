@@ -2,7 +2,7 @@ import ts from 'typescript';
 import {
   TypedFillableMember,
   TypedFunctionFillMember,
-} from '../../parser/fills/structs';
+} from '../../parser/fills/structs.js';
 
 export type FillFileSyntax = {
   fillExportNodes: ts.VariableStatement[];

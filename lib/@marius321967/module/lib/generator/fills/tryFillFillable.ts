@@ -1,7 +1,7 @@
-import { excludeNull } from '../../helpers/structs';
-import { FillableMember, FunctionFill } from '../../parser/fills/structs';
-import { Value, ValueGetter } from '../../repositories/values';
-import { resolveValueFromCandidateBlueprints } from '../resolveValueFromCandidateBlueprints';
+import { excludeNull } from '../../helpers/structs.js';
+import { FillableMember, FunctionFill } from '../../parser/fills/structs.js';
+import { Value, ValueGetter } from '../../repositories/values.js';
+import { resolveValueFromCandidateBlueprints } from '../resolveValueFromCandidateBlueprints.js';
 
 type FilledParameter = { value: Value | null; isOptional: boolean };
 

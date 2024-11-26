@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { DependencyContext } from './structs';
+import { DependencyContext } from './structs.js';
 
 export const registerTypeDeclaration = (
   node: ts.TypeAliasDeclaration,

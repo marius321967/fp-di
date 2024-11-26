@@ -1,9 +1,9 @@
 import path from 'path';
 import ts from 'typescript';
-import { importValue } from '../imports';
-import { Value } from '../repositories/values';
-import { Blueprints } from '../types';
-import { getMemberImportIdentifier } from './getDefaultImportName';
+import { importValue } from '../imports.js';
+import { Value } from '../repositories/values.js';
+import { Blueprints } from '../types.js';
+import { getMemberImportIdentifier } from './getDefaultImportName.js';
 
 const isImportNeeded = (value: Value, importTo: string): boolean =>
   path.relative(value.member.filePath, importTo) !== '';

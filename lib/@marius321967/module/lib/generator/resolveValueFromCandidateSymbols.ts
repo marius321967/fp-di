@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { Value, ValueGetter } from '../repositories/values';
+import { Value, ValueGetter } from '../repositories/values.js';
 
 export const resolveValueFromCandidateSymbols = (
   symbols: ts.Symbol[],

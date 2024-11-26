@@ -1,7 +1,7 @@
-import { FunctionFillMember } from '../../parser/fills/structs';
-import { addFillToFile } from './addFillToFile';
-import { generateFillSyntax } from './generateFillSyntax';
-import { FillFileSyntax } from './structs';
+import { FunctionFillMember } from '../../parser/fills/structs.js';
+import { addFillToFile } from './addFillToFile.js';
+import { generateFillSyntax } from './generateFillSyntax.js';
+import { FillFileSyntax } from './structs.js';
 
 export const generateFillsFile = (
   fills: FunctionFillMember[],

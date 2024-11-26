@@ -1,7 +1,7 @@
 import fs from 'fs';
-import { FunctionFill } from '../parser/fills/structs';
-import { generateStartSyntax } from './fills/generateStartSyntax';
-import { printFile } from './printFile';
+import { FunctionFill } from '../parser/fills/structs.js';
+import { generateStartSyntax } from './fills/generateStartSyntax.js';
+import { printFile } from './printFile.js';
 
 export const compileStart = (
   entrypointFill: FunctionFill,

@@ -1,8 +1,8 @@
 import ts from 'typescript';
-import { assertIsPresent } from '../../helpers/assert';
-import { BlueprintGetter } from '../../repositories/blueprints';
-import { fileFillableReducer } from './fileFillableReducer';
-import { TypedFillableMember } from './structs';
+import { assertIsPresent } from '../../helpers/assert.js';
+import { BlueprintGetter } from '../../repositories/blueprints.js';
+import { fileFillableReducer } from './fileFillableReducer.js';
+import { TypedFillableMember } from './structs.js';
 
 export const parseFillables = (
   programFiles: string[],

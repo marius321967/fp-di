@@ -1,8 +1,8 @@
-import { TypedFillableMember } from '../../parser/fills/structs';
-import { DependencyContext } from '../../parser/structs';
-import { introduceFunctionFill } from './introduceFunctionFill';
-import { FillsPassResult } from './structs';
-import { tryFillTypedFillable } from './tryFillTypedFillable';
+import { TypedFillableMember } from '../../parser/fills/structs.js';
+import { DependencyContext } from '../../parser/structs.js';
+import { introduceFunctionFill } from './introduceFunctionFill.js';
+import { FillsPassResult } from './structs.js';
+import { tryFillTypedFillable } from './tryFillTypedFillable.js';
 
 /**
  * @param context Used to access existing metadata for filling functions.

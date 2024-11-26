@@ -1,6 +1,6 @@
 import ts from 'typescript';
-import { resolveOriginalSymbol } from '../helpers/symbols';
-import { ModuleMember } from '../types';
+import { resolveOriginalSymbol } from '../helpers/symbols.js';
+import { ModuleMember } from '../types.js';
 
 export type Value = TypelessValue & {
   typeSymbols: ts.Symbol[];

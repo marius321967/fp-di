@@ -1,7 +1,7 @@
 import ts from 'typescript';
-import { assertIsPresent } from '../helpers/assert';
-import { isEntrypointExport } from '../node.type-guards';
-import { FunctionLikeNode, ModuleMember } from '../types';
+import { assertIsPresent } from '../helpers/assert.js';
+import { isEntrypointExport } from '../node.type-guards.js';
+import { FunctionLikeNode, ModuleMember } from '../types.js';
 
 export const findProgramEntrypoint = (
   program: ts.Program,

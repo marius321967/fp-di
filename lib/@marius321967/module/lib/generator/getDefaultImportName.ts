@@ -1,6 +1,6 @@
 import { basename, extname } from 'path';
 import ts from 'typescript';
-import { ModuleMember } from '../types';
+import { ModuleMember } from '../types.js';
 
 export const getDefaultImportName = (filePath: string): string => {
   const moduleName = basename(filePath, extname(filePath));

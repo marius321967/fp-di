@@ -1,10 +1,13 @@
 import ts from 'typescript';
-import { excludeNull } from '../../helpers/structs';
-import { isFunctionLikeNode } from '../../node.type-guards';
-import { BlueprintGetter } from '../../repositories/blueprints';
-import { ExportAs } from '../../types';
-import { matchParametersBlueprints, tryExtractBlueprints } from './blueprints';
-import { Fillable, FillableMember } from './structs';
+import { excludeNull } from '../../helpers/structs.js';
+import { isFunctionLikeNode } from '../../node.type-guards.js';
+import { BlueprintGetter } from '../../repositories/blueprints.js';
+import { ExportAs } from '../../types.js';
+import {
+  matchParametersBlueprints,
+  tryExtractBlueprints,
+} from './blueprints.js';
+import { Fillable, FillableMember } from './structs.js';
 
 export const probeNamedExportForFillable = (
   node: ts.VariableDeclaration,

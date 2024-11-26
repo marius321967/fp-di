@@ -1,7 +1,7 @@
 import ts from 'typescript';
-import { unique } from '../../helpers/structs';
-import { importBlueprint, importFillable, importValue } from '../../imports';
-import { FunctionFill } from '../../parser/fills/structs';
+import { unique } from '../../helpers/structs.js';
+import { importBlueprint, importFillable, importValue } from '../../imports.js';
+import { FunctionFill } from '../../parser/fills/structs.js';
 
 export const generateFillImports = (
   fill: FunctionFill,

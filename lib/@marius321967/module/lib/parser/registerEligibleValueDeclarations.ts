@@ -1,8 +1,8 @@
 import ts from 'typescript';
-import { exportedAsNamed } from '../helpers/structs';
-import { InterestProcessorContext } from './interest';
-import { isEligibleValue } from './isEligibleValue';
-import { registerValueDeclaration } from './registerValueDeclaration';
+import { exportedAsNamed } from '../helpers/structs.js';
+import { InterestProcessorContext } from './interest.js';
+import { isEligibleValue } from './isEligibleValue.js';
+import { registerValueDeclaration } from './registerValueDeclaration.js';
 
 export const registerEligibleValueDeclarations = (
   node: ts.VariableStatement,

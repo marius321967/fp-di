@@ -1,7 +1,7 @@
 import ts from 'typescript';
-import { BlueprintRepository } from '../repositories/blueprints';
-import { ValueRepository } from '../repositories/values';
-import { FillableMember } from './fills/structs';
+import { BlueprintRepository } from '../repositories/blueprints.js';
+import { ValueRepository } from '../repositories/values.js';
+import { FillableMember } from './fills/structs.js';
 
 export type DependencyContext = {
   blueprints: BlueprintRepository;

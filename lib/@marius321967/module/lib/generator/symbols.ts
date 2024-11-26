@@ -1,6 +1,9 @@
 import ts from 'typescript';
-import { getSymbolAtLocation, resolveOriginalSymbol } from '../helpers/symbols';
-import { toAcceptedTypes } from './fills/toAcceptedTypes';
+import {
+  getSymbolAtLocation,
+  resolveOriginalSymbol,
+} from '../helpers/symbols.js';
+import { toAcceptedTypes } from './fills/toAcceptedTypes.js';
 
 /** @returns Single symbol in case of TypeReferenceNode, multiple possible symbols in case of UnionTypeNode */
 export const resolveTypeNodeSymbols = (

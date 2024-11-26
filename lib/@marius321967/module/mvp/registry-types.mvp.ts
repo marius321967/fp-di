@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-// import { registerBuilder } from './di.js';
+// import { registerBuilder } from './di.js.js';
 export type Token<T> = symbol;
 export type Builder<T> = (...args: any[]) => T;
 

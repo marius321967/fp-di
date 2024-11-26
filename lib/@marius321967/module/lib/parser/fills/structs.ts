@@ -1,7 +1,7 @@
 import ts, { CallExpression } from 'typescript';
-import { BlueprintGetter } from '../../repositories/blueprints';
-import { Value } from '../../repositories/values';
-import { Blueprints, FunctionLikeNode, ModuleMember } from '../../types';
+import { BlueprintGetter } from '../../repositories/blueprints.js';
+import { Value } from '../../repositories/values.js';
+import { Blueprints, FunctionLikeNode, ModuleMember } from '../../types.js';
 
 type HasMember<T> = T & {
   member: ModuleMember<FunctionLikeNode>;

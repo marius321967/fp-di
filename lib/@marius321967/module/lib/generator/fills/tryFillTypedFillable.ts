@@ -1,9 +1,9 @@
 import {
   TypedFillableMember,
   TypedFunctionFill,
-} from '../../parser/fills/structs';
-import { ValueGetter } from '../../repositories/values';
-import { tryFillFillable } from './tryFillFillable';
+} from '../../parser/fills/structs.js';
+import { ValueGetter } from '../../repositories/values.js';
+import { tryFillFillable } from './tryFillFillable.js';
 
 export const tryFillTypedFillable = (
   fillable: TypedFillableMember,

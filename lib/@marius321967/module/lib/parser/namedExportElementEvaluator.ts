@@ -1,11 +1,11 @@
 import ts from 'typescript';
-import { exportedAsNamed } from '../helpers/structs';
-import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem';
-import { InterestProcessorContext } from './interest';
-import { isEligibleValue } from './isEligibleValue';
-import { registerTypeDeclaration } from './registerTypeDeclaration';
-import { registerValueDeclaration } from './registerValueDeclaration';
-import { DependencyContext } from './structs';
+import { exportedAsNamed } from '../helpers/structs.js';
+import { findDeclarationOfExportedItem } from './findDeclarationOfExportedItem.js';
+import { InterestProcessorContext } from './interest.js';
+import { isEligibleValue } from './isEligibleValue.js';
+import { registerTypeDeclaration } from './registerTypeDeclaration.js';
+import { registerValueDeclaration } from './registerValueDeclaration.js';
+import { DependencyContext } from './structs.js';
 
 export const processNamedExportDeclaration = (
   node: ts.ExportDeclaration & {

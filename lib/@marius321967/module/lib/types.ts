@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { Blueprint } from './repositories/blueprints';
+import { Blueprint } from './repositories/blueprints.js';
 
 export type FunctionLikeNode = ts.Node &
   Pick<ts.ArrowFunction, 'parameters' | 'type' | 'getSourceFile'>;

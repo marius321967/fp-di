@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import * as Sinon from 'sinon';
 import { inject, registerBuilder, registerValue } from '..';
-import { Builder, Token } from '../di-types';
+import { Builder, Token } from '../di-types.js';
 
 type User = { name: string };
 type UserGetter = () => User;

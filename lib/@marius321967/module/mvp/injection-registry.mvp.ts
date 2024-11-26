@@ -1,4 +1,4 @@
-import { Builder, BuilderRegistrator, Token } from './registry-types.mvp';
+import { Builder, BuilderRegistrator, Token } from './registry-types.mvp.js';
 
 const collection: { [key: symbol]: Builder<any> } = {};
 

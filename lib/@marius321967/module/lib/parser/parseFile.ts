@@ -1,10 +1,10 @@
 import ts from 'typescript';
-import { assertIsPresent } from '../helpers/assert';
-import { createBlueprintRepository } from '../repositories/blueprints';
-import { createValueRepository } from '../repositories/values';
-import { interestIterator } from './interestIterator';
-import { ROOT_NODE_INTERESTS } from './interestRegistry';
-import { DependencyContext } from './structs';
+import { assertIsPresent } from '../helpers/assert.js';
+import { createBlueprintRepository } from '../repositories/blueprints.js';
+import { createValueRepository } from '../repositories/values.js';
+import { interestIterator } from './interestIterator.js';
+import { ROOT_NODE_INTERESTS } from './interestRegistry.js';
+import { DependencyContext } from './structs.js';
 
 export const parseFile = (
   path: string,

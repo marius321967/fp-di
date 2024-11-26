@@ -1,6 +1,6 @@
 import ts from 'typescript';
-import { FunctionLikeNode, ModuleMember } from '../../types';
-import { generateFillableDefaultImportIdentifier } from './fill-naming';
+import { FunctionLikeNode, ModuleMember } from '../../types.js';
+import { generateFillableDefaultImportIdentifier } from './fill-naming.js';
 
 export const createFillableIdentifier = (
   fillable: ModuleMember<FunctionLikeNode>,

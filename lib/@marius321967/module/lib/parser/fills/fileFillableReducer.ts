@@ -3,15 +3,15 @@ import {
   isDefaultExportDeclaration,
   isExportedVariableDeclaration,
   isFunctionLikeNode,
-} from '../../node.type-guards';
-import { BlueprintGetter } from '../../repositories/blueprints';
-import { FunctionLikeNode } from '../../types';
-import { TypedFillable, TypedFillableMember } from './structs';
+} from '../../node.type-guards.js';
+import { BlueprintGetter } from '../../repositories/blueprints.js';
+import { FunctionLikeNode } from '../../types.js';
+import { TypedFillable, TypedFillableMember } from './structs.js';
 import {
   exportAssignmentToExportAs,
   probeDefaultExportForFillable,
   probeNamedExportsForFillable,
-} from './tryExtractFillable';
+} from './tryExtractFillable.js';
 
 export const fileFillableReducer =
   (program: ts.Program, getBlueprint: BlueprintGetter) =>

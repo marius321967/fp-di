@@ -1,18 +1,18 @@
 import ts from 'typescript';
-import { assertIsPresent } from '../helpers/assert';
+import { assertIsPresent } from '../helpers/assert.js';
 import {
   combineBlueprintRepositories,
   createBlueprintRepository,
-} from '../repositories/blueprints';
+} from '../repositories/blueprints.js';
 import {
   combineValueRepositories,
   createValueRepository,
-} from '../repositories/values';
-import { PreparedProgram } from '../types';
-import { probeFillable } from './fills/tryExtractFillable';
-import { findProgramEntrypoint } from './findProgramEntrypoint';
-import { parseFile } from './parseFile';
-import { DependencyContext, ParseResult } from './structs';
+} from '../repositories/values.js';
+import { PreparedProgram } from '../types.js';
+import { probeFillable } from './fills/tryExtractFillable.js';
+import { findProgramEntrypoint } from './findProgramEntrypoint.js';
+import { parseFile } from './parseFile.js';
+import { DependencyContext, ParseResult } from './structs.js';
 
 export const parseProgram = ({
   program,

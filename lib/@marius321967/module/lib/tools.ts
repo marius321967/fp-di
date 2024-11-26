@@ -1,6 +1,6 @@
 import path from 'path';
 import ts from 'typescript';
-import { PreparedProgram } from './types';
+import { PreparedProgram } from './types.js';
 
 export const getStartPath = (entrypointPath: string): string => {
   const programDir = path.dirname(entrypointPath);

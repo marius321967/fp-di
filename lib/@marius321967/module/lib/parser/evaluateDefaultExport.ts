@@ -1,10 +1,10 @@
 import ts from 'typescript';
-import { exportedAsDefault } from '../helpers/structs';
-import { InterestProcessorContext } from './interest';
-import { isEligibleBlueprint } from './isEligibleBlueprint';
-import { isEligibleValue } from './isEligibleValue';
-import { registerTypeDeclaration } from './registerTypeDeclaration';
-import { registerValueDeclaration } from './registerValueDeclaration';
+import { exportedAsDefault } from '../helpers/structs.js';
+import { InterestProcessorContext } from './interest.js';
+import { isEligibleBlueprint } from './isEligibleBlueprint.js';
+import { isEligibleValue } from './isEligibleValue.js';
+import { registerTypeDeclaration } from './registerTypeDeclaration.js';
+import { registerValueDeclaration } from './registerValueDeclaration.js';
 
 // TODO reuse common functionality with namedExportElementEvaluator()
 export const evaluateDefaultExport = (

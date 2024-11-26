@@ -1,8 +1,8 @@
 import ts from 'typescript';
-import { FunctionFill } from '../../parser/fills/structs';
-import { createFillableCallExpression } from '../node-builders';
-import { createFillableIdentifier } from './createFillableIdentifier';
-import { generateFillImports } from './generateFillImports';
+import { FunctionFill } from '../../parser/fills/structs.js';
+import { createFillableCallExpression } from '../node-builders.js';
+import { createFillableIdentifier } from './createFillableIdentifier.js';
+import { generateFillImports } from './generateFillImports.js';
 
 type StartSyntax = {
   importNodes: ts.ImportDeclaration[];
