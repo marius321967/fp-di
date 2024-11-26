@@ -1,1 +1,1 @@
-import './lib/@marius321967/module/cli/index.js';
+import './lib/@marius321967/module/bin/index.js';
