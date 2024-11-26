@@ -1,6 +1,6 @@
 {
   "license": "MIT",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "ts-node": "^10.9.1",
     "typescript": "^5.4.5"
