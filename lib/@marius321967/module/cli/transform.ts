@@ -1,7 +1,7 @@
 import { generateAssets } from '../lib/generator/generateAssets.js';
 import { parseProgram } from '../lib/parser/index.js';
 import { prepareProgram } from '../lib/tools.js';
-import { FpTsConfig } from './config.js';
+import { FpTsConfig } from './types.js';
 
 export const transform = (config: FpTsConfig): void => {
   console.debug('[FPTS] Transforming program with config', config);

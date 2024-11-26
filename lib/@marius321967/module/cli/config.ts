@@ -1,4 +1,5 @@
-export type FpTsConfig = { programDir: string };
+import { getCommandLineConfig } from './command-line.js';
+import { FpTsConfig } from './types.js';
 
 export const getDefaultConfig = (): FpTsConfig => {
   return {
@@ -7,5 +8,12 @@ export const getDefaultConfig = (): FpTsConfig => {
 };
 
 export const getConfig = async (): Promise<FpTsConfig> => {
-  return getDefaultConfig();
+  // Get from command line
+  // Get from dedicated .json
+  // Get from package.json/config
+
+  return {
+    ...getDefaultConfig(),
+    ...getCommandLineConfig(),
+  };
 };
