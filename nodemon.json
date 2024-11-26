@@ -4,5 +4,5 @@
     "start.ts",
     "*.fill.ts"
   ],
-  "exec": "ts-node-esm ./index.ts"
+  "exec": "ts-node-esm ./index.ts -d ./samples/optional-parameters"
 }
