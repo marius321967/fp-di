@@ -1,0 +1,7 @@
+- for checking whether to use import or require:
+  - i previously was ready to rely on config in priority from highest to lowest: moduleResolution, module, package.json type with some values indicating either esm or commonjs
+  - soon after starting implementation it turned out the concept is a bit different:
+  - by default should be using ESM, even with module=commonjs it's allowed and will be transpiled as the setting targets only js output
+  - when tsconfig module=commonjs, esModuleInterop is false/empty, default imports should be imported with `* as x` and accessed like `x.default`
+  - type imports should always be esm, they dont work with commonjs
+  - with this in mind it can be implemented later
