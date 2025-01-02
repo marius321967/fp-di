@@ -1,0 +1,8 @@
+{
+  "ext": "ts,json",
+  "ignore": [
+    "start.ts",
+    "*.fill.ts"
+  ],
+  "exec": "ts-node-esm ./bin/index.ts -d ./samples/`cat samples/.active` && ts-node-esm ./samples/`cat samples/.active`/start.ts"
+}

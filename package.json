@@ -12,7 +12,7 @@
     "prettier": "^3.2.5"
   },
   "scripts": {
-    "start": "yarn nodemon",
-    "test-output": "ts-node-esm ./samples/optional-parameters/start.ts"
+    "dev:compile": "yarn nodemon --config samples/nodemon-compile.json",
+    "dev:compile-run": "yarn nodemon --config samples/nodemon-compile-run.json"
   }
 }
