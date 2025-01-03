@@ -1,18 +1,28 @@
 {
+  "name": "@marius321967/fpts",
   "license": "MIT",
   "type": "module",
+  "author": "marius321967",
   "dependencies": {
     "commander": "^12.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.4.5"
   },
   "devDependencies": {
+    "@types/chai": "^5.0.1",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^18.15.0",
+    "@types/sinon": "^10.0.15",
+    "chai": "^5.1.2",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.21",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "sinon": "^15.1.2",
+    "ts-mocha": "^10.0.0"
   },
   "scripts": {
     "dev:compile": "yarn nodemon --config samples/nodemon-compile.json",
-    "dev:compile-run": "yarn nodemon --config samples/nodemon-compile-run.json"
+    "dev:compile-run": "yarn nodemon --config samples/nodemon-compile-run.json",
+    "test": "ts-mocha tests/**/*.spec.ts"
   }
 }
