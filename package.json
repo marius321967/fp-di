@@ -17,12 +17,11 @@
     "mocha": "^10.2.0",
     "nodemon": "^2.0.21",
     "prettier": "^3.2.5",
-    "sinon": "^15.1.2",
-    "ts-mocha": "^10.0.0"
+    "sinon": "^15.1.2"
   },
   "scripts": {
     "dev:compile": "yarn nodemon --config samples/nodemon-compile.json",
     "dev:compile-run": "yarn nodemon --config samples/nodemon-compile-run.json",
-    "test": "ts-mocha tests/**/*.spec.ts"
+    "test": "mocha tests/**/*.spec.ts"
   }
 }
