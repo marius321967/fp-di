@@ -1,6 +1,8 @@
 {
+  "loader": "ts-node/esm",
+  "extension": "ts",
   "watchFiles": [
     "tests/**/*.ts",
-    "*.ts"
+    "lib/**/*.ts"
   ]
 }
