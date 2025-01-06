@@ -3,17 +3,17 @@ import { dirname } from 'path';
 import { createProgram } from 'typescript';
 import { fileURLToPath } from 'url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const assetDir = dirname(fileURLToPath(import.meta.url)) + '/assets';
 
 describe('node.getSourceFile() should return the exact same object for same file, not a copy of the SourceFile object', () => {
   const program = createProgram(
-    [__dirname + '/sample-program.ts', __dirname + '/sample-program-2.ts'],
+    [assetDir + '/sample-program.ts', assetDir + '/sample-program-2.ts'],
     {},
   );
   program.getTypeChecker();
 
   it('main test', () => {
-    const sourceFile = program.getSourceFile(__dirname + '/sample-program.ts');
+    const sourceFile = program.getSourceFile(assetDir + '/sample-program.ts');
 
     if (!sourceFile) {
       assert.fail('Could not parse sample program for test');
@@ -31,9 +31,9 @@ describe('node.getSourceFile() should return the exact same object for same file
   });
 
   it('nodes from different files should return different getSourceFile (just in case)', () => {
-    const sourceFile1 = program.getSourceFile(__dirname + '/sample-program.ts');
+    const sourceFile1 = program.getSourceFile(assetDir + '/sample-program.ts');
     const sourceFile2 = program.getSourceFile(
-      __dirname + '/sample-program-2.ts',
+      assetDir + '/sample-program-2.ts',
     );
 
     if (!sourceFile1 || !sourceFile2) {
