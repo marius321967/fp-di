@@ -22,6 +22,8 @@
   "scripts": {
     "dev:compile": "yarn nodemon --config samples/nodemon-compile.json",
     "dev:compile-run": "yarn nodemon --config samples/nodemon-compile-run.json",
-    "test": "mocha tests/**/*.spec.ts"
+    "test:unit": "mocha lib/**/*.spec.ts",
+    "test:ts-lib": "mocha tests/ts/**/*.spec.ts",
+    "test": "yarn test:unit && yarn test:ts-lib"
   }
 }
