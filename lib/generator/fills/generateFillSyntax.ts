@@ -1,9 +1,7 @@
 import { FunctionFillMember } from '../../parser/fills/structs.js';
-import {
-  createIntersectionTypeFromBlueprints,
-  createSingleExportStatement,
-} from '../node-builders.js';
 import { FillSyntax } from '../structs.js';
+import { createSingleExportStatement } from '../ts-node-factory/exports.factory.js';
+import { createIntersectionTypeFromBlueprints } from '../ts-node-factory/types.factory.js';
 import { generateFillName } from './fill-naming.js';
 import { generateFillImports } from './generateFillImports.js';
 

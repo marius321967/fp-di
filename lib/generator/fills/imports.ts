@@ -3,8 +3,8 @@ import { orderDefaultImport, orderNamedImport } from '../../imports.js';
 import { Blueprint } from '../../repositories/blueprints.js';
 import { Value } from '../../repositories/values.js';
 import { FunctionLikeNode, ModuleMember } from '../../types.js';
-import { getFillableImportName } from '../fills/createFillableIdentifier.js';
-import { createImportDeclarationFromOrder } from '../node-builders.js';
+import { createImportDeclarationFromOrder } from '../ts-node-factory/imports.factory.js';
+import { getFillableImportName } from './createFillableIdentifier.js';
 
 export const importValue = (
   value: Value,
