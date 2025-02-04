@@ -3,7 +3,7 @@ import { orderDefaultImport, orderNamedImport } from '../../imports.js';
 import { Blueprint } from '../../repositories/blueprints.js';
 import { Value } from '../../repositories/values.js';
 import { FunctionLikeNode, ModuleMember } from '../../types.js';
-import { createImportDeclarationFromOrder } from '../ts-node-factory/imports.factory.js';
+import { createImportDeclarationFromContext } from '../ts-node-factory/imports.factory.js';
 import { getFillableImportName } from './createFillableIdentifier.js';
 
 export const importValue = (
@@ -22,7 +22,7 @@ export const importValue = (
     importTo,
   );
 
-  return createImportDeclarationFromOrder(importOrder);
+  return createImportDeclarationFromContext(importOrder);
 };
 
 export const importBlueprint = (
@@ -35,7 +35,7 @@ export const importBlueprint = (
     importTo,
   );
 
-  return createImportDeclarationFromOrder(importOrder);
+  return createImportDeclarationFromContext(importOrder);
 };
 
 export const importFillable = (
@@ -51,5 +51,5 @@ export const importFillable = (
         )
       : orderNamedImport(fillable.exportedAs, fillable.filePath, importTo);
 
-  return createImportDeclarationFromOrder(importOrder);
+  return createImportDeclarationFromContext(importOrder);
 };

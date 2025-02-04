@@ -35,25 +35,6 @@ export const createRenamedImportClause = (
     ]),
   );
 
-export const createImportDeclaration = (
-  clause: ts.ImportClause,
-  modulePath: string,
-): ts.ImportDeclaration =>
-  ts.factory.createImportDeclaration(
-    undefined,
-    clause,
-    ts.factory.createStringLiteral(modulePath),
-  );
-
-export const createImportDeclarationFromOrder = (
-  context: ImportContext,
-): ts.ImportDeclaration => {
-  return createImportDeclaration(
-    createImportClauseFromContext(context),
-    context.modulePath,
-  );
-};
-
 export const createImportClauseFromContext = ({
   importAs,
   exportedAs,
@@ -68,4 +49,23 @@ export const createImportClauseFromContext = ({
         ts.factory.createIdentifier(exportedAs.name),
         ts.factory.createIdentifier(importAs),
       );
+};
+
+export const createImportDeclaration = (
+  clause: ts.ImportClause,
+  modulePath: string,
+): ts.ImportDeclaration =>
+  ts.factory.createImportDeclaration(
+    undefined,
+    clause,
+    ts.factory.createStringLiteral(modulePath),
+  );
+
+export const createImportDeclarationFromContext = (
+  context: ImportContext,
+): ts.ImportDeclaration => {
+  return createImportDeclaration(
+    createImportClauseFromContext(context),
+    context.modulePath,
+  );
 };
