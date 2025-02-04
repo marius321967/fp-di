@@ -1,9 +1,10 @@
 import path from 'path';
 import ts from 'typescript';
-import { importValue } from '../imports.js';
+import { ImportContext } from '../import-context.js';
 import { Value } from '../repositories/values.js';
 import { Blueprints } from '../types.js';
 import { getMemberImportIdentifier } from './getDefaultImportName.js';
+import { importValue } from './ts-factories/import.factories.js';
 
 const isImportNeeded = (value: Value, importTo: string): boolean =>
   path.relative(value.member.filePath, importTo) !== '';
@@ -48,6 +49,23 @@ export const createNamedImportClause = (
     ]),
   );
 
+/** @returns Import clause with single identifier, eg., { originalIdentifier as importIdentifier } */
+export const createRenamedImportClause = (
+  originalIdentifier: ts.Identifier,
+  importIdentifier: ts.Identifier,
+): ts.ImportClause =>
+  ts.factory.createImportClause(
+    false,
+    undefined,
+    ts.factory.createNamedImports([
+      ts.factory.createImportSpecifier(
+        false,
+        originalIdentifier,
+        importIdentifier,
+      ),
+    ]),
+  );
+
 export const createImportDeclaration = (
   clause: ts.ImportClause,
   modulePath: string,
@@ -57,6 +75,31 @@ export const createImportDeclaration = (
     clause,
     ts.factory.createStringLiteral(modulePath),
   );
+
+export const createImportDeclarationFromOrder = (
+  context: ImportContext,
+): ts.ImportDeclaration => {
+  return createImportDeclaration(
+    createImportClauseFromContext(context),
+    context.modulePath,
+  );
+};
+
+export const createImportClauseFromContext = ({
+  importAs,
+  exportedAs,
+}: Pick<ImportContext, 'importAs' | 'exportedAs'>): ts.ImportClause => {
+  if (exportedAs.type === 'default') {
+    return createDefaultImportClause(ts.factory.createIdentifier(importAs));
+  }
+
+  return exportedAs.name === importAs
+    ? createNamedImportClause(ts.factory.createIdentifier(importAs))
+    : createRenamedImportClause(
+        ts.factory.createIdentifier(exportedAs.name),
+        ts.factory.createIdentifier(importAs),
+      );
+};
 
 export const createSingleExportStatement = (
   name: string,
