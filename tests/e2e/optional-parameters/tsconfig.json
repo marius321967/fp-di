@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "strictNullChecks": true
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["./start.ts", "*.example.ts"]
+}
