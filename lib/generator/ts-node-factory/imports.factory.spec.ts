@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai';
-import ts from 'typescript';
+import ts, { NamedImports } from 'typescript';
 import { ExportAs } from '../../types.js';
 import { createImportClauseFromContext } from './imports.factory.js';
 
@@ -21,10 +21,7 @@ describe('createImportClauseFromContext', () => {
     const result = createImportClauseFromContext({ importAs, exportedAs });
 
     assert.isDefined(result.namedBindings);
-    // TODO use forEachChild
-    const importSpecifier = result.namedBindings.getChildAt(
-      0,
-    ) as ts.ImportSpecifier;
+    const importSpecifier = (result.namedBindings as NamedImports).elements[0];
     expect(importSpecifier.name.escapedText).to.equal('foo');
     expect(importSpecifier.propertyName).to.be.undefined;
   });
