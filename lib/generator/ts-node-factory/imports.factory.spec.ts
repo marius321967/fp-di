@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai';
-import ts, { NamedImports } from 'typescript';
+import ts, { Identifier, NamedImports } from 'typescript';
 import { ExportAs } from '../../types.js';
 import { createImportClauseFromContext } from './imports.factory.js';
 
@@ -27,6 +27,17 @@ describe('createImportClauseFromContext', () => {
   });
 
   it('should import under different name when import name does not match target export name', () => {
-    // TODO
+    const importAs = 'bar';
+    const exportedAs: ExportAs = { type: 'named', name: 'foo' };
+
+    const result = createImportClauseFromContext({ importAs, exportedAs });
+
+    assert.isDefined(result.namedBindings);
+    const importSpecifier = (result.namedBindings as NamedImports).elements[0];
+    expect(importSpecifier.name.escapedText).to.equal('bar');
+    assert.isDefined(importSpecifier.propertyName);
+    expect((importSpecifier.propertyName as Identifier).escapedText).to.equal(
+      'foo',
+    );
   });
 });
