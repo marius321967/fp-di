@@ -1,11 +1,9 @@
 import { getCommandLineConfig } from './command-line.js';
 import { FpTsConfig } from './types.js';
 
-export const getDefaultConfig = (): FpTsConfig => {
-  return {
-    programDir: './',
-  };
-};
+export const getDefaultConfig = (): FpTsConfig => ({
+  programDir: './',
+});
 
 export const getConfig = async (): Promise<FpTsConfig> => {
   // Get from command line
