@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import { TypedFunctionFillMember } from '../../parser/fills/structs.js';
 import { printFile } from '../printFile.js';
 import { generateFillsFile } from './generateFillsFileSyntax.js';
@@ -7,19 +7,25 @@ type ModuleFills = {
   [fillFilePath: string]: TypedFunctionFillMember[];
 };
 
-export const compileFills = (fills: TypedFunctionFillMember[]): void => {
+export const compileFills = (
+  fills: TypedFunctionFillMember[],
+): Promise<void> => {
   const moduleFills: ModuleFills = groupModuleFills(fills);
 
-  Object.entries(moduleFills).forEach(([fillFilePath, fills]) => {
-    const fillFileSyntax = generateFillsFile(fills, fillFilePath);
+  const fileWrites = Object.entries(moduleFills).map<Promise<void>>(
+    ([fillFilePath, fills]) => {
+      const fillFileSyntax = generateFillsFile(fills, fillFilePath);
 
-    const sourceText = printFile([
-      ...fillFileSyntax.importNodes,
-      ...fillFileSyntax.fillExportNodes,
-    ]);
+      const sourceText = printFile([
+        ...fillFileSyntax.importNodes,
+        ...fillFileSyntax.fillExportNodes,
+      ]);
 
-    fs.writeFileSync(fillFilePath, sourceText);
-  });
+      return fs.writeFile(fillFilePath, sourceText);
+    },
+  );
+
+  return Promise.all(fileWrites).then();
 };
 
 const groupModuleFills = (fills: TypedFunctionFillMember[]): ModuleFills => {

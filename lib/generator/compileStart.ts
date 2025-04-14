@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import { FunctionFill } from '../parser/fills/structs.js';
 import { generateStartSyntax } from './fills/generateStartSyntax.js';
 import { printFile } from './printFile.js';
@@ -6,7 +6,7 @@ import { printFile } from './printFile.js';
 export const compileStart = (
   entrypointFill: FunctionFill,
   startPath: string,
-): void => {
+): Promise<void> => {
   const startSyntax = generateStartSyntax(entrypointFill, startPath);
 
   const source = printFile([
@@ -14,5 +14,5 @@ export const compileStart = (
     startSyntax.entrypointCallNode,
   ]);
 
-  fs.writeFileSync(startPath, source);
+  return fs.writeFile(startPath, source);
 };

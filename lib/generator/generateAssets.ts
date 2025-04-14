@@ -12,7 +12,7 @@ import { tryFillFillable } from './fills/tryFillFillable.js';
 export const generateAssets = (
   parseResult: ParseResult,
   { programFiles, program, programEntrypointPath }: PreparedProgram,
-): void => {
+): Promise<void> => {
   let remainingFillables = parseFillables(
     programFiles,
     program,
@@ -44,6 +44,7 @@ export const generateAssets = (
     );
   }
 
-  compileFills(fills);
-  compileStart(filledEntrypoint, getStartPath(programEntrypointPath));
+  return compileFills(fills).then(() =>
+    compileStart(filledEntrypoint, getStartPath(programEntrypointPath)),
+  );
 };
