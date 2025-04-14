@@ -23,8 +23,8 @@
     "dev:compile": "yarn nodemon --config samples/nodemon-compile.json",
     "dev:compile-run": "yarn nodemon --config samples/nodemon-compile-run.json",
     "test:unit": "mocha lib/**/*.spec.ts",
-    "test:e2e": "mocha tests/e2e/**/*.spec.ts",
     "test:ts-lib": "mocha tests/ts/**/*.spec.ts",
-    "test": "yarn test:unit && yarn test:ts-lib"
+    "test:e2e": "mocha tests/e2e/**/*.spec.ts",
+    "test": "yarn test:unit && yarn test:ts-lib && yarn test:e2e"
   }
 }
