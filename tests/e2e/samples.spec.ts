@@ -11,7 +11,7 @@ describe('optional-parameters', function () {
     });
   });
 
-  it('should', async () => {
+  it('should compile without issue when optional fillable parameter is not available', async () => {
     const result = await run('./tests/e2e/optional-parameters/start.ts');
 
     expect(result.trim()).to.equal(
