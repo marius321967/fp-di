@@ -1,5 +1,7 @@
 {
-  "loader": "ts-node/esm",
+  "node-option": [
+    "import=tsx"
+  ],
   "extension": "ts",
   "watchFiles": [
     "tests/**/*.ts",

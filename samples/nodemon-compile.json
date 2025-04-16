@@ -4,5 +4,5 @@
     "start.ts",
     "*.fill.ts"
   ],
-  "exec": "ts-node-esm ./bin/index.ts -d ./samples/`cat samples/.active`"
+  "exec": "tsx ./bin/index.ts -d ./samples/`cat samples/.active`"
 }
