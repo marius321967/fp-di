@@ -1,5 +1,5 @@
-import './config';
-import { EmailServiceAddress, SmsServiceAddress } from './types';
+import './config.js';
+import { EmailServiceAddress, SmsServiceAddress } from './types.js';
 
 export default (
   emailHost: EmailServiceAddress,
